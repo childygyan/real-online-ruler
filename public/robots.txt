@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://real-online-ruler-30y.pages.dev/sitemap-index.xml
+Sitemap: https://realonlineruler.online/sitemap-index.xml
+
+# LLM discovery file: https://realonlineruler.online/llms.txt

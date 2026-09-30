@@ -114,3 +114,20 @@ describe('content pages', () => {
     }
   });
 });
+
+describe('robots.txt and llms.txt', () => {
+  it('robots.txt points crawlers at the production sitemap', () => {
+    const robots = read('public/robots.txt');
+    expect(robots).toContain('Sitemap: https://realonlineruler.online/sitemap-index.xml');
+    expect(robots).not.toContain('pages.dev');
+  });
+
+  it('llms.txt exists and describes the site for LLMs', () => {
+    expect(existsSync(join(ROOT, 'public/llms.txt'))).toBe(true);
+    const llms = read('public/llms.txt');
+    expect(llms).toContain('# Real Online Ruler');
+    expect(llms).toContain('https://realonlineruler.online/');
+    expect(llms).toContain('/privacy-policy/');
+    expect(llms).toContain('/zh/');
+  });
+});

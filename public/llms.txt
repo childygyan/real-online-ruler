@@ -1,0 +1,38 @@
+# Real Online Ruler
+
+> A free online tool that turns any screen into an accurate ruler at true physical size. No download, no sign-up, no account. Works on phones, tablets, laptops, and desktops.
+
+Real Online Ruler (https://realonlineruler.online/) displays an on-screen ruler calibrated to real-world units. Users calibrate with a credit card, a known screen size, or automatic device detection, then measure objects directly against the screen in centimeters, millimeters, inches, or pixels.
+
+## Main pages
+
+- [Online ruler](https://realonlineruler.online/): the interactive measuring tool with unit switching (cm, mm, inches, pixels), themes, and precision controls.
+- [How to calibrate](https://realonlineruler.online/how-to-calibrate/): step-by-step calibration using a credit card, manual PPI entry, or device presets.
+- [Guide](https://realonlineruler.online/guide/): how to read the ruler and measure accurately on screen.
+- [Centimeter ruler](https://realonlineruler.online/cm/), [Inch ruler](https://realonlineruler.online/inches/), [Millimeter ruler](https://realonlineruler.online/mm/), [Pixel ruler](https://realonlineruler.online/pixels/): unit-focused ruler pages.
+
+## Advanced features
+
+- Drag-to-measure with live distance and angle readout
+- Protractor overlay for angle measurement
+- Magnifier loupe for precise alignment
+- Floating, rotatable on-screen ruler
+- Measurement log with CSV/TXT export
+- Grid overlay
+
+## Legal and contact
+
+- [About](https://realonlineruler.online/about/): built by Firoz Khan (FK Digital Media).
+- [Privacy Policy](https://realonlineruler.online/privacy-policy/): no accounts; measurements and preferences stay in the browser (localStorage); Google Analytics is used for basic usage statistics.
+- [Terms of Service](https://realonlineruler.online/terms-of-service/): free as-is tool; on-screen measurements are approximate and not for medical, engineering, safety, or legal decisions.
+- [Contact](https://realonlineruler.online/contact/): support@realonlineruler.online and public profiles.
+
+## Localization
+
+Every page is available in six languages under locale prefixes: /es/ (Spanish), /fr/ (French), /pt/ (Brazilian Portuguese), /zh/ (Simplified Chinese), /id/ (Indonesian). English is the default at the root path.
+
+## Technical notes for crawlers and LLMs
+
+- Static site; all content is server-rendered HTML.
+- Canonical URLs use https://realonlineruler.online/.
+- Sitemap: https://realonlineruler.online/sitemap-index.xml
