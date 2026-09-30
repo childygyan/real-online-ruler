@@ -4,10 +4,10 @@ import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
 
-// Production domain: TBD (Firoz has not chosen one yet).
-// Placeholder origin used for sitemap/canonical generation only.
+// Production domain: TBD (Firoz has not chosen a custom domain yet).
+// Temporary Pages origin used for sitemap/canonical generation.
 export default defineConfig({
-  site: 'https://real-online-ruler.pages.dev',
+  site: 'https://real-online-ruler-30y.pages.dev',
   output: 'static',
   adapter: cloudflare({
     imageService: 'passthrough',

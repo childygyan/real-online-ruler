@@ -16,9 +16,10 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Visible focus ring everywhere — keyboard users must see where they are. */
+  /* Visible focus ring everywhere — keyboard users must see where they are.
+     brand-600 keeps ≥3:1 against both light and dark surfaces. */
   :focus-visible {
-    outline: 2px solid var(--ror-brand-500);
+    outline: 2px solid var(--ror-brand-600);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -37,11 +38,11 @@
 
   .ror-btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition-colors;
-    background-color: var(--ror-brand-600);
+    background-color: var(--ror-brand-700);
     color: #fff;
   }
   .ror-btn-primary:hover {
-    background-color: var(--ror-brand-700);
+    background-color: var(--ror-brand-800);
   }
 
   .ror-btn-ghost {

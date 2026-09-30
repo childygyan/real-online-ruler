@@ -155,17 +155,17 @@
         <div
           id="ch-h"
           class="absolute left-0 right-0 top-0"
-          style="border-top: 1px dashed var(--ror-brand-500);"
+          style="border-top: 1px dashed var(--ror-brand-700);"
         ></div>
         <div
           id="ch-v"
           class="absolute bottom-0 left-0 top-0"
-          style="border-left: 1px dashed var(--ror-brand-500);"
+          style="border-left: 1px dashed var(--ror-brand-700);"
         ></div>
         <div
           id="ch-label"
           class="absolute rounded px-1.5 py-0.5 text-[11px] font-semibold"
-          style="background-color: var(--ror-brand-600); color: #fff; transform: translate(10px, 10px);"
+          style="background-color: var(--ror-brand-700); color: #fff; transform: translate(10px, 10px);"
         ></div>
       </div>
       <p class="max-w-sm text-center text-sm" style="color: var(--ror-text-muted);">
@@ -215,7 +215,7 @@
     background-color: rgba(6, 182, 212, 0.12);
   }
   .ruler-tool[aria-pressed='true'] {
-    background-color: var(--ror-brand-600);
+    background-color: var(--ror-brand-700);
     color: #fff;
   }
   .ruler-tool:focus-visible {
@@ -232,14 +232,14 @@
     left: 0;
     right: 0;
     height: 0;
-    border-top: 2px solid var(--ror-brand-500);
+    border-top: 2px solid var(--ror-brand-700);
     cursor: ns-resize;
   }
   .guide-line.guide-v {
     top: 0;
     bottom: 0;
     width: 0;
-    border-left: 2px solid var(--ror-brand-500);
+    border-left: 2px solid var(--ror-brand-700);
     cursor: ew-resize;
   }
   .guide-label {
@@ -247,7 +247,7 @@
     font-size: 11px;
     font-weight: 600;
     white-space: nowrap;
-    background-color: var(--ror-brand-600);
+    background-color: var(--ror-brand-700);
     color: #fff;
     border-radius: 4px;
     padding: 1px 6px;
@@ -737,7 +737,7 @@
     state.pxPerInch = cal.pxPerInch;
     if (cal.method === 'default') {
       statusEl.innerHTML =
-        'Uncalibrated — using the 96 px/in CSS default. <button type="button" data-open-calibrate class="underline font-semibold" style="color: var(--ror-brand-600);">Calibrate now</button>';
+        'Uncalibrated — using the 96 px/in CSS default. <button type="button" data-open-calibrate class="underline font-semibold" style="color: var(--ror-brand-700);">Calibrate now</button>';
     } else {
       var what = cal.deviceName ? cal.deviceName : methodLabel(cal.method);
       statusEl.textContent = cal.pxPerInch.toFixed(1) + ' px/in · calibrated via ' + what + '.';
