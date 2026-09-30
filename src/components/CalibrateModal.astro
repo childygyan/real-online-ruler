@@ -262,6 +262,8 @@
   function flashSaved() {
     refreshReadout();
     savedNote.classList.remove('hidden');
+    // Notify the ruler app (and any other listeners) that calibration changed.
+    window.dispatchEvent(new CustomEvent('ror:calibration-changed'));
     window.setTimeout(function () {
       savedNote.classList.add('hidden');
     }, 2500);

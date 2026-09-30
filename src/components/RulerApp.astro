@@ -1,0 +1,380 @@
+---
+/**
+ * RulerApp.astro — the interactive ruler workspace (Phase 3).
+ * Four independently toggleable SVG rulers (top/bottom/left/right), unit
+ * switcher, live calibration readout. Re-renders on resize and whenever
+ * the calibration changes.
+ */
+---
+
+<div id="ruler-app-root" class="ror-card overflow-hidden">
+  <!-- Toolbar -->
+  <div
+    class="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-4 py-3"
+    style="border-color: var(--ror-border); background-color: var(--ror-bg-soft);"
+  >
+    <div
+      role="group"
+      aria-label="Measurement unit"
+      class="flex overflow-hidden rounded-lg border"
+      style="border-color: var(--ror-border);"
+    >
+      <button type="button" class="ruler-tool" data-unit="cm" aria-pressed="true">
+        cm
+      </button>
+      <button type="button" class="ruler-tool" data-unit="mm" aria-pressed="false">
+        mm
+      </button>
+      <button type="button" class="ruler-tool" data-unit="in" aria-pressed="false">
+        in
+      </button>
+      <button type="button" class="ruler-tool" data-unit="px" aria-pressed="false">
+        px
+      </button>
+    </div>
+
+    <div
+      role="group"
+      aria-label="Ruler edges"
+      class="flex overflow-hidden rounded-lg border"
+      style="border-color: var(--ror-border);"
+    >
+      <button type="button" class="ruler-tool" data-edge="top" aria-pressed="true">
+        Top
+      </button>
+      <button type="button" class="ruler-tool" data-edge="bottom" aria-pressed="false">
+        Bottom
+      </button>
+      <button type="button" class="ruler-tool" data-edge="left" aria-pressed="false">
+        Left
+      </button>
+      <button type="button" class="ruler-tool" data-edge="right" aria-pressed="false">
+        Right
+      </button>
+    </div>
+
+    <span class="flex-1"></span>
+
+    <button type="button" data-open-calibrate class="ror-btn-ghost !px-4 !py-2 text-xs">
+      Calibrate
+    </button>
+  </div>
+
+  <!-- Stage -->
+  <div
+    id="ruler-stage"
+    class="relative overflow-hidden"
+    style="height: min(46vh, 420px); min-height: 300px; background-color: var(--ror-canvas-bg);"
+    aria-label="Measuring area"
+  >
+    <div id="ruler-bar-top" class="absolute left-0 top-0" aria-hidden="true"></div>
+    <div id="ruler-bar-bottom" class="absolute bottom-0 left-0" aria-hidden="true"></div>
+    <div id="ruler-bar-left" class="absolute left-0" aria-hidden="true"></div>
+    <div id="ruler-bar-right" class="absolute right-0" aria-hidden="true"></div>
+    <div id="ruler-workspace" class="absolute flex items-center justify-center p-6">
+      <p class="max-w-sm text-center text-sm" style="color: var(--ror-text-muted);">
+        Toggle the edges above to frame this area with rulers. Hold a small object against a
+        ruler&rsquo;s highlighted measuring edge and read its size.
+      </p>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div
+    class="flex flex-wrap items-center justify-between gap-2 border-t px-4 py-2 text-xs"
+    style="border-color: var(--ror-border); color: var(--ror-text-muted);"
+  >
+    <span id="ruler-cal-status">Loading calibration…</span>
+    <span>Keep browser zoom at 100% — zooming rescales the ruler.</span>
+  </div>
+</div>
+
+<style>
+  .ruler-tool {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ror-text-muted);
+    background: transparent;
+    border-right: 1px solid var(--ror-border);
+    transition:
+      background-color 0.15s,
+      color 0.15s;
+  }
+  .ruler-tool:last-child {
+    border-right: none;
+  }
+  .ruler-tool:hover {
+    color: var(--ror-text);
+    background-color: var(--ror-brand-50);
+  }
+  .dark .ruler-tool:hover {
+    background-color: rgba(6, 182, 212, 0.12);
+  }
+  .ruler-tool[aria-pressed='true'] {
+    background-color: var(--ror-brand-600);
+    color: #fff;
+  }
+  .ruler-tool:focus-visible {
+    outline: 2px solid var(--ror-brand-500);
+    outline-offset: -2px;
+  }
+</style>
+
+<script>
+  import { loadCalibration } from '../lib/calibration.js';
+  import { computeTicks } from '../lib/ticks.js';
+
+  var BAR = 56; // ruler bar thickness, px
+  var TICK_LEN = { major: 24, long: 18, medium: 13, minor: 8 };
+  var FONT_CSS = 'font-family: inherit; font-size: 11px;';
+
+  var state = {
+    unit: 'cm',
+    edges: { top: true, bottom: false, left: false, right: false },
+    pxPerInch: 96,
+  };
+
+  var stage = document.getElementById('ruler-stage');
+  var workspace = document.getElementById('ruler-workspace');
+  var bars = {
+    top: document.getElementById('ruler-bar-top'),
+    bottom: document.getElementById('ruler-bar-bottom'),
+    left: document.getElementById('ruler-bar-left'),
+    right: document.getElementById('ruler-bar-right'),
+  };
+  var statusEl = document.getElementById('ruler-cal-status');
+
+  function crisp(n) {
+    return (Math.round(n) + 0.5).toFixed(1);
+  }
+
+  /** Horizontal ruler SVG. `flip` = true puts the measuring edge at the bottom (top bar). */
+  function hRulerSVG(length, flip) {
+    var ticks = computeTicks(length, state.unit, state.pxPerInch);
+    var base = flip ? BAR : 0; // y of the measuring edge
+    var dir = flip ? -1 : 1;
+    var parts = [];
+    parts.push(
+      '<svg width="' +
+        length +
+        '" height="' +
+        BAR +
+        '" role="img" aria-label="Horizontal ruler in ' +
+        state.unit +
+        '">'
+    );
+    // measuring-edge baseline
+    parts.push(
+      '<line x1="0" y1="' +
+        base +
+        '" x2="' +
+        length +
+        '" y2="' +
+        base +
+        '" stroke="var(--ror-brand-600)" stroke-width="2.5"/>'
+    );
+    for (var i = 0; i < ticks.length; i++) {
+      var t = ticks[i];
+      var len = TICK_LEN[t.size];
+      var x = crisp(t.pos);
+      var y1 = base;
+      var y2 = base + dir * len;
+      var color = t.size === 'minor' ? 'var(--ror-tick-minor)' : 'var(--ror-tick)';
+      parts.push(
+        '<line x1="' +
+          x +
+          '" y1="' +
+          y1 +
+          '" x2="' +
+          x +
+          '" y2="' +
+          y2 +
+          '" stroke="' +
+          color +
+          '" stroke-width="1" shape-rendering="crispEdges"/>'
+      );
+      if (t.label !== undefined) {
+        var ty = base + dir * (len + 13);
+        parts.push(
+          '<text x="' +
+            t.pos.toFixed(1) +
+            '" y="' +
+            ty +
+            '" text-anchor="middle" fill="var(--ror-text-muted)" style="' +
+            FONT_CSS +
+            '">' +
+            t.label +
+            '</text>'
+        );
+      }
+    }
+    parts.push('</svg>');
+    return parts.join('');
+  }
+
+  /** Vertical ruler SVG. `flip` = true puts the measuring edge at the right (left bar). */
+  function vRulerSVG(length, flip) {
+    var ticks = computeTicks(length, state.unit, state.pxPerInch);
+    var base = flip ? BAR : 0; // x of the measuring edge
+    var dir = flip ? -1 : 1;
+    var parts = [];
+    parts.push(
+      '<svg width="' +
+        BAR +
+        '" height="' +
+        length +
+        '" role="img" aria-label="Vertical ruler in ' +
+        state.unit +
+        '">'
+    );
+    parts.push(
+      '<line x1="' +
+        base +
+        '" y1="0" x2="' +
+        base +
+        '" y2="' +
+        length +
+        '" stroke="var(--ror-brand-600)" stroke-width="2.5"/>'
+    );
+    for (var i = 0; i < ticks.length; i++) {
+      var t = ticks[i];
+      var len = TICK_LEN[t.size];
+      var y = crisp(t.pos);
+      var color = t.size === 'minor' ? 'var(--ror-tick-minor)' : 'var(--ror-tick)';
+      parts.push(
+        '<line x1="' +
+          base +
+          '" y1="' +
+          y +
+          '" x2="' +
+          (base + dir * len) +
+          '" y2="' +
+          y +
+          '" stroke="' +
+          color +
+          '" stroke-width="1" shape-rendering="crispEdges"/>'
+      );
+      if (t.label !== undefined) {
+        var tx = base + dir * (len + 7);
+        parts.push(
+          '<text transform="translate(' +
+            tx +
+            ',' +
+            t.pos.toFixed(1) +
+            ') rotate(-90)" text-anchor="middle" ' +
+            'dominant-baseline="central" fill="var(--ror-text-muted)" style="' +
+            FONT_CSS +
+            '">' +
+            t.label +
+            '</text>'
+        );
+      }
+    }
+    parts.push('</svg>');
+    return parts.join('');
+  }
+
+  function renderRulers() {
+    if (!stage) return;
+    var W = stage.clientWidth;
+    var H = stage.clientHeight;
+    if (W === 0 || H === 0) return;
+    var padT = state.edges.top ? BAR : 0;
+    var padB = state.edges.bottom ? BAR : 0;
+    var padL = state.edges.left ? BAR : 0;
+    var padR = state.edges.right ? BAR : 0;
+
+    // Horizontal bars span the full width.
+    bars.top.style.display = state.edges.top ? 'block' : 'none';
+    bars.bottom.style.display = state.edges.bottom ? 'block' : 'none';
+    // Vertical bars fit between the horizontal ones (no corner overlap).
+    bars.left.style.display = state.edges.left ? 'block' : 'none';
+    bars.right.style.display = state.edges.right ? 'block' : 'none';
+    bars.left.style.top = padT + 'px';
+    bars.left.style.height = H - padT - padB + 'px';
+    bars.right.style.top = padT + 'px';
+    bars.right.style.height = H - padT - padB + 'px';
+
+    if (state.edges.top) bars.top.innerHTML = hRulerSVG(W, true);
+    if (state.edges.bottom) bars.bottom.innerHTML = hRulerSVG(W, false);
+    if (state.edges.left) bars.left.innerHTML = vRulerSVG(H - padT - padB, true);
+    if (state.edges.right) bars.right.innerHTML = vRulerSVG(H - padT - padB, false);
+
+    workspace.style.top = padT + 'px';
+    workspace.style.bottom = padB + 'px';
+    workspace.style.left = padL + 'px';
+    workspace.style.right = padR + 'px';
+  }
+
+  function methodLabel(m) {
+    return (
+      {
+        auto: 'auto-detect',
+        device: 'device pick',
+        diagonal: 'screen diagonal',
+        card: 'credit card',
+        default: 'default',
+      }[m] || m
+    );
+  }
+
+  function refreshCalibration() {
+    var cal = loadCalibration();
+    state.pxPerInch = cal.pxPerInch;
+    if (cal.method === 'default') {
+      statusEl.innerHTML =
+        'Uncalibrated — using the 96 px/in CSS default. <button type="button" data-open-calibrate class="underline font-semibold" style="color: var(--ror-brand-600);">Calibrate now</button>';
+    } else {
+      var what = cal.deviceName ? cal.deviceName : methodLabel(cal.method);
+      statusEl.textContent = cal.pxPerInch.toFixed(1) + ' px/in · calibrated via ' + what + '.';
+    }
+    renderRulers();
+  }
+
+  // Toolbar wiring
+  var root = document.getElementById('ruler-app-root');
+  root.querySelectorAll('[data-unit]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      state.unit = btn.getAttribute('data-unit');
+      root.querySelectorAll('[data-unit]').forEach(function (b) {
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+      });
+      renderRulers();
+    });
+  });
+  root.querySelectorAll('[data-edge]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var edge = btn.getAttribute('data-edge');
+      state.edges[edge] = !state.edges[edge];
+      btn.setAttribute('aria-pressed', state.edges[edge] ? 'true' : 'false');
+      renderRulers();
+    });
+  });
+
+  // Keyboard shortcuts: 1=cm 2=in 3=mm 4=px (full map lands in Phase 4)
+  document.addEventListener('keydown', function (ev) {
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    var map = { 1: 'cm', 2: 'in', 3: 'mm', 4: 'px' };
+    var unit = map[ev.key];
+    if (!unit) return;
+    state.unit = unit;
+    root.querySelectorAll('[data-unit]').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-unit') === unit ? 'true' : 'false');
+    });
+    renderRulers();
+  });
+
+  // React to calibration changes (same tab + other tabs)
+  window.addEventListener('ror:calibration-changed', refreshCalibration);
+  window.addEventListener('storage', function (ev) {
+    if (ev.key === 'ror-calibration') refreshCalibration();
+  });
+
+  new ResizeObserver(function () {
+    renderRulers();
+  }).observe(stage);
+
+  refreshCalibration();
+</script>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CalibrateModal from '../components/CalibrateModal.astro';
+import RulerApp from '../components/RulerApp.astro';
 
 const title = 'Real Online Ruler — Free Actual-Size Screen Ruler (cm, mm, Inches, Pixels)';
 const description =
@@ -97,63 +98,9 @@ const FAQS = [
     </p>
   </section>
 
-  <!-- App shell: the interactive ruler mounts here in Phase 3.
-       Phase 1 renders a deliberate placeholder workspace. -->
+  <!-- App shell: the live ruler (Phase 3). -->
   <section id="ruler-app" class="ror-container scroll-mt-20" aria-label="Ruler workspace">
-    <div class="ror-card overflow-hidden">
-      <!-- Toolbar skeleton (inactive until Phase 3/4) -->
-      <div
-        class="flex flex-wrap items-center gap-2 border-b px-4 py-3"
-        style="border-color: var(--ror-border); background-color: var(--ror-bg-soft);"
-        aria-hidden="true"
-      >
-        {['cm', 'mm', 'in', 'px', 'Calibrate', 'Guides', 'Crosshair', 'Fullscreen'].map((label) => (
-          <span
-            class="inline-block rounded-md border px-3 py-1.5 text-xs font-medium opacity-60"
-            style="border-color: var(--ror-border); color: var(--ror-text-muted);"
-          >
-            {label}
-          </span>
-        ))}
-      </div>
-      <!-- Canvas area -->
-      <div
-        class="flex min-h-[320px] flex-col items-center justify-center gap-4 px-6 py-16 text-center sm:min-h-[380px]"
-        style="background-color: var(--ror-canvas-bg);"
-      >
-        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" aria-hidden="true">
-          <rect
-            x="6"
-            y="24"
-            width="60"
-            height="24"
-            rx="6"
-            style="fill: var(--ror-brand-600);"
-            opacity="0.9"
-          />
-          <g stroke="#ffffff" stroke-width="2.4" stroke-linecap="round">
-            <line x1="16" y1="24" x2="16" y2="36" />
-            <line x1="26" y1="24" x2="26" y2="32" />
-            <line x1="36" y1="24" x2="36" y2="36" />
-            <line x1="46" y1="24" x2="46" y2="32" />
-            <line x1="56" y1="24" x2="56" y2="36" />
-          </g>
-        </svg>
-        <div class="max-w-md">
-          <p class="text-lg font-semibold">The live ruler is being built</p>
-          <p class="mt-2 text-sm leading-relaxed" style="color: var(--ror-text-muted);">
-            This workspace will host the interactive measuring tool. The calibration engine is ready
-            — calibrate your display now — and the ruler engine arrives in Phase 3.
-          </p>
-        </div>
-        <button type="button" data-open-calibrate class="ror-btn-primary">
-          Calibrate display
-        </button>
-        <p class="text-xs" style="color: var(--ror-text-muted);">
-          4 methods: auto-detect, pick device, screen diagonal, credit card. Saved in your browser.
-        </p>
-      </div>
-    </div>
+    <RulerApp />
   </section>
 
   <CalibrateModal />
