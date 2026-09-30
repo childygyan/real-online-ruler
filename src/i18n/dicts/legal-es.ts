@@ -49,7 +49,7 @@ export const legalEs = {
     description:
       'Política de Privacidad de Real Online Ruler: qué datos recoge el sitio (ninguno), cómo se guardan los ajustes de calibración localmente en tu navegador y tus derechos.',
     h1: 'Política de Privacidad',
-    lede: 'En resumen: este sitio no recoge nada sobre ti. Todo ocurre en tu navegador.',
+    lede: 'En resumen: no recogemos datos personales. El único script de terceros del sitio es Google Analytics, usado para estadísticas básicas de uso.',
     breadcrumb: 'Política de Privacidad',
     updated: 'Última actualización: 30 de septiembre de 2026',
     intro: [
@@ -59,7 +59,7 @@ export const legalEs = {
       {
         h: 'Información que recogemos',
         body: [
-          'Ninguna. El sitio no tiene cuentas ni registro, ningún formulario que transmita datos, ni analítica, ni publicidad ni scripts de rastreo. No vemos, almacenamos ni transmitimos nada de lo que midas.',
+          'No tenemos cuentas, ni registro, ni formularios que transmitan datos, y nunca vemos, almacenamos ni transmitimos nada de lo que midas: las mediciones se quedan en tu navegador. Para entender cómo se usa el sitio, utilizamos Google Analytics, que recoge datos agregados de uso (como páginas visitadas, ubicación aproximada y tipo de dispositivo). Esos datos se rigen por la política de privacidad de Google, no por esta.',
         ],
       },
       {
@@ -71,13 +71,13 @@ export const legalEs = {
       {
         h: 'Cookies',
         body: [
-          'El sitio no instala cookies de rastreo. Los únicos valores guardados son las preferencias funcionales descritas arriba, en almacenamiento local y no en cookies.',
+          'Google Analytics instala sus propias cookies (como _ga) para distinguir visitas. Puedes bloquearlas o eliminarlas en los ajustes de tu navegador, o usar el complemento de inhabilitación de Google; la regla sigue funcionando igual. Aparte de Analytics, el sitio no instala cookies de rastreo; los únicos valores guardados son las preferencias funcionales descritas arriba, en almacenamiento local y no en cookies.',
         ],
       },
       {
         h: 'Servicios de terceros',
         body: [
-          'El sitio está alojado en Cloudflare Pages, que puede procesar datos técnicos estándar (como direcciones IP) para servir las páginas de forma segura; esto se rige por la propia política de privacidad de Cloudflare. Aparte del alojamiento, no hay ningún servicio de terceros integrado en el sitio.',
+          'El sitio está alojado en Cloudflare Pages, que puede procesar datos técnicos estándar (como direcciones IP) para servir las páginas de forma segura; esto se rige por la propia política de privacidad de Cloudflare. Aparte del alojamiento y de Google Analytics (descrito arriba), no hay ningún otro servicio de terceros integrado en el sitio.',
         ],
       },
       {

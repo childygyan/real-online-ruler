@@ -49,7 +49,7 @@ export const legalPt = {
     description:
       'Política de Privacidade do Real Online Ruler: quais dados o site coleta (nenhum), como os ajustes de calibração ficam salvos localmente no seu navegador e os seus direitos.',
     h1: 'Política de Privacidade',
-    lede: 'Resumindo: este site não coleta nada sobre você. Tudo acontece no seu navegador.',
+    lede: 'Resumindo: não coletamos dados pessoais. O único script de terceiros no site é o Google Analytics, usado para estatísticas básicas de uso.',
     breadcrumb: 'Política de Privacidade',
     updated: 'Última atualização: 30 de setembro de 2026',
     intro: [
@@ -59,7 +59,7 @@ export const legalPt = {
       {
         h: 'Informações que coletamos',
         body: [
-          'Nenhuma. O site não tem contas nem cadastro, nenhum formulário que transmita dados, nem analytics, nem publicidade, nem scripts de rastreamento. Não vemos, não armazenamos e não transmitimos nada do que você mede.',
+          'Não temos contas, nem cadastro, nem formulários que transmitam dados, e nunca vemos, armazenamos ou transmitimos nada do que você mede — as medições ficam no seu navegador. Para entender como o site é usado, utilizamos o Google Analytics, que coleta dados agregados de uso (como páginas visitadas, localização aproximada e tipo de dispositivo). Esses dados são regidos pela política de privacidade do Google, não por esta.',
         ],
       },
       {
@@ -71,13 +71,13 @@ export const legalPt = {
       {
         h: 'Cookies',
         body: [
-          'O site não define cookies de rastreamento. Os únicos valores guardados são as preferências funcionais descritas acima, no armazenamento local em vez de cookies.',
+          'O Google Analytics define seus próprios cookies (como _ga) para distinguir visitas. Você pode bloqueá-los ou excluí-los nas configurações do navegador, ou usar o complemento de desativação do Google — a régua continua funcionando normalmente. Fora o Analytics, o site não define cookies de rastreamento; os únicos outros valores guardados são as preferências funcionais descritas acima, no armazenamento local em vez de cookies.',
         ],
       },
       {
         h: 'Serviços de terceiros',
         body: [
-          'O site é hospedado na Cloudflare Pages, que pode processar dados técnicos padrão (como endereços IP) para entregar as páginas com segurança — isso é regido pela própria política de privacidade da Cloudflare. Fora a hospedagem, nenhum serviço de terceiros está embutido no site.',
+          'O site é hospedado na Cloudflare Pages, que pode processar dados técnicos padrão (como endereços IP) para entregar as páginas com segurança — isso é regido pela própria política de privacidade da Cloudflare. Fora a hospedagem e o Google Analytics (descrito acima), nenhum outro serviço de terceiros está embutido no site.',
         ],
       },
       {

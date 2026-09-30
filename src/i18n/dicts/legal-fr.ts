@@ -49,7 +49,7 @@ export const legalFr = {
     description:
       "Politique de Confidentialité de Real Online Ruler : quelles données le site collecte (aucune), comment les réglages d'étalonnage sont stockés localement dans votre navigateur, et vos droits.",
     h1: 'Politique de Confidentialité',
-    lede: 'En résumé : ce site ne collecte rien sur vous. Tout se passe dans votre navigateur.',
+    lede: 'En résumé : nous ne collectons aucune donnée personnelle. Le seul script tiers du site est Google Analytics, utilisé pour des statistiques d\u2019usage basiques.',
     breadcrumb: 'Politique de Confidentialité',
     updated: 'Dernière mise à jour : 30 septembre 2026',
     intro: [
@@ -59,7 +59,7 @@ export const legalFr = {
       {
         h: 'Informations que nous collectons',
         body: [
-          'Aucune. Le site ne propose ni comptes ni inscription, aucun formulaire transmettant des données, ni statistiques, ni publicité, ni scripts de suivi. Nous ne voyons, ne stockons et ne transmettons rien de ce que vous mesurez.',
+          'Nous n\u2019avons ni comptes, ni inscription, ni formulaires transmettant des données, et nous ne voyons, ne stockons et ne transmettons jamais rien de ce que vous mesurez : les mesures restent dans votre navigateur. Pour comprendre comment le site est utilisé, nous utilisons Google Analytics, qui collecte des données d\u2019usage agrégées (comme les pages visitées, la localisation approximative et le type d\u2019appareil). Ces données relèvent de la politique de confidentialité de Google, et non de celle-ci.',
         ],
       },
       {
@@ -71,13 +71,13 @@ export const legalFr = {
       {
         h: 'Cookies',
         body: [
-          'Le site ne dépose aucun cookie de suivi. Les seules valeurs conservées sont les préférences fonctionnelles décrites ci-dessus, dans le stockage local plutôt que dans des cookies.',
+          'Google Analytics dépose ses propres cookies (comme _ga) pour distinguer les visites. Vous pouvez les bloquer ou les supprimer dans les réglages de votre navigateur, ou utiliser le module de désactivation de Google — la règle continue de fonctionner. Hormis Analytics, le site ne dépose aucun cookie de suivi ; les seules autres valeurs conservées sont les préférences fonctionnelles décrites ci-dessus, dans le stockage local plutôt que dans des cookies.',
         ],
       },
       {
         h: 'Services tiers',
         body: [
-          "Le site est hébergé sur Cloudflare Pages, qui peut traiter des données techniques standard (comme les adresses IP) pour servir les pages en sécurité — cela relève de la politique de confidentialité de Cloudflare elle-même. Hormis l'hébergement, aucun service tiers n'est intégré au site.",
+          "Le site est hébergé sur Cloudflare Pages, qui peut traiter des données techniques standard (comme les adresses IP) pour servir les pages en sécurité — cela relève de la politique de confidentialité de Cloudflare elle-même. Hormis l'hébergement et Google Analytics (décrit ci-dessus), aucun autre service tiers n'est intégré au site.",
         ],
       },
       {

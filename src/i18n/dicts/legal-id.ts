@@ -49,7 +49,7 @@ export const legalId = {
     description:
       'Kebijakan Privasi Real Online Ruler: data apa yang dikumpulkan situs ini (tidak ada), bagaimana pengaturan kalibrasi disimpan lokal di browser-mu, dan hak-hakmu.',
     h1: 'Kebijakan Privasi',
-    lede: 'Versi singkatnya: situs ini tidak mengumpulkan apa pun tentangmu. Semuanya terjadi di browser-mu.',
+    lede: 'Versi singkatnya: kami sendiri tidak mengumpulkan data pribadi. Satu-satunya skrip pihak ketiga di situs ini adalah Google Analytics, untuk statistik penggunaan dasar.',
     breadcrumb: 'Kebijakan Privasi',
     updated: 'Terakhir diperbarui: 30 September 2026',
     intro: [
@@ -59,7 +59,7 @@ export const legalId = {
       {
         h: 'Informasi yang kami kumpulkan',
         body: [
-          'Tidak ada. Situs ini tidak punya akun maupun pendaftaran, tidak ada formulir yang mengirim data, tidak ada analitik, tidak ada iklan, dan tidak ada skrip pelacakan. Kami tidak melihat, menyimpan, atau mengirim apa pun yang kamu ukur.',
+          'Kami tidak menjalankan akun, pendaftaran, maupun formulir yang mengirim data, dan kami tidak pernah melihat, menyimpan, atau mengirim apa pun yang kamu ukur — pengukuran tetap di browser-mu. Untuk memahami cara situs ini digunakan, kami memakai Google Analytics, yang mengumpulkan data penggunaan agregat (seperti halaman yang dikunjungi, perkiraan lokasi, dan jenis perangkat). Data tersebut diatur oleh kebijakan privasi Google, bukan kebijakan ini.',
         ],
       },
       {
@@ -71,13 +71,13 @@ export const legalId = {
       {
         h: 'Cookie',
         body: [
-          'Situs ini tidak memasang cookie pelacakan. Satu-satunya nilai yang disimpan adalah preferensi fungsional yang dijelaskan di atas, di penyimpanan lokal dan bukan cookie.',
+          'Google Analytics memasang cookie-nya sendiri (seperti _ga) untuk membedakan kunjungan. Kamu bisa memblokir atau menghapusnya di pengaturan browser-mu, atau memakai pengaya opt-out Google — penggaris tetap berfungsi normal. Selain Analytics, situs ini tidak memasang cookie pelacakan; satu-satunya nilai lain yang disimpan adalah preferensi fungsional yang dijelaskan di atas, di penyimpanan lokal dan bukan cookie.',
         ],
       },
       {
         h: 'Layanan pihak ketiga',
         body: [
-          'Situs ini di-hosting di Cloudflare Pages, yang dapat memproses data teknis standar (seperti alamat IP) untuk menyajikan halaman secara aman — hal ini diatur oleh kebijakan privasi Cloudflare sendiri. Selain hosting, tidak ada layanan pihak ketiga yang disematkan di situs ini.',
+          'Situs ini di-hosting di Cloudflare Pages, yang dapat memproses data teknis standar (seperti alamat IP) untuk menyajikan halaman secara aman — hal ini diatur oleh kebijakan privasi Cloudflare sendiri. Selain hosting dan Google Analytics (dijelaskan di atas), tidak ada layanan pihak ketiga lain yang disematkan di situs ini.',
         ],
       },
       {

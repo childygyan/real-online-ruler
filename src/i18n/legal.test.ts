@@ -56,6 +56,14 @@ describe('legal dictionaries', () => {
     }
   });
 
+  it('privacy policy discloses Google Analytics in every locale', () => {
+    for (const code of CODES) {
+      const { privacy } = DICTS[code].content.legal;
+      const text = [privacy.lede, ...privacy.sections.flatMap((s) => [s.h, ...s.body])].join(' ');
+      expect(text, `${code}:privacy mentions Google Analytics`).toContain('Google Analytics');
+    }
+  });
+
   it('footer exposes exactly four legal links with root-relative hrefs', () => {
     const expectedHrefs = ['/about/', '/privacy-policy/', '/terms-of-service/', '/contact/'];
     for (const code of CODES) {

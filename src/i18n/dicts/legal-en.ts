@@ -50,7 +50,7 @@ export const legalEn = {
     description:
       'Privacy Policy for Real Online Ruler: what data the site collects (none), how calibration settings are stored locally in your browser, and your rights.',
     h1: 'Privacy Policy',
-    lede: 'Short version: this site collects nothing about you. Everything happens in your browser.',
+    lede: 'Short version: we collect no personal data ourselves. The only third-party script on the site is Google Analytics, used for basic usage statistics.',
     breadcrumb: 'Privacy Policy',
     updated: 'Last updated: September 30, 2026',
     intro: [
@@ -60,7 +60,7 @@ export const legalEn = {
       {
         h: 'Information we collect',
         body: [
-          'None. The site has no accounts, no sign-up, no contact forms that transmit data, no analytics, and no advertising or tracking scripts. We do not see, store, or transmit anything you measure.',
+          'We run no accounts, no sign-up, and no contact forms that transmit data, and we never see, store, or transmit anything you measure — measurements stay in your browser. To understand how the site is used, we use Google Analytics, which collects aggregate usage data (such as pages visited, approximate location, and device type). That data is governed by Google\u2019s privacy policy, not this one.',
         ],
       },
       {
@@ -72,13 +72,13 @@ export const legalEn = {
       {
         h: 'Cookies',
         body: [
-          'The site does not set tracking cookies. The only stored values are the functional preferences described above, kept in local storage rather than cookies.',
+          'Google Analytics sets its own cookies (such as _ga) to distinguish visits. You can block or delete them in your browser settings, or use Google\u2019s opt-out add-on — the ruler keeps working either way. Apart from Analytics, the site sets no tracking cookies; the only other stored values are the functional preferences described above, kept in local storage rather than cookies.',
         ],
       },
       {
         h: 'Third-party services',
         body: [
-          "The site is hosted on Cloudflare Pages, which may process standard technical data (such as IP addresses) to deliver pages securely — this is governed by Cloudflare's own privacy policy. Apart from hosting, no third-party services are embedded in the site.",
+          "The site is hosted on Cloudflare Pages, which may process standard technical data (such as IP addresses) to deliver pages securely — this is governed by Cloudflare's own privacy policy. Apart from hosting and Google Analytics (described above), no other third-party services are embedded in the site.",
         ],
       },
       {
