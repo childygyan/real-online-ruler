@@ -1,0 +1,380 @@
+[
+  {
+    "category": "iPhone",
+    "name": "iPhone 16 Pro Max",
+    "physicalPpi": 460,
+    "resH": 2868,
+    "resW": 1320
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 16 Pro",
+    "physicalPpi": 460,
+    "resH": 2622,
+    "resW": 1206
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 15 Pro Max",
+    "physicalPpi": 460,
+    "resH": 2796,
+    "resW": 1290
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 15 Pro",
+    "physicalPpi": 460,
+    "resH": 2556,
+    "resW": 1179
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 15 / 15 Plus",
+    "physicalPpi": 460,
+    "resH": 2556,
+    "resW": 1179
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 14 Pro Max",
+    "physicalPpi": 460,
+    "resH": 2796,
+    "resW": 1290
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 14 Pro",
+    "physicalPpi": 460,
+    "resH": 2556,
+    "resW": 1179
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 14",
+    "physicalPpi": 460,
+    "resH": 2532,
+    "resW": 1170
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 13 Pro Max",
+    "physicalPpi": 458,
+    "resH": 2778,
+    "resW": 1284
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 13 Pro",
+    "physicalPpi": 458,
+    "resH": 2532,
+    "resW": 1170
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 13",
+    "physicalPpi": 460,
+    "resH": 2532,
+    "resW": 1170
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 13 mini",
+    "physicalPpi": 476,
+    "resH": 2340,
+    "resW": 1080
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 12 Pro",
+    "physicalPpi": 460,
+    "resH": 2532,
+    "resW": 1170
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 12 mini",
+    "physicalPpi": 476,
+    "resH": 2340,
+    "resW": 1080
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 11 Pro Max",
+    "physicalPpi": 458,
+    "resH": 2688,
+    "resW": 1242
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone 11",
+    "physicalPpi": 326,
+    "resH": 1792,
+    "resW": 828
+  },
+  {
+    "category": "iPhone",
+    "name": "iPhone SE (2022)",
+    "physicalPpi": 326,
+    "resH": 1334,
+    "resW": 750
+  },
+  {
+    "category": "iPad",
+    "name": "iPad Pro 13\" (M4)",
+    "physicalPpi": 264,
+    "resH": 2064,
+    "resW": 2752
+  },
+  {
+    "category": "iPad",
+    "name": "iPad Pro 11\" (M4)",
+    "physicalPpi": 264,
+    "resH": 1668,
+    "resW": 2420
+  },
+  {
+    "category": "iPad",
+    "name": "iPad Pro 12.9\" (6th gen)",
+    "physicalPpi": 264,
+    "resH": 2048,
+    "resW": 2732
+  },
+  {
+    "category": "iPad",
+    "name": "iPad Air 11\" (M3 / M2)",
+    "physicalPpi": 264,
+    "resH": 1640,
+    "resW": 2360
+  },
+  {
+    "category": "iPad",
+    "name": "iPad Air (5th gen)",
+    "physicalPpi": 264,
+    "resH": 1640,
+    "resW": 2360
+  },
+  {
+    "category": "iPad",
+    "name": "iPad (10th gen)",
+    "physicalPpi": 264,
+    "resH": 1640,
+    "resW": 2360
+  },
+  {
+    "category": "iPad",
+    "name": "iPad (9th gen)",
+    "physicalPpi": 264,
+    "resH": 1620,
+    "resW": 2160
+  },
+  {
+    "category": "iPad",
+    "name": "iPad mini (7th gen)",
+    "physicalPpi": 326,
+    "resH": 1488,
+    "resW": 2266
+  },
+  {
+    "category": "MacBook",
+    "name": "MacBook Pro 16\" (Apple silicon)",
+    "physicalPpi": 254,
+    "resH": 2234,
+    "resW": 3456
+  },
+  {
+    "category": "MacBook",
+    "name": "MacBook Pro 14\" (Apple silicon)",
+    "physicalPpi": 254,
+    "resH": 1964,
+    "resW": 3024
+  },
+  {
+    "category": "MacBook",
+    "name": "MacBook Air 15\" (M3 / M2)",
+    "physicalPpi": 224,
+    "resH": 1864,
+    "resW": 2880
+  },
+  {
+    "category": "MacBook",
+    "name": "MacBook Air 13\" (M4 / M3 / M2)",
+    "physicalPpi": 224,
+    "resH": 1664,
+    "resW": 2560
+  },
+  {
+    "category": "MacBook",
+    "name": "MacBook Air 13\" (M1)",
+    "physicalPpi": 227,
+    "resH": 1600,
+    "resW": 2560
+  },
+  {
+    "category": "MacBook",
+    "name": "MacBook Pro 13\" (M2 / M1)",
+    "physicalPpi": 227,
+    "resH": 1600,
+    "resW": 2560
+  },
+  {
+    "category": "MacBook",
+    "name": "MacBook Pro 16\" (2019)",
+    "physicalPpi": 226,
+    "resH": 1920,
+    "resW": 3072
+  },
+  {
+    "category": "Android",
+    "name": "Galaxy S24 Ultra",
+    "physicalPpi": 505,
+    "resH": 1440,
+    "resW": 3120
+  },
+  {
+    "category": "Android",
+    "name": "Galaxy S24+",
+    "physicalPpi": 513,
+    "resH": 1440,
+    "resW": 3120
+  },
+  {
+    "category": "Android",
+    "name": "Galaxy S24",
+    "physicalPpi": 416,
+    "resH": 1080,
+    "resW": 2340
+  },
+  {
+    "category": "Android",
+    "name": "Galaxy S23 Ultra",
+    "physicalPpi": 500,
+    "resH": 1440,
+    "resW": 3088
+  },
+  {
+    "category": "Android",
+    "name": "Galaxy S23+",
+    "physicalPpi": 393,
+    "resH": 1080,
+    "resW": 2340
+  },
+  {
+    "category": "Android",
+    "name": "Galaxy S23",
+    "physicalPpi": 425,
+    "resH": 1080,
+    "resW": 2340
+  },
+  {
+    "category": "Android",
+    "name": "Pixel 8 Pro",
+    "physicalPpi": 489,
+    "resH": 1344,
+    "resW": 2992
+  },
+  {
+    "category": "Android",
+    "name": "Pixel 8",
+    "physicalPpi": 428,
+    "resH": 1080,
+    "resW": 2400
+  },
+  {
+    "category": "Android",
+    "name": "Pixel 7 Pro",
+    "physicalPpi": 512,
+    "resH": 1440,
+    "resW": 3120
+  },
+  {
+    "category": "Android",
+    "name": "Pixel 7",
+    "physicalPpi": 416,
+    "resH": 1080,
+    "resW": 2400
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 24,
+    "name": "iMac 24\" (4.5K)",
+    "note": "Apple factory spec",
+    "physicalPpi": 218
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 27,
+    "name": "Apple Studio Display (5K)",
+    "note": "Apple factory spec",
+    "physicalPpi": 218
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 27,
+    "name": "iMac 27\" (5K)",
+    "note": "Apple factory spec",
+    "physicalPpi": 218
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 32,
+    "name": "Pro Display XDR (6K)",
+    "note": "Apple factory spec",
+    "physicalPpi": 218
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 24,
+    "name": "24\" monitor · Full HD (1920×1080)",
+    "note": "Computed: 1920×1080 ÷ 24 in",
+    "physicalPpi": 92
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 27,
+    "name": "27\" monitor · Full HD (1920×1080)",
+    "note": "Computed: 1920×1080 ÷ 27 in",
+    "physicalPpi": 82
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 24,
+    "name": "24\" monitor · QHD (2560×1440)",
+    "note": "Computed: 2560×1440 ÷ 24 in",
+    "physicalPpi": 122
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 27,
+    "name": "27\" monitor · QHD (2560×1440)",
+    "note": "Computed: 2560×1440 ÷ 27 in",
+    "physicalPpi": 109
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 32,
+    "name": "32\" monitor · QHD (2560×1440)",
+    "note": "Computed: 2560×1440 ÷ 32 in",
+    "physicalPpi": 92
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 27,
+    "name": "27\" monitor · 4K (3840×2160)",
+    "note": "Computed: 3840×2160 ÷ 27 in",
+    "physicalPpi": 163
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 32,
+    "name": "32\" monitor · 4K (3840×2160)",
+    "note": "Computed: 3840×2160 ÷ 32 in",
+    "physicalPpi": 138
+  },
+  {
+    "category": "Monitor",
+    "diagonalIn": 34,
+    "name": "34\" ultrawide · UWQHD (3440×1440)",
+    "note": "Computed: 3440×1440 ÷ 34 in",
+    "physicalPpi": 110
+  }
+]

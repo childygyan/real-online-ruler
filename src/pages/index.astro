@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CalibrateModal from '../components/CalibrateModal.astro';
 
 const title = 'Real Online Ruler — Free Actual-Size Screen Ruler (cm, mm, Inches, Pixels)';
 const description =
@@ -141,20 +142,21 @@ const FAQS = [
         <div class="max-w-md">
           <p class="text-lg font-semibold">The live ruler is being built</p>
           <p class="mt-2 text-sm leading-relaxed" style="color: var(--ror-text-muted);">
-            This workspace will host the interactive measuring tool. The calibration engine arrives
-            in Phase 2 and the ruler engine in Phase 3 — then this placeholder is replaced by real,
-            calibrated rulers on all four edges.
+            This workspace will host the interactive measuring tool. The calibration engine is ready
+            — calibrate your display now — and the ruler engine arrives in Phase 3.
           </p>
         </div>
-        <span
-          class="rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
-          style="background-color: var(--ror-accent-400); color: #451a03;"
-        >
-          Phase 1 · Foundation
-        </span>
+        <button type="button" data-open-calibrate class="ror-btn-primary">
+          Calibrate display
+        </button>
+        <p class="text-xs" style="color: var(--ror-text-muted);">
+          4 methods: auto-detect, pick device, screen diagonal, credit card. Saved in your browser.
+        </p>
       </div>
     </div>
   </section>
+
+  <CalibrateModal />
 
   <!-- Features -->
   <section class="ror-container mt-20" aria-label="Features">
@@ -244,8 +246,8 @@ const FAQS = [
         class="mt-6 rounded-lg border px-4 py-3 text-sm"
         style="border-color: var(--ror-brand-200); background-color: var(--ror-brand-50); color: var(--ror-brand-900);"
       >
-        The interactive calibration panel — with live readouts and saved settings — arrives in Phase
-        2.
+        The interactive calibration panel is live — open it from the ruler workspace above to
+        calibrate with auto-detect, device pick, screen diagonal, or the credit-card method.
       </p>
     </div>
   </section>

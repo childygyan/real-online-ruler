@@ -1,0 +1,504 @@
+---
+/**
+ * CalibrateModal.astro — the four-method calibration dialog.
+ * Opens when any [data-open-calibrate] element is clicked; Esc closes it.
+ * All logic lives in the client script below (plain JS, bundled by Astro).
+ */
+---
+
+<div
+  id="calibrate-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="calibrate-title"
+>
+  <div class="absolute inset-0 bg-black/60" data-close-calibrate aria-hidden="true"></div>
+
+  <div
+    class="ror-card relative max-h-[90vh] w-full max-w-2xl overflow-y-auto p-6 sm:p-8"
+    style="background-color: var(--ror-surface);"
+  >
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h2 id="calibrate-title" class="text-2xl font-bold tracking-tight">
+          Calibrate your display
+        </h2>
+        <p class="mt-1 text-sm" style="color: var(--ror-text-muted);">
+          Current: <strong id="cal-readout">96 px/in (default)</strong>
+          <span
+            id="cal-saved-note"
+            class="ml-2 hidden font-semibold"
+            style="color: var(--ror-brand-600);"
+          >
+            Saved
+          </span>
+        </p>
+      </div>
+      <button
+        type="button"
+        class="ror-btn-ghost !px-3 !py-2"
+        data-close-calibrate
+        aria-label="Close calibration dialog"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div
+      class="mt-6 flex flex-wrap gap-2 border-b pb-1"
+      role="tablist"
+      aria-label="Calibration methods"
+      style="border-color: var(--ror-border);"
+    >
+      <button
+        type="button"
+        role="tab"
+        aria-selected="true"
+        data-cal-tab="auto"
+        class="cal-tab rounded-t-lg px-4 py-2 text-sm font-semibold"
+      >
+        Auto-detect
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-cal-tab="device"
+        class="cal-tab rounded-t-lg px-4 py-2 text-sm font-semibold"
+      >
+        Pick device
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-cal-tab="diagonal"
+        class="cal-tab rounded-t-lg px-4 py-2 text-sm font-semibold"
+      >
+        Screen diagonal
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-cal-tab="card"
+        class="cal-tab rounded-t-lg px-4 py-2 text-sm font-semibold"
+      >
+        Credit card
+      </button>
+    </div>
+
+    <!-- AUTO -->
+    <section data-cal-panel="auto" role="tabpanel" class="pt-6">
+      <p class="text-sm leading-relaxed" style="color: var(--ror-text-muted);">
+        We look at your browser and screen resolution, match them against a built-in database of
+        published display specs, and apply the factory pixel density. Fastest option when it finds
+        your device.
+      </p>
+      <button type="button" id="cal-auto-run" class="ror-btn-primary mt-4">
+        Detect my device
+      </button>
+      <div
+        id="cal-auto-result"
+        class="mt-4 hidden rounded-lg border p-4 text-sm"
+        style="border-color: var(--ror-border);"
+      ></div>
+    </section>
+
+    <!-- DEVICE -->
+    <section data-cal-panel="device" role="tabpanel" class="hidden pt-6">
+      <p class="text-sm leading-relaxed" style="color: var(--ror-text-muted);">
+        Know your exact model? Select it below — we apply its published pixel density, adjusted for
+        your display scaling.
+      </p>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <label class="block text-sm">
+          <span class="mb-1 block font-semibold">Category</span>
+          <select
+            id="cal-device-category"
+            class="w-full rounded-lg border px-3 py-2"
+            style="border-color: var(--ror-border); background-color: var(--ror-bg);"
+          ></select>
+        </label>
+        <label class="block text-sm">
+          <span class="mb-1 block font-semibold">Device</span>
+          <select
+            id="cal-device-name"
+            class="w-full rounded-lg border px-3 py-2"
+            style="border-color: var(--ror-border); background-color: var(--ror-bg);"
+          ></select>
+        </label>
+      </div>
+      <div
+        id="cal-device-result"
+        class="mt-4 hidden rounded-lg border p-4 text-sm"
+        style="border-color: var(--ror-border);"
+      ></div>
+    </section>
+
+    <!-- DIAGONAL -->
+    <section data-cal-panel="diagonal" role="tabpanel" class="hidden pt-6">
+      <p class="text-sm leading-relaxed" style="color: var(--ror-text-muted);">
+        Type your screen&rsquo;s diagonal size in inches (it&rsquo;s usually on the box or the
+        manufacturer&rsquo;s spec page — e.g. 15.6 for a typical laptop). We combine it with your
+        screen resolution to compute the exact density. Keep browser zoom at 100%.
+      </p>
+      <div class="mt-4 flex flex-wrap items-end gap-3">
+        <label class="block text-sm">
+          <span class="mb-1 block font-semibold">Diagonal (inches)</span>
+          <input
+            id="cal-diagonal-input"
+            type="number"
+            min="3"
+            max="100"
+            step="0.1"
+            value="15.6"
+            inputmode="decimal"
+            class="w-40 rounded-lg border px-3 py-2"
+            style="border-color: var(--ror-border); background-color: var(--ror-bg);"
+          />
+        </label>
+        <button type="button" id="cal-diagonal-run" class="ror-btn-primary">
+          Calculate
+        </button>
+      </div>
+      <div
+        id="cal-diagonal-result"
+        class="mt-4 hidden rounded-lg border p-4 text-sm"
+        style="border-color: var(--ror-border);"
+      ></div>
+    </section>
+
+    <!-- CARD -->
+    <section data-cal-panel="card" role="tabpanel" class="hidden pt-6">
+      <p class="text-sm leading-relaxed" style="color: var(--ror-text-muted);">
+        Place any credit card, debit card, or ID card flat against your screen, on top of the
+        outline below. Drag the slider until the outline matches the card&rsquo;s edges exactly,
+        then use the calibration. Standard cards are 85.60 × 53.98&nbsp;mm.
+      </p>
+      <div
+        class="mt-4 overflow-x-auto rounded-lg border p-6"
+        style="border-color: var(--ror-border); background-color: var(--ror-canvas-bg);"
+      >
+        <div
+          id="cal-card-outline"
+          class="mx-auto rounded-md border-4"
+          style="border-color: var(--ror-brand-600);"
+          aria-hidden="true"
+        ></div>
+        <p class="mt-2 text-center text-xs" style="color: var(--ror-text-muted);">
+          85.60 × 53.98 mm
+        </p>
+      </div>
+      <label class="mt-4 block text-sm">
+        <span class="mb-1 flex justify-between font-semibold">
+          <span>Assumed density</span>
+          <span id="cal-card-value">96.0 px/in</span>
+        </span>
+        <input
+          id="cal-card-slider"
+          type="range"
+          min="50"
+          max="300"
+          step="0.25"
+          value="96"
+          class="w-full"
+          style="accent-color: var(--ror-brand-600);"
+        />
+      </label>
+      <button type="button" id="cal-card-apply" class="ror-btn-primary mt-4">
+        Use this calibration
+      </button>
+    </section>
+
+    <div
+      class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t pt-4"
+      style="border-color: var(--ror-border);"
+    >
+      <p class="text-xs" style="color: var(--ror-text-muted);">
+        Saved in this browser only. Re-calibrate if you change monitors or display scaling.
+      </p>
+      <button type="button" id="cal-reset" class="ror-btn-ghost !px-4 !py-2 text-xs">
+        Reset to 96 PPI
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { diagonalPpi, deviceCssPxPerInch } from '../lib/ppi.js';
+  import { getDevicesByCategory, detectDevice, DEVICE_CATEGORIES } from '../lib/devices.js';
+  import { loadCalibration, saveCalibration, resetCalibration } from '../lib/calibration.js';
+
+  var modal = document.getElementById('calibrate-modal');
+  var readout = document.getElementById('cal-readout');
+  var savedNote = document.getElementById('cal-saved-note');
+  var lastOpener = null;
+
+  function methodLabel(m) {
+    return (
+      {
+        auto: 'auto-detect',
+        device: 'device pick',
+        diagonal: 'screen diagonal',
+        card: 'credit card',
+        default: 'default',
+      }[m] || m
+    );
+  }
+
+  function refreshReadout() {
+    var cal = loadCalibration();
+    readout.textContent =
+      cal.pxPerInch.toFixed(1) +
+      ' px/in (' +
+      methodLabel(cal.method) +
+      (cal.deviceName ? ' · ' + cal.deviceName : '') +
+      ')';
+  }
+
+  function flashSaved() {
+    refreshReadout();
+    savedNote.classList.remove('hidden');
+    window.setTimeout(function () {
+      savedNote.classList.add('hidden');
+    }, 2500);
+  }
+
+  function openModal(opener) {
+    lastOpener = opener || null;
+    refreshReadout();
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    var closeBtn = modal.querySelector('[data-close-calibrate]');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+    if (lastOpener && lastOpener.focus) lastOpener.focus();
+  }
+
+  document.addEventListener('click', function (ev) {
+    var opener = ev.target.closest('[data-open-calibrate]');
+    if (opener) {
+      openModal(opener);
+      return;
+    }
+    if (ev.target.closest('[data-close-calibrate]')) closeModal();
+  });
+
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+  });
+
+  // Tabs
+  var tabs = Array.prototype.slice.call(modal.querySelectorAll('[data-cal-tab]'));
+  var panels = Array.prototype.slice.call(modal.querySelectorAll('[data-cal-panel]'));
+  function selectTab(name) {
+    tabs.forEach(function (t) {
+      var active = t.getAttribute('data-cal-tab') === name;
+      t.setAttribute('aria-selected', active ? 'true' : 'false');
+      t.style.borderBottom = active ? '2px solid var(--ror-brand-600)' : '2px solid transparent';
+      t.style.color = active ? 'var(--ror-brand-700)' : 'var(--ror-text-muted)';
+    });
+    panels.forEach(function (p) {
+      p.classList.toggle('hidden', p.getAttribute('data-cal-panel') !== name);
+    });
+  }
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      selectTab(t.getAttribute('data-cal-tab'));
+    });
+  });
+  selectTab('auto');
+
+  function showResult(id, html) {
+    var el = document.getElementById(id);
+    el.innerHTML = html;
+    el.classList.remove('hidden');
+    return el;
+  }
+
+  function applyButtonHtml(pxPerInch, method, deviceName) {
+    return (
+      '<button type="button" class="ror-btn-primary mt-3" data-apply-calibration ' +
+      'data-px="' +
+      pxPerInch +
+      '" data-method="' +
+      method +
+      '" data-device="' +
+      (deviceName || '').replace(/"/g, '&quot;') +
+      '">Use this calibration</button>'
+    );
+  }
+
+  modal.addEventListener('click', function (ev) {
+    var btn = ev.target.closest('[data-apply-calibration]');
+    if (!btn) return;
+    saveCalibration({
+      method: btn.getAttribute('data-method'),
+      pxPerInch: parseFloat(btn.getAttribute('data-px')),
+      deviceName: btn.getAttribute('data-device') || undefined,
+    });
+    flashSaved();
+  });
+
+  // AUTO tab
+  document.getElementById('cal-auto-run').addEventListener('click', function () {
+    var r = detectDevice(
+      navigator.userAgent,
+      window.screen.width,
+      window.screen.height,
+      window.devicePixelRatio || 1
+    );
+    var html;
+    if (r.device) {
+      var px = deviceCssPxPerInch(r.device.physicalPpi, window.devicePixelRatio || 1);
+      var conf =
+        r.confidence === 'high'
+          ? 'High confidence — exact model match.'
+          : 'Medium confidence — matched a display shared by similar models (same density).';
+      html =
+        '<p><strong>Detected:</strong> ' +
+        r.device.name +
+        ' (' +
+        r.device.physicalPpi +
+        ' PPI factory)</p>' +
+        '<p class="mt-1">' +
+        conf +
+        '</p>' +
+        '<p class="mt-1">Computed density at your display scaling: <strong>' +
+        px.toFixed(1) +
+        ' px/in</strong></p>' +
+        applyButtonHtml(px, 'auto', r.device.name);
+    } else {
+      var hint = r.category
+        ? 'We recognize this as a <strong>' +
+          r.category +
+          '</strong> display, but could not pin down the exact model.'
+        : 'We could not recognize this device from your browser information.';
+      html =
+        '<p>' +
+        hint +
+        '</p><p class="mt-1">Try the <strong>Pick device</strong>, <strong>Screen diagonal</strong>, or <strong>Credit card</strong> tab instead.</p>';
+    }
+    showResult('cal-auto-result', html);
+  });
+
+  // DEVICE tab
+  var catSel = document.getElementById('cal-device-category');
+  var devSel = document.getElementById('cal-device-name');
+  DEVICE_CATEGORIES.forEach(function (c) {
+    var o = document.createElement('option');
+    o.value = c;
+    o.textContent = c;
+    catSel.appendChild(o);
+  });
+  function fillDevices() {
+    devSel.innerHTML = '';
+    getDevicesByCategory(catSel.value).forEach(function (d) {
+      var o = document.createElement('option');
+      o.value = d.name;
+      o.textContent = d.name + ' — ' + d.physicalPpi + ' PPI';
+      devSel.appendChild(o);
+    });
+    updateDeviceResult();
+  }
+  function updateDeviceResult() {
+    var d = getDevicesByCategory(catSel.value).find(function (x) {
+      return x.name === devSel.value;
+    });
+    if (!d) return;
+    var dpr = window.devicePixelRatio || 1;
+    var px = deviceCssPxPerInch(d.physicalPpi, dpr);
+    showResult(
+      'cal-device-result',
+      '<p><strong>' +
+        d.name +
+        '</strong> — factory ' +
+        d.physicalPpi +
+        ' PPI' +
+        (d.note ? ' <span style="color: var(--ror-text-muted);">(' + d.note + ')</span>' : '') +
+        '</p>' +
+        '<p class="mt-1">At your current display scaling (×' +
+        dpr +
+        '): <strong>' +
+        px.toFixed(1) +
+        ' px/in</strong></p>' +
+        applyButtonHtml(px, 'device', d.name)
+    );
+  }
+  catSel.addEventListener('change', fillDevices);
+  devSel.addEventListener('change', updateDeviceResult);
+  fillDevices();
+
+  // DIAGONAL tab
+  document.getElementById('cal-diagonal-run').addEventListener('click', function () {
+    var diag = parseFloat(document.getElementById('cal-diagonal-input').value);
+    if (!isFinite(diag) || diag <= 0) {
+      showResult('cal-diagonal-result', '<p>Please enter a valid diagonal in inches.</p>');
+      return;
+    }
+    var px = diagonalPpi(window.screen.width, window.screen.height, diag);
+    showResult(
+      'cal-diagonal-result',
+      '<p>Screen: ' +
+        window.screen.width +
+        ' × ' +
+        window.screen.height +
+        ' px, diagonal ' +
+        diag +
+        ' in</p>' +
+        '<p class="mt-1">Computed density: <strong>' +
+        px.toFixed(1) +
+        ' px/in</strong></p>' +
+        applyButtonHtml(px, 'diagonal', diag + ' in diagonal')
+    );
+  });
+
+  // CARD tab
+  var slider = document.getElementById('cal-card-slider');
+  var cardValue = document.getElementById('cal-card-value');
+  var outline = document.getElementById('cal-card-outline');
+  function updateCardOutline() {
+    var pxPerInch = parseFloat(slider.value);
+    cardValue.textContent = pxPerInch.toFixed(1) + ' px/in';
+    outline.style.width = ((85.6 / 25.4) * pxPerInch).toFixed(1) + 'px';
+    outline.style.height = ((53.98 / 25.4) * pxPerInch).toFixed(1) + 'px';
+  }
+  slider.addEventListener('input', updateCardOutline);
+  document.getElementById('cal-card-apply').addEventListener('click', function () {
+    saveCalibration({
+      method: 'card',
+      pxPerInch: parseFloat(slider.value),
+      deviceName: '85.60 × 53.98 mm card',
+    });
+    flashSaved();
+  });
+
+  // Reset
+  document.getElementById('cal-reset').addEventListener('click', function () {
+    resetCalibration();
+    flashSaved();
+  });
+
+  // Initialize from stored calibration
+  refreshReadout();
+  var current = loadCalibration();
+  if (current.pxPerInch >= 50 && current.pxPerInch <= 300) {
+    slider.value = String(current.pxPerInch);
+  }
+  updateCardOutline();
+</script>
+
+<style>
+  .cal-tab {
+    border-bottom: 2px solid transparent;
+  }
+</style>
