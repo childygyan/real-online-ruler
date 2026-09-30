@@ -4,10 +4,9 @@ import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
 
-// Production domain: TBD (Firoz has not chosen a custom domain yet).
-// Temporary Pages origin used for sitemap/canonical generation.
+// Production domain: https://realonlineruler.online (Firoz, 2026-09-30).
 export default defineConfig({
-  site: 'https://real-online-ruler-30y.pages.dev',
+  site: 'https://realonlineruler.online',
   output: 'static',
   adapter: cloudflare({
     imageService: 'passthrough',
