@@ -24,7 +24,7 @@ and natural, not word-by-word.
   `ContentBlock[]` (h2/h3/p/ul/table) plus FAQs, breadcrumbs, related links,
   and lede copy.
 - `src/i18n/dict.ts` — `export type Dict = typeof en`; `DICTS:
-  Record<LocaleCode, Dict>`; `getDict(code)` with English fallback.
+Record<LocaleCode, Dict>`; `getDict(code)` with English fallback.
 - `src/i18n/dicts/{es,fr,pt,zh,id}.ts` — complete native translations with
   **exactly** the English key shape. TypeScript rejects any missing/extra key
   at compile time; `dict.test.ts` additionally asserts runtime parity
@@ -41,8 +41,7 @@ and natural, not word-by-word.
 - `src/i18n/locales.ts` — `en` (root), `es`, `fr`, `pt`, `zh` (html/hreflang
   `zh-Hans`, OG `zh_Hans`), `id`; OG locales `en_US/es_ES/fr_FR/pt_BR/zh_Hans/id_ID`.
 - Thin wrappers `src/pages/{es,fr,pt,zh,id}/**/*.astro` (40 files) render the
-  8 shared sources (home, guide, how-to-calibrate, cm, inches, mm, pixels,
-  404) with the locale prop. No content duplication.
+  8 shared sources (home, guide, how-to-calibrate, cm, inches, mm, pixels, 404) with the locale prop. No content duplication.
 - `BaseLayout` emits locale `<html lang>`, canonical localized path, 7
   hreflang links (`en/es/fr/pt/zh-Hans/id/x-default`), and localized OG
   locale + alternates.
@@ -85,13 +84,13 @@ instructional tool, never word-by-word. Contract per locale:
 
 ### Native-term rationale (recorded 2026-09-30)
 
-| Locale | Key term choices |
-|---|---|
+| Locale                      | Key term choices                                                                                                                                          |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | es (neutral Latin American) | Guías (guides), Retícula (crosshair), Transportador (protractor), Lupa (loupe), Cuadrícula (grid), pulgada (inch); SEO phrasing leans on "regla en línea" |
-| fr | Repères (guides), Réticule (crosshair), Rapporteur (protractor), Loupe, Grille (grid), pouce (inch); "règle en ligne" phrasing |
-| pt-BR | Guias, Mira (crosshair — short, native), Transferidor (protractor), Lupa, Grade (grid), polegada; "régua online" phrasing; friendly *você* register |
-| zh-Hans | 参考线 (guides), 十字线 (crosshair), 量角器 (protractor), 放大镜 (loupe), 网格 (grid), 厘米/毫米/英寸/像素； "在线尺子" phrasing |
-| id | Garis panduan (guides), Garis bidik (crosshair), Busur derajat (protractor), Lup (loupe), Kisi (grid), inci; "penggaris online" phrasing |
+| fr                          | Repères (guides), Réticule (crosshair), Rapporteur (protractor), Loupe, Grille (grid), pouce (inch); "règle en ligne" phrasing                            |
+| pt-BR                       | Guias, Mira (crosshair — short, native), Transferidor (protractor), Lupa, Grade (grid), polegada; "régua online" phrasing; friendly _você_ register       |
+| zh-Hans                     | 参考线 (guides), 十字线 (crosshair), 量角器 (protractor), 放大镜 (loupe), 网格 (grid), 厘米/毫米/英寸/像素； "在线尺子" phrasing                          |
+| id                          | Garis panduan (guides), Garis bidik (crosshair), Busur derajat (protractor), Lup (loupe), Kisi (grid), inci; "penggaris online" phrasing                  |
 
 Language selection was data-driven (Google Trends 2026-09-30, see project
 memory): strong native-term demand for es ("regla online", 32 regions),
@@ -131,17 +130,19 @@ the English base); de/it dropped for lack of signal.
 
 - Phase 8 zip uploaded to the **Real Online Ruler** Drive folder
   (id `1l1PK3Fu4pJJIhnr4iAyl4Hq3favbsqyE`):
-  - File ID: `<DRIVE_ID>`
-  - Link: `<DRIVE_LINK>`
+  - File ID: `1ACBOHDA8nfHSuCndeMCnRKCumHJuvHrw`
+  - Link: `https://drive.google.com/file/d/1ACBOHDA8nfHSuCndeMCnRKCumHJuvHrw/view?usp=drivesdk`
+  - Size: 291,233 bytes; uploaded 2026-09-30 ~10:15 IST
 
 ## 7. Deployment
 
-- Deployed with official Wrangler (absolute dist path) to the
-  `real-online-ruler` Pages project.
-- Deployment URL: `<DEPLOY_URL>`
-- Smoke test: `/`, `/es/`, `/fr/guide/`, `/pt/`, `/zh/cm/`, `/id/`
-  all HTTP 200 with correct `lang`/hreflang; temporary production origin
-  serves the new build.
+- Deployed 2026-09-30 ~10:16 IST with official Wrangler (absolute dist
+  path) to the `real-online-ruler` Pages project.
+- Deployment URL: `https://ac7b0e98.real-online-ruler-30y.pages.dev`
+- Smoke test (all HTTP 200 with correct `<html lang>`): `/` (en), `/es/`,
+  `/fr/guide/`, `/pt/`, `/zh/cm/` (zh-Hans), `/id/`.
+- Temporary production origin `https://real-online-ruler-30y.pages.dev`
+  verified serving the new build (hreflang `zh-Hans` present).
 
 ## 8. Caveats / open items
 
