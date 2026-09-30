@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page not found — Real Online Ruler"
+  description="The page you were looking for does not exist on Real Online Ruler."
+  path="/404"
+>
+  <section class="ror-container py-24 text-center">
+    <p class="font-mono text-7xl font-bold" style="color: var(--ror-brand-600);">
+      404
+    </p>
+    <h1 class="mt-4 text-2xl font-bold">This mark isn&rsquo;t on the ruler</h1>
+    <p class="mx-auto mt-3 max-w-md" style="color: var(--ror-text-muted);">
+      The page you asked for doesn&rsquo;t exist. Let&rsquo;s get you back to measuring.
+    </p>
+    <a href="/" class="ror-btn-primary mt-8">
+      Back to the ruler
+    </a>
+  </section>
+</BaseLayout>

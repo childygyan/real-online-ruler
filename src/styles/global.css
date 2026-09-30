@@ -1,0 +1,59 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--ror-bg);
+    color: var(--ror-text);
+    font-family: var(--ror-font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Visible focus ring everywhere — keyboard users must see where they are. */
+  :focus-visible {
+    outline: 2px solid var(--ror-brand-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .ror-container {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .ror-card {
+    background-color: var(--ror-surface);
+    border: 1px solid var(--ror-border);
+    border-radius: var(--ror-radius);
+  }
+
+  .ror-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition-colors;
+    background-color: var(--ror-brand-600);
+    color: #fff;
+  }
+  .ror-btn-primary:hover {
+    background-color: var(--ror-brand-700);
+  }
+
+  .ror-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition-colors;
+    border: 1px solid var(--ror-border);
+    color: var(--ror-text);
+  }
+  .ror-btn-ghost:hover {
+    border-color: var(--ror-brand-500);
+    color: var(--ror-brand-700);
+  }
+  .dark .ror-btn-ghost:hover {
+    color: var(--ror-brand-300);
+  }
+}

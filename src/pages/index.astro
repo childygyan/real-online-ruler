@@ -1,0 +1,316 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Real Online Ruler — Free Actual-Size Screen Ruler (cm, mm, Inches, Pixels)';
+const description =
+  'Turn your screen into a real ruler. Calibrate once for your display, then measure small objects in centimeters, millimeters, inches, or pixels — free, no signup, no download.';
+
+const FEATURES = [
+  {
+    name: 'Calibrate four ways',
+    body: 'Auto-detect your device, pick it from a list, enter your screen diagonal, or match a credit card on screen. One calibration makes every measurement true to size.',
+    icon: '◎',
+  },
+  {
+    name: 'Rulers on all four edges',
+    body: 'Pin a ruler to the top, bottom, left, or right edge — or all four at once — and frame anything on your screen inside a live measuring grid.',
+    icon: '▦',
+  },
+  {
+    name: 'cm, mm, inches & pixels',
+    body: 'Switch units instantly: metric ticks down to the millimeter, fractional inch marks, or raw CSS pixels for design work. Keyboard shortcuts included.',
+    icon: '⇄',
+  },
+  {
+    name: 'Guide lines',
+    body: 'Drop horizontal and vertical reference lines anywhere, drag them into place, and read distances between them in your current unit.',
+    icon: '┼',
+  },
+  {
+    name: 'Crosshair coordinates',
+    body: 'A live crosshair follows your cursor and reports its exact X/Y position in the active unit — handy for layouts and alignment checks.',
+    icon: '✛',
+  },
+  {
+    name: 'Fullscreen & dark mode',
+    body: 'Expand to the full display for edge-to-edge measuring, and switch between light and dark themes. Your preferences are remembered.',
+    icon: '◈',
+  },
+];
+
+const FAQS = [
+  {
+    q: 'Can a screen ruler really be accurate?',
+    a: 'Yes — but only after calibration. Your browser draws in CSS pixels, which have no fixed physical size. Calibration teaches the page how many CSS pixels make one real inch on your specific display. Once that number is known, every tick mark lands at its true physical position.',
+  },
+  {
+    q: 'Why do I need to calibrate? Can\u2019t the site just know my screen size?',
+    a: 'Browsers deliberately hide your exact physical pixel density for privacy, so no website can measure your screen directly. The site starts from the web-standard guess of 96 pixels per inch; the four calibration methods replace that guess with your display\u2019s real number.',
+  },
+  {
+    q: 'Do I have to calibrate on every visit?',
+    a: 'No. Your calibration is saved in your browser and reloaded automatically. Re-calibrate only if you switch monitors, change your display scaling, or notice measurements drifting.',
+  },
+  {
+    q: 'Does browser zoom change the measurements?',
+    a: 'Yes. Zooming rescales CSS pixels, so a ruler calibrated at 100% zoom will read wrong at 110%. Keep your browser zoom at 100% while measuring — the app reminds you of this.',
+  },
+  {
+    q: 'What can I actually measure with it?',
+    a: 'Anything small enough to hold against your screen: coins, screws, earring backs, SD cards, printed swatches, ring sizes. The longest straight measurement is your screen\u2019s width or height.',
+  },
+  {
+    q: 'Does it work on phones and tablets?',
+    a: 'Yes. Open the page in any mobile browser, calibrate with your device model or the credit-card method, and the phone screen becomes a pocket ruler — surprisingly handy for quick checks.',
+  },
+];
+---
+
+<BaseLayout title={title} description={description} path="/">
+  <!-- Hero -->
+  <section class="ror-container pb-14 pt-14 text-center sm:pt-20">
+    <p
+      class="mx-auto inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
+      style="border-color: var(--ror-brand-200); color: var(--ror-brand-700); background-color: var(--ror-brand-50);"
+    >
+      <span aria-hidden="true">●</span> Free · No signup · No download
+    </p>
+    <h1 class="mx-auto mt-6 max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl">
+      Your screen, turned into a <span style="color: var(--ror-brand-600);">real ruler</span>.
+    </h1>
+    <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed" style="color: var(--ror-text-muted);">
+      Calibrate once for your display and this page becomes a measuring tool at true physical size.
+      Hold a coin, a screw, or a swatch against the edge and read it in centimeters, millimeters,
+      inches, or pixels.
+    </p>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <a href="#ruler-app" class="ror-btn-primary">
+        Open the ruler
+      </a>
+      <a href="#calibration" class="ror-btn-ghost">
+        How calibration works
+      </a>
+    </div>
+    <p class="mt-6 text-sm" style="color: var(--ror-text-muted);">
+      Tip: keep browser zoom at 100% while measuring.
+    </p>
+  </section>
+
+  <!-- App shell: the interactive ruler mounts here in Phase 3.
+       Phase 1 renders a deliberate placeholder workspace. -->
+  <section id="ruler-app" class="ror-container scroll-mt-20" aria-label="Ruler workspace">
+    <div class="ror-card overflow-hidden">
+      <!-- Toolbar skeleton (inactive until Phase 3/4) -->
+      <div
+        class="flex flex-wrap items-center gap-2 border-b px-4 py-3"
+        style="border-color: var(--ror-border); background-color: var(--ror-bg-soft);"
+        aria-hidden="true"
+      >
+        {['cm', 'mm', 'in', 'px', 'Calibrate', 'Guides', 'Crosshair', 'Fullscreen'].map((label) => (
+          <span
+            class="inline-block rounded-md border px-3 py-1.5 text-xs font-medium opacity-60"
+            style="border-color: var(--ror-border); color: var(--ror-text-muted);"
+          >
+            {label}
+          </span>
+        ))}
+      </div>
+      <!-- Canvas area -->
+      <div
+        class="flex min-h-[320px] flex-col items-center justify-center gap-4 px-6 py-16 text-center sm:min-h-[380px]"
+        style="background-color: var(--ror-canvas-bg);"
+      >
+        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" aria-hidden="true">
+          <rect
+            x="6"
+            y="24"
+            width="60"
+            height="24"
+            rx="6"
+            style="fill: var(--ror-brand-600);"
+            opacity="0.9"
+          />
+          <g stroke="#ffffff" stroke-width="2.4" stroke-linecap="round">
+            <line x1="16" y1="24" x2="16" y2="36" />
+            <line x1="26" y1="24" x2="26" y2="32" />
+            <line x1="36" y1="24" x2="36" y2="36" />
+            <line x1="46" y1="24" x2="46" y2="32" />
+            <line x1="56" y1="24" x2="56" y2="36" />
+          </g>
+        </svg>
+        <div class="max-w-md">
+          <p class="text-lg font-semibold">The live ruler is being built</p>
+          <p class="mt-2 text-sm leading-relaxed" style="color: var(--ror-text-muted);">
+            This workspace will host the interactive measuring tool. The calibration engine arrives
+            in Phase 2 and the ruler engine in Phase 3 — then this placeholder is replaced by real,
+            calibrated rulers on all four edges.
+          </p>
+        </div>
+        <span
+          class="rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
+          style="background-color: var(--ror-accent-400); color: #451a03;"
+        >
+          Phase 1 · Foundation
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="ror-container mt-20" aria-label="Features">
+    <h2 class="text-center text-3xl font-bold tracking-tight">One page, a full measuring bench</h2>
+    <p class="mx-auto mt-3 max-w-2xl text-center" style="color: var(--ror-text-muted);">
+      Everything here is being built in the open, phase by phase. Here is where the tool is headed.
+    </p>
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {FEATURES.map((f) => (
+        <article class="ror-card p-6">
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-lg text-xl"
+            style="background-color: var(--ror-brand-50); color: var(--ror-brand-700);"
+            aria-hidden="true"
+          >
+            {f.icon}
+          </div>
+          <h3 class="mt-4 text-lg font-semibold">{f.name}</h3>
+          <p class="mt-2 text-sm leading-relaxed" style="color: var(--ror-text-muted);">
+            {f.body}
+          </p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Calibration explainer (full interactive version lands in Phase 2) -->
+  <section
+    id="calibration"
+    class="ror-container mt-20 scroll-mt-20"
+    aria-label="How calibration works"
+  >
+    <div class="ror-card p-8 sm:p-10">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">How calibration works</h2>
+      <div class="mt-6 grid gap-8 md:grid-cols-2">
+        <div class="space-y-4 text-sm leading-relaxed" style="color: var(--ror-text-muted);">
+          <p>
+            Every screen packs a different number of physical pixels into each inch — a phone might
+            hold 460, a desktop monitor closer to 100. Your browser, however, draws the page in{' '}
+            <em>CSS pixels</em>, and it never tells websites their true physical size.
+          </p>
+          <p>
+            Calibration closes that gap. You give the page one trustworthy reference — your device
+            model, your screen&rsquo;s diagonal, or a credit card held against the display — and it
+            computes exactly how many CSS pixels equal one real inch. From that single number, every
+            tick mark on every ruler is placed at its true position.
+          </p>
+        </div>
+        <ol class="space-y-4">
+          {[
+            [
+              'Auto-detect',
+              'We match your device against a built-in display database and apply its factory pixel density.',
+            ],
+            [
+              'Pick your device',
+              'Browse iPhone, iPad, MacBook, Android, and monitor entries and select your exact model.',
+            ],
+            [
+              'Screen diagonal',
+              'Type your screen\u2019s diagonal in inches; we derive the density from your resolution.',
+            ],
+            [
+              'Credit card',
+              'Hold any bank card to the screen and drag a slider until the on-screen outline matches it.',
+            ],
+          ].map(([name, body], i) => (
+            <li class="flex gap-4">
+              <span
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+                style="background-color: var(--ror-brand-600);"
+                aria-hidden="true"
+              >
+                {i + 1}
+              </span>
+              <div>
+                <p class="font-semibold">{name}</p>
+                <p class="mt-1 text-sm" style="color: var(--ror-text-muted);">
+                  {body}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <p
+        class="mt-6 rounded-lg border px-4 py-3 text-sm"
+        style="border-color: var(--ror-brand-200); background-color: var(--ror-brand-50); color: var(--ror-brand-900);"
+      >
+        The interactive calibration panel — with live readouts and saved settings — arrives in Phase
+        2.
+      </p>
+    </div>
+  </section>
+
+  <!-- Reading guide stub (expanded in Phase 5) -->
+  <section id="guide" class="ror-container mt-20 scroll-mt-20" aria-label="Reading guide">
+    <h2 class="text-center text-3xl font-bold tracking-tight">How to read the ruler</h2>
+    <div class="mx-auto mt-8 grid max-w-4xl gap-5 md:grid-cols-3">
+      {[
+        [
+          'Centimeters',
+          'Each numbered line is one centimeter. The ten small ticks between numbers are millimeters — so the 4th small tick past 7 is 7.4 cm.',
+        ],
+        [
+          'Inches',
+          'Numbered lines are whole inches. Between them, the longest unticked line is ½″, then ¼″ and ¾″, then eighths — just like a wooden ruler.',
+        ],
+        [
+          'Pixels',
+          'Pixel mode counts raw CSS pixels from zero — the unit designers use for spacing, type sizes, and element dimensions on screen.',
+        ],
+      ].map(([name, body]) => (
+        <article class="ror-card p-6">
+          <h3 class="text-lg font-semibold" style="color: var(--ror-brand-700);">
+            {name}
+          </h3>
+          <p class="mt-2 text-sm leading-relaxed" style="color: var(--ror-text-muted);">
+            {body}
+          </p>
+        </article>
+      ))}
+    </div>
+    <p class="mx-auto mt-6 max-w-2xl text-center text-sm" style="color: var(--ror-text-muted);">
+      Full illustrated guides for each unit — with practice examples — arrive with the dedicated
+      unit pages in Phase 5.
+    </p>
+  </section>
+
+  <!-- FAQ -->
+  <section
+    id="faq"
+    class="ror-container mt-20 scroll-mt-20"
+    aria-label="Frequently asked questions"
+  >
+    <h2 class="text-center text-3xl font-bold tracking-tight">Frequently asked questions</h2>
+    <div class="mx-auto mt-8 max-w-3xl space-y-4">
+      {FAQS.map((f) => (
+        <details class="ror-card group px-6 py-4">
+          <summary class="cursor-pointer list-none font-semibold [&::-webkit-details-marker]:hidden">
+            <span class="flex items-center justify-between gap-4">
+              {f.q}
+              <span
+                class="text-xl transition-transform group-open:rotate-45"
+                style="color: var(--ror-brand-600);"
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </span>
+          </summary>
+          <p class="mt-3 text-sm leading-relaxed" style="color: var(--ror-text-muted);">
+            {f.a}
+          </p>
+        </details>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

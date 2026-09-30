@@ -1,0 +1,76 @@
+---
+/**
+ * BaseLayout.astro — shared page shell.
+ * Props: title, description, canonical path, optional OG extras.
+ */
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  ogType?: string;
+}
+
+const { title, description, path = '/', ogType = 'website' } = Astro.props;
+const site = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const canonical = site ? `${site}${path}` : path;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Real Online Ruler" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <meta name="theme-color" content="#0e7490" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Theme init: runs before first paint so there is no flash of the
+         wrong theme. Preference lives in localStorage under "ror-theme";
+         first-time visitors follow the OS setting. -->
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('ror-theme');
+          var dark =
+            stored === 'dark' ||
+            (stored === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+        } catch {
+          /* storage unavailable — stay on light theme */
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen antialiased">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-cyan-700 focus:px-4 focus:py-2 focus:text-white"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,53 @@
+/* Design tokens for Real Online Ruler.
+ * Original palette: deep teal ("instrument teal") as the brand color —
+ * chosen for a precision-instrument feel — with a warm amber accent used
+ * sparingly for calls to action and highlights. */
+
+:root {
+  /* Brand — teal scale */
+  --ror-brand-50: #ecfeff;
+  --ror-brand-100: #cffafe;
+  --ror-brand-200: #a5f3fc;
+  --ror-brand-300: #67e8f9;
+  --ror-brand-400: #22d3ee;
+  --ror-brand-500: #06b6d4;
+  --ror-brand-600: #0891b2;
+  --ror-brand-700: #0e7490;
+  --ror-brand-800: #155e75;
+  --ror-brand-900: #164e63;
+
+  /* Accent — amber, used sparingly */
+  --ror-accent-400: #fbbf24;
+  --ror-accent-500: #f59e0b;
+  --ror-accent-600: #d97706;
+
+  /* Surfaces */
+  --ror-bg: #ffffff;
+  --ror-bg-soft: #f8fafc;
+  --ror-surface: #ffffff;
+  --ror-border: #e2e8f0;
+  --ror-text: #0f172a;
+  --ror-text-muted: #475569;
+
+  /* Ruler canvas (Phase 3 will use these) */
+  --ror-canvas-bg: #f1f5f9;
+  --ror-tick: #0f172a;
+  --ror-tick-minor: #94a3b8;
+
+  --ror-radius: 0.75rem;
+  --ror-font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.dark {
+  --ror-bg: #0b1220;
+  --ror-bg-soft: #0f172a;
+  --ror-surface: #111c33;
+  --ror-border: #1e293b;
+  --ror-text: #e2e8f0;
+  --ror-text-muted: #94a3b8;
+
+  --ror-canvas-bg: #0f172a;
+  --ror-tick: #e2e8f0;
+  --ror-tick-minor: #475569;
+}

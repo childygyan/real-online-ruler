@@ -1,0 +1,43 @@
+{
+  "allowScripts": {
+    "esbuild": true
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.6.13",
+    "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "^5.18.2"
+  },
+  "description": "Real Online Ruler — a free actual-size on-screen ruler web app.",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.71.0",
+    "@typescript-eslint/parser": "^8.71.0",
+    "autoprefixer": "^10.6.1",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-astro": "^3.2.1",
+    "postcss": "^8.5.28",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.1.0",
+    "tailwindcss": "^3.4.18",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "name": "real-online-ruler",
+  "scripts": {
+    "astro": "astro",
+    "build": "astro build",
+    "dev": "astro dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "preview": "astro preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}
