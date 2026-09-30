@@ -1,0 +1,52 @@
+/**
+ * urls.ts — locale-aware URL helpers (Phase 8 scaffolding).
+ */
+import { DEFAULT_LOCALE, LOCALES, type LocaleCode } from './locales.js';
+
+/** hreflang values used on the site, including the x-default fallback. */
+export type HreflangCode = 'en' | 'es' | 'fr' | 'pt' | 'zh-Hans' | 'id' | 'x-default';
+
+/**
+ * Map a root-relative path (e.g. "/cm/") to its locale version.
+ * English stays at the root; every other locale gets its prefix.
+ */
+export function localizePath(path: string, locale: LocaleCode): string {
+  if (!path.startsWith('/')) throw new RangeError(`path must start with '/', got ${path}`);
+  if (locale === DEFAULT_LOCALE) return path;
+  const prefix = LOCALES.find((l) => l.code === locale)?.prefix ?? '';
+  return `${prefix}${path === '/' ? '/' : path}`;
+}
+
+/**
+ * hreflang alternates for a page path, plus x-default (which points at English).
+ * Returned in LOCALES order with x-default last.
+ */
+export function alternateLinks(
+  path: string,
+  siteOrigin: string
+): { hreflang: HreflangCode; href: string }[] {
+  const links: { hreflang: HreflangCode; href: string }[] = LOCALES.map((l) => ({
+    hreflang: l.hreflang as HreflangCode,
+    href: `${siteOrigin}${localizePath(path, l.code)}`,
+  }));
+  links.push({ hreflang: 'x-default', href: `${siteOrigin}${path}` });
+  return links;
+}
+
+/** og:locale value for a locale code (e.g. "es_ES", "zh_Hans"). */
+export function ogLocale(code: LocaleCode): string {
+  switch (code) {
+    case 'en':
+      return 'en_US';
+    case 'es':
+      return 'es_ES';
+    case 'fr':
+      return 'fr_FR';
+    case 'pt':
+      return 'pt_BR';
+    case 'zh':
+      return 'zh_Hans';
+    case 'id':
+      return 'id_ID';
+  }
+}

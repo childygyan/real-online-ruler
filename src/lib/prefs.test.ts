@@ -40,6 +40,13 @@ describe('prefs', () => {
         edges: { top: false, bottom: true, left: true, right: false },
         guidesOn: true,
         crosshairOn: true,
+        measureOn: true,
+        protractorOn: false,
+        loupeOn: true,
+        floatingRulerOn: false,
+        logOpen: true,
+        gridOn: true,
+        gridUnit: 'in',
       },
       storage
     );
@@ -50,6 +57,13 @@ describe('prefs', () => {
       edges: { top: false, bottom: true, left: true, right: false },
       guidesOn: true,
       crosshairOn: true,
+      measureOn: true,
+      protractorOn: false,
+      loupeOn: true,
+      floatingRulerOn: false,
+      logOpen: true,
+      gridOn: true,
+      gridUnit: 'in',
     });
   });
 
@@ -73,6 +87,32 @@ describe('prefs', () => {
     storage.setItem(PREFS_KEY, '{oops');
     expect(loadPrefs(storage)).toEqual(DEFAULT_PREFS);
     expect(parsePrefs(null)).toEqual(DEFAULT_PREFS);
+  });
+
+  it('parses Phase 7 tool prefs and validates gridUnit', () => {
+    storage.setItem(
+      PREFS_KEY,
+      JSON.stringify({
+        measureOn: true,
+        protractorOn: true,
+        loupeOn: 'yes',
+        floatingRulerOn: 1,
+        logOpen: true,
+        gridOn: true,
+        gridUnit: 'in',
+      })
+    );
+    const prefs = loadPrefs(storage);
+    expect(prefs.measureOn).toBe(true);
+    expect(prefs.protractorOn).toBe(true);
+    expect(prefs.loupeOn).toBe(false);
+    expect(prefs.floatingRulerOn).toBe(false);
+    expect(prefs.logOpen).toBe(true);
+    expect(prefs.gridOn).toBe(true);
+    expect(prefs.gridUnit).toBe('in');
+
+    storage.setItem(PREFS_KEY, JSON.stringify({ gridUnit: 'furlong' }));
+    expect(loadPrefs(storage).gridUnit).toBe('cm');
   });
 
   it('works without a storage backend', () => {

@@ -3,6 +3,8 @@
  * RulerApp.astro — the interactive ruler workspace.
  * Phase 3: SVG rulers on 4 toggleable edges, unit switcher.
  * Phase 4: guides, crosshair, fullscreen, theme, persisted prefs.
+ * Phase 7: drag-to-measure, protractor, magnifier loupe, floating ruler,
+ *          measurement log, grid overlay, shortcuts help.
  */
 ---
 
@@ -131,6 +133,108 @@
         Calibrate
       </button>
     </div>
+
+    <!-- Advanced tools (Phase 7) -->
+    <div
+      class="flex w-full flex-wrap items-center gap-x-3 gap-y-2 border-t pt-2"
+      style="border-color: var(--ror-border);"
+    >
+      <span
+        class="text-[11px] font-bold uppercase tracking-wider"
+        style="color: var(--ror-text-muted);"
+      >
+        Advanced
+      </span>
+      <div
+        role="group"
+        aria-label="Advanced measuring tools"
+        class="flex overflow-hidden rounded-lg border"
+        style="border-color: var(--ror-border);"
+      >
+        <button
+          type="button"
+          class="ruler-tool"
+          id="tool-measure"
+          aria-pressed="false"
+          title="Drag on the canvas to measure distance and angle (M)"
+        >
+          Measure
+        </button>
+        <button
+          type="button"
+          class="ruler-tool"
+          id="tool-protractor"
+          aria-pressed="false"
+          title="Protractor overlay (P)"
+        >
+          Protractor
+        </button>
+        <button
+          type="button"
+          class="ruler-tool"
+          id="tool-loupe"
+          aria-pressed="false"
+          title="Magnifier loupe, 3x (L)"
+        >
+          Loupe
+        </button>
+        <button
+          type="button"
+          class="ruler-tool"
+          id="tool-fruler"
+          aria-pressed="false"
+          title="Floating rotatable ruler (R)"
+        >
+          Ruler
+        </button>
+        <button
+          type="button"
+          class="ruler-tool"
+          id="tool-log"
+          aria-pressed="false"
+          title="Measurement log (O)"
+        >
+          Log
+        </button>
+        <button
+          type="button"
+          class="ruler-tool"
+          id="tool-grid"
+          aria-pressed="false"
+          title="Grid overlay (N)"
+        >
+          Grid
+        </button>
+      </div>
+      <label
+        id="grid-unit-wrap"
+        class="hidden items-center gap-1 text-xs font-semibold"
+        style="color: var(--ror-text-muted);"
+      >
+        Grid unit
+        <select
+          id="grid-unit"
+          class="rounded border px-1 py-0.5 text-xs"
+          style="border-color: var(--ror-border); background-color: var(
+              --ror-surface
+            ); color: var(--ror-text);"
+          aria-label="Grid cell unit"
+        >
+          <option value="cm">cm</option>
+          <option value="in">inch</option>
+        </select>
+      </label>
+      <span class="flex-1"></span>
+      <button
+        type="button"
+        id="tool-help"
+        class="ruler-tool rounded-lg border"
+        style="border-color: var(--ror-border);"
+        title="Keyboard shortcuts (H)"
+      >
+        ? Shortcuts
+      </button>
+    </div>
   </div>
 
   <!-- Stage -->
@@ -145,11 +249,22 @@
     <div id="ruler-bar-left" class="absolute left-0" aria-hidden="true"></div>
     <div id="ruler-bar-right" class="absolute right-0" aria-hidden="true"></div>
     <div id="ruler-workspace" class="absolute flex items-center justify-center p-6">
+      <div
+        id="grid-layer"
+        class="absolute inset-0"
+        style="display: none; pointer-events: none;"
+      ></div>
       <div id="guides-layer" class="absolute inset-0" style="pointer-events: none;"></div>
+      <svg
+        id="measure-layer"
+        class="absolute inset-0"
+        style="pointer-events: none; z-index: 6;"
+        aria-hidden="true"
+      ></svg>
       <div
         id="crosshair-layer"
         class="absolute inset-0 hidden"
-        style="pointer-events: none;"
+        style="pointer-events: none; z-index: 7;"
         aria-hidden="true"
       >
         <div
@@ -168,6 +283,23 @@
           style="background-color: var(--ror-brand-700); color: #fff; transform: translate(10px, 10px);"
         ></div>
       </div>
+      <div
+        id="measure-popup"
+        class="absolute z-20 hidden rounded-lg border px-3 py-2 shadow-xl"
+        style="border-color: var(--ror-border); background-color: var(--ror-surface);"
+        role="dialog"
+        aria-label="Save measurement"
+      >
+        <div id="measure-popup-text" class="text-sm font-bold"></div>
+        <div class="mt-1.5 flex gap-1">
+          <button type="button" id="measure-save" class="log-btn">
+            Save to log
+          </button>
+          <button type="button" id="measure-discard" class="log-btn">
+            Discard
+          </button>
+        </div>
+      </div>
       <p class="max-w-sm text-center text-sm" style="color: var(--ror-text-muted);">
         Toggle the edges above to frame this area with rulers. Hold a small object against a
         ruler&rsquo;s highlighted measuring edge and read its size.
@@ -177,6 +309,291 @@
         </span>
       </p>
     </div>
+
+    <!-- Protractor overlay (Phase 7) -->
+    <div
+      id="protractor"
+      class="absolute hidden select-none"
+      style="width: 240px; height: 240px; z-index: 10; touch-action: none;"
+      role="img"
+      aria-label="Protractor overlay: drag the center to move, the amber handle to rotate, the teal and amber arm handles to measure an angle"
+    >
+      <svg id="protractor-svg" viewBox="0 0 240 240" class="h-full w-full">
+        <circle
+          cx="120"
+          cy="120"
+          r="117"
+          fill="var(--ror-surface)"
+          fill-opacity="0.94"
+          stroke="var(--ror-brand-600)"
+          stroke-width="2"
+        ></circle>
+        <circle
+          cx="120"
+          cy="120"
+          r="100"
+          fill="none"
+          stroke="var(--ror-border)"
+          stroke-width="1"
+        ></circle>
+        <g id="protractor-rot">
+          <g id="protractor-ticks"></g>
+          <line
+            id="prot-arm-a"
+            x1="120"
+            y1="120"
+            stroke="var(--ror-brand-600)"
+            stroke-width="3"
+            stroke-linecap="round"
+          ></line>
+          <circle
+            id="prot-arm-a-h"
+            data-action="armA"
+            r="10"
+            fill="var(--ror-brand-600)"
+            stroke="#fff"
+            stroke-width="2"
+            style="cursor: grab;"
+          >
+            <title>Drag to move arm A</title>
+          </circle>
+          <line
+            id="prot-arm-b"
+            x1="120"
+            y1="120"
+            stroke="var(--ror-accent-500)"
+            stroke-width="3"
+            stroke-linecap="round"
+          ></line>
+          <circle
+            id="prot-arm-b-h"
+            data-action="armB"
+            r="10"
+            fill="var(--ror-accent-500)"
+            stroke="#fff"
+            stroke-width="2"
+            style="cursor: grab;"
+          >
+            <title>Drag to move arm B</title>
+          </circle>
+          <g data-action="rotate" style="cursor: grab;">
+            <circle
+              id="prot-rot-h"
+              r="8"
+              fill="var(--ror-brand-700)"
+              stroke="#fff"
+              stroke-width="2"
+            >
+              <title>Drag to rotate the protractor</title>
+            </circle>
+          </g>
+        </g>
+        <circle
+          data-action="move"
+          cx="120"
+          cy="120"
+          r="10"
+          fill="var(--ror-text-muted)"
+          stroke="#fff"
+          stroke-width="2"
+          style="cursor: move;"
+        >
+          <title>Drag to move the protractor</title>
+        </circle>
+        <text
+          id="prot-readout"
+          x="120"
+          y="164"
+          text-anchor="middle"
+          font-size="20"
+          font-weight="700"
+          fill="var(--ror-text)"
+          style="paint-order: stroke;"
+          stroke="var(--ror-surface)"
+          stroke-width="4"
+        >
+          90&deg;
+        </text>
+        <text x="120" y="182" text-anchor="middle" font-size="10" fill="var(--ror-text-muted)">
+          center moves &middot; ring rotates
+        </text>
+      </svg>
+    </div>
+
+    <!-- Floating ruler (Phase 7) -->
+    <div
+      id="floating-ruler"
+      class="absolute hidden"
+      style="z-index: 10; touch-action: none;"
+      role="img"
+      aria-label="Floating ruler: drag the body to move, the handle at the right end to rotate"
+    >
+      <div id="fr-body" class="relative" style="cursor: move;"></div>
+      <span
+        id="fr-angle"
+        class="absolute rounded px-1 text-[10px] font-bold"
+        style="left: 4px; top: 2px; background-color: var(--ror-brand-700); color: #fff;"
+      >
+        0&deg;
+      </span>
+      <span
+        id="fr-rotate"
+        class="absolute rounded-full"
+        title="Drag to rotate"
+        style="width: 18px; height: 18px; right: -9px; top: 50%; margin-top: -9px; cursor: grab; background-color: var(--ror-accent-500); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3);"
+      ></span>
+    </div>
+
+    <!-- Magnifier loupe (Phase 7) -->
+    <div
+      id="ruler-loupe"
+      class="absolute hidden overflow-hidden rounded-full border-2 shadow-xl"
+      style="width: 170px; height: 170px; z-index: 30; pointer-events: none; border-color: var(--ror-brand-600); background-color: var(--ror-surface);"
+      aria-hidden="true"
+    >
+      <div id="loupe-inner" style="transform-origin: 0 0;"></div>
+      <span
+        class="absolute rounded px-1 text-[10px] font-bold"
+        style="bottom: 6px; right: 10px; background-color: var(--ror-brand-700); color: #fff;"
+      >
+        3&times;
+      </span>
+    </div>
+
+    <!-- Measurement log (Phase 7) -->
+    <div
+      id="log-panel"
+      class="absolute bottom-3 right-3 top-3 z-40 hidden w-72 flex-col rounded-lg border shadow-xl"
+      style="border-color: var(--ror-border); background-color: var(--ror-surface);"
+      role="complementary"
+      aria-label="Measurement log"
+    >
+      <div
+        class="flex items-center justify-between border-b px-3 py-2"
+        style="border-color: var(--ror-border);"
+      >
+        <h2 class="text-sm font-bold">Measurement log</h2>
+        <button type="button" id="log-close" class="log-btn" aria-label="Close measurement log">
+          Close
+        </button>
+      </div>
+      <div id="log-list" class="flex-1 space-y-2 overflow-y-auto p-3"></div>
+      <div class="flex flex-wrap gap-1 border-t p-2" style="border-color: var(--ror-border);">
+        <button type="button" id="log-copy-all" class="log-btn">
+          Copy all
+        </button>
+        <button type="button" id="log-csv" class="log-btn">
+          CSV
+        </button>
+        <button type="button" id="log-txt" class="log-btn">
+          TXT
+        </button>
+        <button type="button" id="log-clear" class="log-btn">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Shortcuts help (Phase 7) -->
+    <div id="help-dialog" class="absolute inset-0 z-50 hidden items-center justify-center p-4">
+      <div
+        class="absolute inset-0"
+        data-close-help
+        style="background-color: rgba(0, 0, 0, 0.45);"
+      ></div>
+      <div
+        class="ror-card relative w-full max-w-md p-5"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Keyboard shortcuts"
+      >
+        <h2 class="text-base font-bold">Keyboard shortcuts</h2>
+        <dl class="mt-3 grid grid-cols-1 gap-y-1.5 text-sm">
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">1</span> <span class="kbd">2</span> <span class="kbd">3</span>{' '}
+              <span class="kbd">4</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Units: cm, in, mm, px</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">G</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Toggle guide lines</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">C</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Toggle crosshair</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">F</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Fullscreen</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">D</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Toggle theme</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">M</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Drag-to-measure tool</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">P</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Protractor overlay</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">L</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Magnifier loupe (3&times;)</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">R</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Floating ruler</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">O</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Measurement log</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">N</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Grid overlay</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">H</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">This shortcut help</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>
+              <span class="kbd">Esc</span>
+            </dt>
+            <dd style="color: var(--ror-text-muted);">Cancel drawing / close / clear guides</dd>
+          </div>
+        </dl>
+        <button type="button" id="help-close" class="btn-primary mt-4 w-full">
+          Close
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Status bar -->
@@ -184,10 +601,10 @@
     class="flex flex-wrap items-center justify-between gap-2 border-t px-4 py-2 text-xs"
     style="border-color: var(--ror-border); color: var(--ror-text-muted);"
   >
-    <span id="ruler-cal-status">Loading calibration…</span>
+    <span id="ruler-cal-status">Loading calibration&hellip;</span>
     <span>
-      Keep browser zoom at 100% — zooming rescales the ruler. Shortcuts: 1–4 units · G guides · C
-      crosshair · F fullscreen · D theme.
+      Keep browser zoom at 100% &mdash; zooming rescales the ruler. Press
+      <span class="kbd">H</span> for the full keyboard shortcut map.
     </span>
   </div>
 </div>
@@ -263,6 +680,52 @@
     transform: rotate(-90deg) translateX(-50%);
     transform-origin: top left;
   }
+  /* Phase 7 */
+  #grid-layer {
+    background-image:
+      linear-gradient(var(--ror-grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--ror-grid-line) 1px, transparent 1px),
+      linear-gradient(var(--ror-grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--ror-grid-major) 1px, transparent 1px);
+  }
+  .log-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ror-text);
+    background-color: var(--ror-bg-soft);
+    border: 1px solid var(--ror-border);
+    border-radius: 0.45rem;
+    transition:
+      background-color 0.15s,
+      color 0.15s;
+  }
+  .log-btn:hover {
+    background-color: var(--ror-brand-700);
+    border-color: var(--ror-brand-700);
+    color: #fff;
+  }
+  .log-btn:focus-visible {
+    outline: 2px solid var(--ror-brand-500);
+    outline-offset: 1px;
+  }
+  .kbd {
+    display: inline-block;
+    min-width: 1.6rem;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--ror-text);
+    background-color: var(--ror-bg-soft);
+    border: 1px solid var(--ror-border);
+    border-bottom-width: 2px;
+    border-radius: 0.35rem;
+  }
+  .log-label:focus-visible {
+    outline: 2px solid var(--ror-brand-500);
+    outline-offset: 0;
+  }
 </style>
 
 <script>
@@ -271,10 +734,39 @@
   import { formatValue } from '../lib/units.js';
   import { addGuide, clearGuides, moveGuide, pxToUnitValue, removeGuide } from '../lib/guides.js';
   import { loadPrefs, savePrefs } from '../lib/prefs.js';
+  import {
+    angleBetweenDeg,
+    distPx,
+    gridCellPx,
+    lineAngleDeg,
+    snapToGuide,
+  } from '../lib/geometry.js';
+  import {
+    addMeasurement,
+    clearMeasurements,
+    createMeasurement,
+    loadMeasurements,
+    removeMeasurement,
+    saveMeasurements,
+    toCSV,
+    toTXT,
+    updateLabel,
+  } from '../lib/measurements.js';
 
   var BAR = 56; // ruler bar thickness, px
   var TICK_LEN = { major: 24, long: 18, medium: 13, minor: 8 };
   var FONT_CSS = 'font-family: inherit; font-size: 11px;';
+  var SNAP_PX = 10; // drag-to-measure endpoint snap distance to guides
+  var LOUPE_ZOOM = 3;
+  var LOUPE_SIZE = 170;
+
+  function safeStorage() {
+    try {
+      return typeof localStorage !== 'undefined' ? localStorage : null;
+    } catch {
+      return null;
+    }
+  }
 
   var prefs = loadPrefs();
   var state = {
@@ -290,6 +782,17 @@
     crosshairOn: prefs.crosshairOn,
     guideOrient: 'h',
     guides: clearGuides(),
+    // Phase 7
+    measureOn: prefs.measureOn,
+    protractorOn: prefs.protractorOn,
+    loupeOn: prefs.loupeOn,
+    floatingRulerOn: prefs.floatingRulerOn,
+    logOpen: prefs.logOpen,
+    gridOn: prefs.gridOn,
+    gridUnit: prefs.gridUnit,
+    measurements: loadMeasurements(safeStorage()),
+    prot: { x: 0, y: 0, base: 0, armA: 0, armB: 90, placed: false },
+    fr: { x: 0, y: 0, rot: 0, placed: false },
   };
 
   function persist() {
@@ -298,6 +801,13 @@
       edges: state.edges,
       guidesOn: state.guidesOn,
       crosshairOn: state.crosshairOn,
+      measureOn: state.measureOn,
+      protractorOn: state.protractorOn,
+      loupeOn: state.loupeOn,
+      floatingRulerOn: state.floatingRulerOn,
+      logOpen: state.logOpen,
+      gridOn: state.gridOn,
+      gridUnit: state.gridUnit,
     });
   }
 
@@ -322,6 +832,38 @@
   var crosshairBtn = document.getElementById('tool-crosshair');
   var fullscreenBtn = document.getElementById('tool-fullscreen');
   var themeBtn = document.getElementById('tool-theme');
+  // Phase 7 refs
+  var gridLayer = document.getElementById('grid-layer');
+  var gridUnitWrap = document.getElementById('grid-unit-wrap');
+  var gridUnitSel = document.getElementById('grid-unit');
+  var measureLayer = document.getElementById('measure-layer');
+  var measurePopup = document.getElementById('measure-popup');
+  var measurePopupText = document.getElementById('measure-popup-text');
+  var protractorEl = document.getElementById('protractor');
+  var protSvg = document.getElementById('protractor-svg');
+  var protRotG = document.getElementById('protractor-rot');
+  var protTicksG = document.getElementById('protractor-ticks');
+  var protArmA = document.getElementById('prot-arm-a');
+  var protArmAH = document.getElementById('prot-arm-a-h');
+  var protArmB = document.getElementById('prot-arm-b');
+  var protArmBH = document.getElementById('prot-arm-b-h');
+  var protRotH = document.getElementById('prot-rot-h');
+  var protReadout = document.getElementById('prot-readout');
+  var frBox = document.getElementById('floating-ruler');
+  var frBody = document.getElementById('fr-body');
+  var frAngle = document.getElementById('fr-angle');
+  var loupeEl = document.getElementById('ruler-loupe');
+  var loupeInner = document.getElementById('loupe-inner');
+  var logPanel = document.getElementById('log-panel');
+  var logList = document.getElementById('log-list');
+  var helpDialog = document.getElementById('help-dialog');
+  var toolMeasure = document.getElementById('tool-measure');
+  var toolProtractor = document.getElementById('tool-protractor');
+  var toolLoupe = document.getElementById('tool-loupe');
+  var toolFruler = document.getElementById('tool-fruler');
+  var toolLog = document.getElementById('tool-log');
+  var toolGrid = document.getElementById('tool-grid');
+  var toolHelp = document.getElementById('tool-help');
 
   function crisp(n) {
     return (Math.round(n) + 0.5).toFixed(1);
@@ -329,6 +871,35 @@
 
   function fmtUnit(v) {
     return formatValue(v, state.unit) + ' ' + state.unit;
+  }
+
+  function formatDist(px) {
+    return fmtUnit(pxToUnitValue(px, state.unit, state.pxPerInch));
+  }
+
+  function norm360(deg) {
+    return ((deg % 360) + 360) % 360;
+  }
+
+  function stagePoint(ev) {
+    var r = stage.getBoundingClientRect();
+    return { x: ev.clientX - r.left, y: ev.clientY - r.top };
+  }
+
+  function workspaceRect() {
+    return workspace.getBoundingClientRect();
+  }
+
+  function workspaceCenter() {
+    var sr = stage.getBoundingClientRect();
+    var wr = workspaceRect();
+    return { x: wr.left - sr.left + wr.width / 2, y: wr.top - sr.top + wr.height / 2 };
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
   }
 
   /* ---------- ruler rendering (Phase 3) ---------- */
@@ -479,13 +1050,13 @@
     workspace.style.right = padR + 'px';
 
     renderGuides();
+    refreshGrid();
+    renderFloatingRuler();
+    renderProtractor();
+    if (state.loupeOn) refreshLoupeClone();
   }
 
   /* ---------- guides (Phase 4) ---------- */
-
-  function workspaceRect() {
-    return workspace.getBoundingClientRect();
-  }
 
   function guideLabelText(pos) {
     return fmtUnit(pxToUnitValue(pos, state.unit, state.pxPerInch));
@@ -516,6 +1087,7 @@
       );
     }
     guidesLayer.innerHTML = html.join('');
+    if (state.loupeOn) refreshLoupeClone();
   }
 
   function dropGuide(clientX, clientY) {
@@ -555,6 +1127,7 @@
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointercancel', onUp);
       window.removeEventListener('pointerup', onUp);
+      if (state.loupeOn) refreshLoupeClone();
     }
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
@@ -573,7 +1146,7 @@
     }
   });
   workspace.addEventListener('click', function (ev) {
-    if (!state.guidesOn) return;
+    if (!state.guidesOn || state.measureOn) return;
     if (ev.target.closest('.guide-line')) return; // a drag just ended here
     dropGuide(ev.clientX, ev.clientY);
   });
@@ -686,6 +1259,713 @@
     });
   });
 
+  /* ---------- Phase 7: drag-to-measure ---------- */
+
+  var measureDrag = null; // {x0,y0,x1,y1} in workspace px
+
+  function snapPoint(p) {
+    var vPos = [];
+    var hPos = [];
+    for (var i = 0; i < state.guides.length; i++) {
+      var g = state.guides[i];
+      if (g.orientation === 'v') vPos.push(g.pos);
+      else hPos.push(g.pos);
+    }
+    var sx = snapToGuide(p.x, vPos, SNAP_PX);
+    var sy = snapToGuide(p.y, hPos, SNAP_PX);
+    return { x: sx === null ? p.x : sx, y: sy === null ? p.y : sy };
+  }
+
+  function drawMeasure() {
+    var rect = workspaceRect();
+    var d = measureDrag;
+    if (!d || rect.width === 0) {
+      measureLayer.innerHTML = '';
+      return;
+    }
+    var dist = distPx(d.x0, d.y0, d.x1, d.y1);
+    var ang = Math.round(lineAngleDeg(d.x0, d.y0, d.x1, d.y1));
+    var label = formatDist(dist) + ' · ' + ang + '°';
+    var mx = (d.x0 + d.x1) / 2;
+    var my = (d.y0 + d.y1) / 2;
+    var w = Math.max(40, label.length * 6.4 + 14);
+    measureLayer.setAttribute('width', String(rect.width));
+    measureLayer.setAttribute('height', String(rect.height));
+    measureLayer.innerHTML =
+      '<line x1="' +
+      d.x0 +
+      '" y1="' +
+      d.y0 +
+      '" x2="' +
+      d.x1 +
+      '" y2="' +
+      d.y1 +
+      '" stroke="var(--ror-accent-500)" stroke-width="2.5"/>' +
+      '<circle cx="' +
+      d.x0 +
+      '" cy="' +
+      d.y0 +
+      '" r="4.5" fill="var(--ror-accent-500)" stroke="#fff" stroke-width="1.5"/>' +
+      '<circle cx="' +
+      d.x1 +
+      '" cy="' +
+      d.y1 +
+      '" r="4.5" fill="var(--ror-accent-500)" stroke="#fff" stroke-width="1.5"/>' +
+      '<rect x="' +
+      (mx - w / 2) +
+      '" y="' +
+      (my - 26) +
+      '" width="' +
+      w +
+      '" height="20" rx="4" fill="var(--ror-surface)" stroke="var(--ror-border)"/>' +
+      '<text x="' +
+      mx +
+      '" y="' +
+      (my - 12) +
+      '" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ror-text)" style="' +
+      FONT_CSS +
+      '">' +
+      escapeHtml(label) +
+      '</text>';
+  }
+
+  function hideMeasurePopup() {
+    measurePopup.classList.add('hidden');
+  }
+
+  function showMeasurePopup(d) {
+    var rect = workspaceRect();
+    var dist = distPx(d.x0, d.y0, d.x1, d.y1);
+    var ang = Math.round(lineAngleDeg(d.x0, d.y0, d.x1, d.y1));
+    measurePopupText.textContent = formatDist(dist) + ' · ' + ang + '°';
+    measurePopup.classList.remove('hidden');
+    var left = Math.max(4, Math.min(d.x1 + 14, rect.width - 190));
+    var top = Math.max(4, Math.min(d.y1 + 14, rect.height - 90));
+    measurePopup.style.left = left + 'px';
+    measurePopup.style.top = top + 'px';
+  }
+
+  function saveCurrentMeasurement() {
+    var d = measureDrag;
+    if (!d) return;
+    var dist = distPx(d.x0, d.y0, d.x1, d.y1);
+    var ang = Math.round(lineAngleDeg(d.x0, d.y0, d.x1, d.y1));
+    var m = createMeasurement(
+      'M' + (state.measurements.length + 1),
+      formatDist(dist),
+      state.unit,
+      dist,
+      ang
+    );
+    state.measurements = addMeasurement(state.measurements, m);
+    saveMeasurements(state.measurements, safeStorage());
+    renderLog();
+    measureDrag = null;
+    drawMeasure();
+    hideMeasurePopup();
+    setLogOpen(true);
+  }
+
+  workspace.addEventListener('pointerdown', function (ev) {
+    if (!state.measureOn) return;
+    if (ev.target.closest('.guide-line')) return; // let the guide drag win
+    ev.preventDefault();
+    var rect = workspaceRect();
+    var p = snapPoint({ x: ev.clientX - rect.left, y: ev.clientY - rect.top });
+    measureDrag = { x0: p.x, y0: p.y, x1: p.x, y1: p.y };
+    hideMeasurePopup();
+    try {
+      workspace.setPointerCapture(ev.pointerId);
+    } catch {
+      /* capture unsupported */
+    }
+    drawMeasure();
+  });
+  workspace.addEventListener('pointermove', function (ev) {
+    if (!measureDrag) return;
+    var rect = workspaceRect();
+    var p = snapPoint({ x: ev.clientX - rect.left, y: ev.clientY - rect.top });
+    measureDrag.x1 = Math.max(0, Math.min(p.x, rect.width));
+    measureDrag.y1 = Math.max(0, Math.min(p.y, rect.height));
+    drawMeasure();
+  });
+  function finishMeasure() {
+    if (!measureDrag) return;
+    var d = measureDrag;
+    if (distPx(d.x0, d.y0, d.x1, d.y1) < 4) {
+      measureDrag = null;
+      drawMeasure();
+      hideMeasurePopup();
+      return;
+    }
+    showMeasurePopup(d);
+    if (state.loupeOn) refreshLoupeClone();
+  }
+  workspace.addEventListener('pointerup', finishMeasure);
+  workspace.addEventListener('pointercancel', function () {
+    measureDrag = null;
+    drawMeasure();
+    hideMeasurePopup();
+  });
+  document.getElementById('measure-save').addEventListener('click', saveCurrentMeasurement);
+  document.getElementById('measure-discard').addEventListener('click', function () {
+    measureDrag = null;
+    drawMeasure();
+    hideMeasurePopup();
+  });
+
+  function setMeasure(on) {
+    state.measureOn = on;
+    toolMeasure.setAttribute('aria-pressed', on ? 'true' : 'false');
+    workspace.style.cursor = on ? 'crosshair' : '';
+    if (!on) {
+      measureDrag = null;
+      drawMeasure();
+      hideMeasurePopup();
+    }
+    persist();
+  }
+  toolMeasure.addEventListener('click', function () {
+    setMeasure(!state.measureOn);
+  });
+
+  /* ---------- Phase 7: protractor ---------- */
+
+  var PROT_C = 120;
+
+  function buildProtractorTicks() {
+    var ns = 'http://www.w3.org/2000/svg';
+    var frag = document.createDocumentFragment();
+    for (var d = 0; d < 360; d += 5) {
+      var major = d % 30 === 0;
+      var mid = d % 15 === 0;
+      var len = major ? 15 : mid ? 11 : 7;
+      var rad = (d * Math.PI) / 180;
+      var r1 = PROT_C - 3;
+      var line = document.createElementNS(ns, 'line');
+      line.setAttribute('x1', String(PROT_C + r1 * Math.cos(rad)));
+      line.setAttribute('y1', String(PROT_C + r1 * Math.sin(rad)));
+      line.setAttribute('x2', String(PROT_C + (r1 - len) * Math.cos(rad)));
+      line.setAttribute('y2', String(PROT_C + (r1 - len) * Math.sin(rad)));
+      line.setAttribute('stroke', major ? 'var(--ror-tick)' : 'var(--ror-tick-minor)');
+      line.setAttribute('stroke-width', major ? '1.6' : '1');
+      frag.appendChild(line);
+      if (major) {
+        var tr = PROT_C - 30;
+        var text = document.createElementNS(ns, 'text');
+        text.setAttribute('x', String(PROT_C + tr * Math.cos(rad)));
+        text.setAttribute('y', String(PROT_C + tr * Math.sin(rad)));
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dominant-baseline', 'central');
+        text.setAttribute('font-size', '10');
+        text.setAttribute('fill', 'var(--ror-text-muted)');
+        text.textContent = String(d);
+        frag.appendChild(text);
+      }
+    }
+    protTicksG.appendChild(frag);
+  }
+
+  function protLocalPt(deg, r) {
+    var rad = (deg * Math.PI) / 180;
+    return { x: PROT_C + r * Math.cos(rad), y: PROT_C + r * Math.sin(rad) };
+  }
+
+  function renderProtractor() {
+    if (!state.protractorOn) {
+      protractorEl.classList.add('hidden');
+      return;
+    }
+    protractorEl.classList.remove('hidden');
+    var p = state.prot;
+    protractorEl.style.left = p.x - PROT_C + 'px';
+    protractorEl.style.top = p.y - PROT_C + 'px';
+    protRotG.setAttribute('transform', 'rotate(' + p.base + ' ' + PROT_C + ' ' + PROT_C + ')');
+    var a = protLocalPt(p.armA, 100);
+    var b = protLocalPt(p.armB, 100);
+    protArmA.setAttribute('x2', String(a.x));
+    protArmA.setAttribute('y2', String(a.y));
+    protArmAH.setAttribute('cx', String(a.x));
+    protArmAH.setAttribute('cy', String(a.y));
+    protArmB.setAttribute('x2', String(b.x));
+    protArmB.setAttribute('y2', String(b.y));
+    protArmBH.setAttribute('cx', String(b.x));
+    protArmBH.setAttribute('cy', String(b.y));
+    var rh = protLocalPt(0, 76);
+    protRotH.setAttribute('cx', String(rh.x));
+    protRotH.setAttribute('cy', String(rh.y));
+    var angle = Math.round(angleBetweenDeg(p.armA, p.armB));
+    protReadout.textContent = angle + '°';
+  }
+
+  var protDrag = null;
+
+  function handleProtPointer(ev) {
+    if (!protDrag) return;
+    var sp = stagePoint(ev);
+    var p = state.prot;
+    if (protDrag.action === 'move') {
+      p.x = sp.x + protDrag.dx;
+      p.y = sp.y + protDrag.dy;
+    } else {
+      var ang = norm360((Math.atan2(sp.y - p.y, sp.x - p.x) * 180) / Math.PI);
+      if (protDrag.action === 'rotate') p.base = ang;
+      else if (protDrag.action === 'armA') p.armA = norm360(ang - p.base);
+      else if (protDrag.action === 'armB') p.armB = norm360(ang - p.base);
+    }
+    renderProtractor();
+  }
+
+  protSvg.addEventListener('pointerdown', function (ev) {
+    var t = ev.target.closest('[data-action]');
+    if (!t) return;
+    ev.preventDefault();
+    var action = t.getAttribute('data-action');
+    if (action === 'move') {
+      var sp = stagePoint(ev);
+      protDrag = { action: action, dx: state.prot.x - sp.x, dy: state.prot.y - sp.y };
+    } else {
+      protDrag = { action: action };
+      handleProtPointer(ev);
+    }
+    try {
+      protSvg.setPointerCapture(ev.pointerId);
+    } catch {
+      /* capture unsupported */
+    }
+  });
+  protSvg.addEventListener('pointermove', handleProtPointer);
+  protSvg.addEventListener('pointerup', function () {
+    protDrag = null;
+  });
+  protSvg.addEventListener('pointercancel', function () {
+    protDrag = null;
+  });
+
+  function placeProtractor() {
+    if (state.prot.placed) return;
+    var c = workspaceCenter();
+    state.prot.x = c.x;
+    state.prot.y = c.y;
+    state.prot.placed = true;
+  }
+
+  function setProtractor(on) {
+    state.protractorOn = on;
+    toolProtractor.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (on) placeProtractor();
+    renderProtractor();
+    persist();
+  }
+  toolProtractor.addEventListener('click', function () {
+    setProtractor(!state.protractorOn);
+  });
+
+  /* ---------- Phase 7: magnifier loupe ---------- */
+
+  function refreshLoupeClone() {
+    if (!state.loupeOn) return;
+    loupeInner.innerHTML = '';
+    var clone = stage.cloneNode(true);
+    var drop = ['ruler-loupe', 'crosshair-layer', 'measure-popup', 'help-dialog', 'log-panel'];
+    for (var i = 0; i < drop.length; i++) {
+      var n = clone.querySelector('#' + drop[i]);
+      if (n) n.remove();
+    }
+    clone.querySelectorAll('[id]').forEach(function (el) {
+      el.removeAttribute('id');
+    });
+    clone.setAttribute('aria-hidden', 'true');
+    clone.style.pointerEvents = 'none';
+    var w = stage.clientWidth;
+    var h = stage.clientHeight;
+    clone.style.width = w + 'px';
+    clone.style.height = h + 'px';
+    loupeInner.style.width = w + 'px';
+    loupeInner.style.height = h + 'px';
+    loupeInner.appendChild(clone);
+  }
+
+  stage.addEventListener('pointermove', function (ev) {
+    if (!state.loupeOn) return;
+    var sp = stagePoint(ev);
+    loupeEl.classList.remove('hidden');
+    loupeEl.style.left = sp.x - LOUPE_SIZE / 2 + 'px';
+    loupeEl.style.top = sp.y - LOUPE_SIZE / 2 + 'px';
+    loupeInner.style.transform =
+      'translate(' +
+      -(sp.x * LOUPE_ZOOM - LOUPE_SIZE / 2) +
+      'px,' +
+      -(sp.y * LOUPE_ZOOM - LOUPE_SIZE / 2) +
+      'px) scale(' +
+      LOUPE_ZOOM +
+      ')';
+  });
+  stage.addEventListener('pointerleave', function () {
+    loupeEl.classList.add('hidden');
+  });
+
+  function setLoupe(on) {
+    state.loupeOn = on;
+    toolLoupe.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (on) refreshLoupeClone();
+    else loupeEl.classList.add('hidden');
+    persist();
+  }
+  toolLoupe.addEventListener('click', function () {
+    setLoupe(!state.loupeOn);
+  });
+
+  /* ---------- Phase 7: floating ruler ---------- */
+
+  function floatingRulerLen() {
+    var r = workspaceRect();
+    return Math.max(120, Math.min(6 * state.pxPerInch, r.width * 0.9, r.height * 0.9));
+  }
+
+  function floatingRulerSVG(len) {
+    var ticks = computeTicks(len, state.unit, state.pxPerInch);
+    var H = 52;
+    var base = H - 2;
+    var parts = [];
+    parts.push(
+      '<svg width="' +
+        len +
+        '" height="' +
+        H +
+        '" viewBox="0 0 ' +
+        len +
+        ' ' +
+        H +
+        '" role="img" aria-label="Floating ruler in ' +
+        state.unit +
+        '">'
+    );
+    parts.push(
+      '<rect x="0" y="0" width="' +
+        len +
+        '" height="' +
+        H +
+        '" rx="6" fill="var(--ror-surface)" fill-opacity="0.94" stroke="var(--ror-border)"/>'
+    );
+    parts.push(
+      '<line x1="0" y1="' +
+        base +
+        '" x2="' +
+        len +
+        '" y2="' +
+        base +
+        '" stroke="var(--ror-brand-600)" stroke-width="2.5"/>'
+    );
+    for (var i = 0; i < ticks.length; i++) {
+      var t = ticks[i];
+      var tlen = TICK_LEN[t.size];
+      var color = t.size === 'minor' ? 'var(--ror-tick-minor)' : 'var(--ror-tick)';
+      parts.push(
+        '<line x1="' +
+          crisp(t.pos) +
+          '" y1="' +
+          base +
+          '" x2="' +
+          crisp(t.pos) +
+          '" y2="' +
+          (base - tlen) +
+          '" stroke="' +
+          color +
+          '" stroke-width="1" shape-rendering="crispEdges"/>'
+      );
+      if (t.label !== undefined) {
+        parts.push(
+          '<text x="' +
+            t.pos.toFixed(1) +
+            '" y="13" text-anchor="middle" fill="var(--ror-text-muted)" style="' +
+            FONT_CSS +
+            '">' +
+            t.label +
+            '</text>'
+        );
+      }
+    }
+    parts.push('</svg>');
+    return parts.join('');
+  }
+
+  function renderFloatingRuler() {
+    if (!state.floatingRulerOn) {
+      frBox.classList.add('hidden');
+      return;
+    }
+    frBox.classList.remove('hidden');
+    var len = floatingRulerLen();
+    frBox.style.width = len + 'px';
+    frBox.style.left = state.fr.x - len / 2 + 'px';
+    frBox.style.top = state.fr.y - 26 + 'px';
+    frBox.style.transform = 'rotate(' + state.fr.rot + 'deg)';
+    frBody.innerHTML = floatingRulerSVG(len);
+    frAngle.textContent = Math.round(norm360(state.fr.rot)) + '°';
+  }
+
+  var frDrag = null;
+
+  frBox.addEventListener('pointerdown', function (ev) {
+    ev.preventDefault();
+    var sp = stagePoint(ev);
+    if (ev.target.closest('#fr-rotate')) {
+      var startAng = (Math.atan2(sp.y - state.fr.y, sp.x - state.fr.x) * 180) / Math.PI;
+      frDrag = { mode: 'rotate', off: state.fr.rot - startAng };
+    } else {
+      frDrag = { mode: 'move', dx: state.fr.x - sp.x, dy: state.fr.y - sp.y };
+    }
+    try {
+      frBox.setPointerCapture(ev.pointerId);
+    } catch {
+      /* capture unsupported */
+    }
+  });
+  frBox.addEventListener('pointermove', function (ev) {
+    if (!frDrag) return;
+    var sp = stagePoint(ev);
+    if (frDrag.mode === 'move') {
+      state.fr.x = sp.x + frDrag.dx;
+      state.fr.y = sp.y + frDrag.dy;
+    } else {
+      var ang = (Math.atan2(sp.y - state.fr.y, sp.x - state.fr.x) * 180) / Math.PI;
+      state.fr.rot = norm360(ang + frDrag.off);
+    }
+    renderFloatingRuler();
+  });
+  frBox.addEventListener('pointerup', function () {
+    frDrag = null;
+  });
+  frBox.addEventListener('pointercancel', function () {
+    frDrag = null;
+  });
+
+  function placeFloatingRuler() {
+    if (state.fr.placed) return;
+    var c = workspaceCenter();
+    state.fr.x = c.x;
+    state.fr.y = c.y;
+    state.fr.placed = true;
+  }
+
+  function setFloatingRuler(on) {
+    state.floatingRulerOn = on;
+    toolFruler.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (on) placeFloatingRuler();
+    renderFloatingRuler();
+    persist();
+  }
+  toolFruler.addEventListener('click', function () {
+    setFloatingRuler(!state.floatingRulerOn);
+  });
+
+  /* ---------- Phase 7: grid overlay ---------- */
+
+  function refreshGrid() {
+    if (!state.gridOn) {
+      gridLayer.style.display = 'none';
+      return;
+    }
+    gridLayer.style.display = 'block';
+    var cell = gridCellPx(state.gridUnit, state.pxPerInch);
+    var major = cell * 5;
+    gridLayer.style.backgroundSize =
+      cell +
+      'px ' +
+      cell +
+      'px, ' +
+      cell +
+      'px ' +
+      cell +
+      'px, ' +
+      major +
+      'px ' +
+      major +
+      'px, ' +
+      major +
+      'px ' +
+      major +
+      'px';
+  }
+
+  function setGrid(on) {
+    state.gridOn = on;
+    toolGrid.setAttribute('aria-pressed', on ? 'true' : 'false');
+    gridUnitWrap.classList.toggle('hidden', !on);
+    gridUnitWrap.classList.toggle('inline-flex', on);
+    refreshGrid();
+    persist();
+  }
+  toolGrid.addEventListener('click', function () {
+    setGrid(!state.gridOn);
+  });
+  gridUnitSel.addEventListener('change', function () {
+    state.gridUnit = gridUnitSel.value === 'in' ? 'in' : 'cm';
+    refreshGrid();
+    persist();
+  });
+
+  /* ---------- Phase 7: measurement log ---------- */
+
+  function copyText(text, btn) {
+    function done(ok) {
+      if (!btn) return;
+      var original = btn.getAttribute('data-label') || btn.textContent;
+      btn.setAttribute('data-label', original);
+      btn.textContent = ok ? 'Copied' : 'Failed';
+      setTimeout(function () {
+        btn.textContent = original;
+      }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        function () {
+          done(true);
+        },
+        function () {
+          done(false);
+        }
+      );
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        done(document.execCommand('copy'));
+      } catch {
+        done(false);
+      }
+      document.body.removeChild(ta);
+    }
+  }
+
+  function downloadFile(name, content, mime) {
+    var blob = new Blob([content], { type: mime });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      URL.revokeObjectURL(a.href);
+      a.remove();
+    }, 500);
+  }
+
+  function renderLog() {
+    logList.innerHTML = '';
+    if (state.measurements.length === 0) {
+      var empty = document.createElement('p');
+      empty.className = 'text-xs';
+      empty.style.color = 'var(--ror-text-muted)';
+      empty.textContent =
+        'No measurements yet. Turn on Measure (M), drag across the canvas, then Save.';
+      logList.appendChild(empty);
+      return;
+    }
+    for (var i = 0; i < state.measurements.length; i++) {
+      (function (m) {
+        var row = document.createElement('div');
+        row.className = 'rounded-lg border p-2';
+        row.style.borderColor = 'var(--ror-border)';
+        row.setAttribute('data-id', m.id);
+        var angle = m.angleDeg === null ? '' : ' · ' + m.angleDeg + '°';
+        row.innerHTML =
+          '<input type="text" class="log-label w-full rounded border px-1.5 py-1 text-xs font-semibold" style="border-color: var(--ror-border); background-color: var(--ror-bg); color: var(--ror-text);" value="' +
+          escapeHtml(m.label) +
+          '" aria-label="Measurement label">' +
+          '<div class="mt-1 text-xs font-medium">' +
+          escapeHtml(m.valueText + angle) +
+          '</div>' +
+          '<div class="mt-1.5 flex gap-1">' +
+          '<button type="button" class="log-btn" data-act="copy">Copy</button>' +
+          '<button type="button" class="log-btn" data-act="del">Delete</button>' +
+          '</div>';
+        logList.appendChild(row);
+      })(state.measurements[i]);
+    }
+  }
+
+  logList.addEventListener('click', function (ev) {
+    var btn = ev.target.closest('[data-act]');
+    if (!btn) return;
+    var row = btn.closest('[data-id]');
+    if (!row) return;
+    var id = row.getAttribute('data-id');
+    var m = null;
+    for (var i = 0; i < state.measurements.length; i++) {
+      if (state.measurements[i].id === id) m = state.measurements[i];
+    }
+    if (!m) return;
+    var act = btn.getAttribute('data-act');
+    if (act === 'del') {
+      state.measurements = removeMeasurement(state.measurements, id);
+      saveMeasurements(state.measurements, safeStorage());
+      renderLog();
+    } else if (act === 'copy') {
+      var angle = m.angleDeg === null ? '' : ' · ' + m.angleDeg + '°';
+      copyText(m.label + ' — ' + m.valueText + angle, btn);
+    }
+  });
+  logList.addEventListener('change', function (ev) {
+    var input = ev.target.closest('.log-label');
+    if (!input) return;
+    var row = input.closest('[data-id]');
+    if (!row) return;
+    state.measurements = updateLabel(state.measurements, row.getAttribute('data-id'), input.value);
+    saveMeasurements(state.measurements, safeStorage());
+  });
+
+  document.getElementById('log-copy-all').addEventListener('click', function (ev) {
+    copyText(toTXT(state.measurements), ev.target);
+  });
+  document.getElementById('log-csv').addEventListener('click', function () {
+    downloadFile('measurements.csv', toCSV(state.measurements), 'text/csv');
+  });
+  document.getElementById('log-txt').addEventListener('click', function () {
+    downloadFile('measurements.txt', toTXT(state.measurements), 'text/plain');
+  });
+  document.getElementById('log-clear').addEventListener('click', function () {
+    state.measurements = clearMeasurements();
+    saveMeasurements(state.measurements, safeStorage());
+    renderLog();
+  });
+  document.getElementById('log-close').addEventListener('click', function () {
+    setLogOpen(false);
+  });
+
+  function setLogOpen(on) {
+    state.logOpen = on;
+    toolLog.setAttribute('aria-pressed', on ? 'true' : 'false');
+    logPanel.classList.toggle('hidden', !on);
+    logPanel.classList.toggle('flex', on);
+    persist();
+  }
+  toolLog.addEventListener('click', function () {
+    setLogOpen(!state.logOpen);
+  });
+
+  /* ---------- Phase 7: shortcuts help ---------- */
+
+  var helpOpen = false;
+
+  function setHelp(on) {
+    helpOpen = on;
+    helpDialog.classList.toggle('hidden', !on);
+    helpDialog.classList.toggle('flex', on);
+  }
+  toolHelp.addEventListener('click', function () {
+    setHelp(!helpOpen);
+  });
+  document.getElementById('help-close').addEventListener('click', function () {
+    setHelp(false);
+  });
+  helpDialog.querySelector('[data-close-help]').addEventListener('click', function () {
+    setHelp(false);
+  });
+
   /* ---------- keyboard shortcuts ---------- */
 
   function modalOpen() {
@@ -709,8 +1989,30 @@
       setCrosshair(!state.crosshairOn);
     } else if (key === 'f') {
       toggleFullscreen();
+    } else if (key === 'm') {
+      setMeasure(!state.measureOn);
+    } else if (key === 'p') {
+      setProtractor(!state.protractorOn);
+    } else if (key === 'l') {
+      setLoupe(!state.loupeOn);
+    } else if (key === 'r') {
+      setFloatingRuler(!state.floatingRulerOn);
+    } else if (key === 'o') {
+      setLogOpen(!state.logOpen);
+    } else if (key === 'n') {
+      setGrid(!state.gridOn);
+    } else if (key === 'h') {
+      setHelp(!helpOpen);
     } else if (key === 'escape' || key === 'esc') {
-      if (!modalOpen() && state.guides.length > 0) {
+      if (measureDrag) {
+        measureDrag = null;
+        drawMeasure();
+        hideMeasurePopup();
+      } else if (!measurePopup.classList.contains('hidden')) {
+        hideMeasurePopup();
+      } else if (helpOpen) {
+        setHelp(false);
+      } else if (!modalOpen() && state.guides.length > 0) {
         state.guides = clearGuides();
         renderGuides();
       }
@@ -768,5 +2070,31 @@
   guidesHint.classList.toggle('hidden', !state.guidesOn);
   guidesLayer.style.pointerEvents = state.guidesOn ? 'auto' : 'none';
 
+  // Phase 7 init
+  buildProtractorTicks();
+  toolMeasure.setAttribute('aria-pressed', state.measureOn ? 'true' : 'false');
+  toolProtractor.setAttribute('aria-pressed', state.protractorOn ? 'true' : 'false');
+  toolLoupe.setAttribute('aria-pressed', state.loupeOn ? 'true' : 'false');
+  toolFruler.setAttribute('aria-pressed', state.floatingRulerOn ? 'true' : 'false');
+  toolLog.setAttribute('aria-pressed', state.logOpen ? 'true' : 'false');
+  toolGrid.setAttribute('aria-pressed', state.gridOn ? 'true' : 'false');
+  gridUnitSel.value = state.gridUnit;
+  gridUnitWrap.classList.toggle('hidden', !state.gridOn);
+  gridUnitWrap.classList.toggle('inline-flex', state.gridOn);
+  if (state.measureOn) workspace.style.cursor = 'crosshair';
+  logPanel.classList.toggle('hidden', !state.logOpen);
+  logPanel.classList.toggle('flex', state.logOpen);
+  renderLog();
+
   refreshCalibration();
+
+  // place persisted-on overlays once layout exists
+  if (state.protractorOn) {
+    placeProtractor();
+    renderProtractor();
+  }
+  if (state.floatingRulerOn) {
+    placeFloatingRuler();
+    renderFloatingRuler();
+  }
 </script>

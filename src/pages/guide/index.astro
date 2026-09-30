@@ -45,10 +45,10 @@ const related = [
 
 <ContentLayout
   title="How to Read an Online Ruler (cm, mm, Inches, Pixels) | Real Online Ruler"
-  description="Learn to read the on-screen ruler: centimeter and millimeter ticks, inch fractions down to sixteenths, pixel mode, plus guides and the crosshair for precise measuring."
+  description="Learn to read the on-screen ruler: centimeter and millimeter ticks, inch fractions down to sixteenths, pixel mode, plus guides, crosshair, and six advanced measuring tools."
   path={path}
   h1="How to read the ruler"
-  lede="Four units, one screen. This guide teaches you to read every scale the ruler offers — metric ticks, inch fractions, and pixel mode — and to use the guides and crosshair for measurements you can't take at a ruler's edge."
+  lede="Four units, one screen. This guide teaches you to read every scale the ruler offers — metric ticks, inch fractions, and pixel mode — to use the guides and crosshair, and to master the six advanced tools: drag-to-measure, protractor, loupe, floating ruler, measurement log, and grid."
   breadcrumb="Reading guide"
   jsonLd={[faqJsonLd]}
   related={related}
@@ -159,6 +159,68 @@ const related = [
     single point — the corner of a photo, the edge of a widget — without dropping guides.
   </p>
 
+  <h2>Advanced tools</h2>
+  <p>
+    The toolbar's <strong>Advanced</strong> row adds six tools that go beyond the edge rulers. All
+    of them measure in CSS pixels scaled by your calibration, in the currently selected unit.
+  </p>
+  <ul>
+    <li>
+      <strong>Measure (M)</strong> — drag anywhere on the canvas to draw a measurement line. The
+      live readout shows the distance in the current unit and the line's angle in degrees. Endpoints
+      snap to nearby guide lines. Release to get Save (sends the reading to the log) or Discard;
+      <code>Esc</code> cancels while drawing.
+    </li>
+    <li>
+      <strong>Protractor (P)</strong> — a circular protractor you can drag anywhere. Drag the center
+      to move it, the ring handle to rotate the scale, and the two arm handles to set the arms; the
+      digital readout shows the angle between the arms in degrees.
+    </li>
+    <li>
+      <strong>Loupe (L)</strong> — a 3&times; magnifier that follows your cursor, showing a zoomed
+      view of the rulers, guides, and canvas beneath it for precise tick reading.
+    </li>
+    <li>
+      <strong>Ruler (R)</strong> — a floating ruler, independent of the screen edges. Drag its body
+      to move it and the amber handle at its end to rotate it to any angle; it renders ticks in the
+      current unit along its length, with a small badge showing its rotation.
+    </li>
+    <li>
+      <strong>Log (O)</strong> — every saved measurement lands here with an editable label. Copy a
+      single entry or the whole list, export as CSV or TXT, or delete entries. The log persists in
+      your browser's local storage.
+    </li>
+    <li>
+      <strong>Grid (N)</strong> — a subtle overlay grid for alignment work. Each cell is exactly 1
+      cm (or 1 inch — switch with the Grid unit selector), with a stronger line every 5 cells.
+    </li>
+  </ul>
+
+  <h2>Keyboard shortcuts</h2>
+  <p>
+    Press <code>H</code> anywhere in the ruler app to open the shortcut reference. The full map:
+  </p>
+  <ul>
+    <li>
+      <code>1</code>–<code>4</code> — units: cm, in, mm, px
+    </li>
+    <li>
+      <code>G</code> guides &middot; <code>C</code> crosshair &middot; <code>F</code> fullscreen
+      &middot; <code>D</code> theme
+    </li>
+    <li>
+      <code>M</code> drag-to-measure &middot; <code>P</code> protractor &middot; <code>L</code>{' '}
+      loupe
+    </li>
+    <li>
+      <code>R</code> floating ruler &middot; <code>O</code> measurement log &middot; <code>N</code>{' '}
+      grid
+    </li>
+    <li>
+      <code>Esc</code> — cancel the current drawing, close dialogs, or clear all guides
+    </li>
+  </ul>
+
   <h2>Tips for trustworthy measurements</h2>
   <ul>
     <li>
@@ -174,6 +236,11 @@ const related = [
     </li>
     <li>
       View the screen straight on; at a steep angle, parallax shifts where the edge appears to be.
+    </li>
+    <li>
+      Every tool measures in CSS pixels scaled by your calibration. Browser zoom, OS display
+      scaling, or an external monitor with a different pixel density will rescale the ruler — keep
+      zoom at 100% and recalibrate if you move the window to another display.
     </li>
     <li>
       When in doubt, re-check with the <a href="/how-to-calibrate/">credit-card calibration</a> — it

@@ -21,6 +21,14 @@ export interface RulerPrefs {
   edges: EdgeState;
   guidesOn: boolean;
   crosshairOn: boolean;
+  /** Phase 7 advanced tools. */
+  measureOn: boolean;
+  protractorOn: boolean;
+  loupeOn: boolean;
+  floatingRulerOn: boolean;
+  logOpen: boolean;
+  gridOn: boolean;
+  gridUnit: 'cm' | 'in';
 }
 
 export const DEFAULT_PREFS: RulerPrefs = {
@@ -28,6 +36,13 @@ export const DEFAULT_PREFS: RulerPrefs = {
   edges: { top: true, bottom: false, left: false, right: false },
   guidesOn: false,
   crosshairOn: false,
+  measureOn: false,
+  protractorOn: false,
+  loupeOn: false,
+  floatingRulerOn: false,
+  logOpen: false,
+  gridOn: false,
+  gridUnit: 'cm',
 };
 
 export interface StorageLike {
@@ -47,6 +62,10 @@ function getStorage(): StorageLike | null {
 
 function toBoolean(v: unknown, fallback: boolean): boolean {
   return typeof v === 'boolean' ? v : fallback;
+}
+
+function toGridUnit(v: unknown, fallback: 'cm' | 'in'): 'cm' | 'in' {
+  return v === 'cm' || v === 'in' ? v : fallback;
 }
 
 /** Parse stored prefs, merging over defaults; never throws. */
@@ -69,6 +88,13 @@ export function parsePrefs(raw: string | null): RulerPrefs {
       },
       guidesOn: toBoolean(p['guidesOn'], fallback.guidesOn),
       crosshairOn: toBoolean(p['crosshairOn'], fallback.crosshairOn),
+      measureOn: toBoolean(p['measureOn'], fallback.measureOn),
+      protractorOn: toBoolean(p['protractorOn'], fallback.protractorOn),
+      loupeOn: toBoolean(p['loupeOn'], fallback.loupeOn),
+      floatingRulerOn: toBoolean(p['floatingRulerOn'], fallback.floatingRulerOn),
+      logOpen: toBoolean(p['logOpen'], fallback.logOpen),
+      gridOn: toBoolean(p['gridOn'], fallback.gridOn),
+      gridUnit: toGridUnit(p['gridUnit'], fallback.gridUnit),
     };
   } catch {
     return fallback;
