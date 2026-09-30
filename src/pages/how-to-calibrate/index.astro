@@ -1,0 +1,156 @@
+---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+
+const path = '/how-to-calibrate/';
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Which calibration method is the most accurate?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The credit-card method is usually the most accurate because it calibrates against a physical object of a known, standardized size (85.60 mm wide) that you hold against the screen. The device-picker is equally good when your exact model is listed. Auto-detect is a solid starting point, and the diagonal method is best used as a fallback.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How often should I recalibrate?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Only when something about your display changes: a new monitor, a different laptop, a changed OS display-scaling setting, or docking/undocking. Your calibration is saved in the browser, so day-to-day you never need to touch it.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does calibration work on a second monitor?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Each display needs its own calibration, because pixel density differs between screens. Calibrate once per monitor; the saved value applies to whichever display the browser window is on when you calibrate. If you move the window to another monitor, recalibrate there.',
+      },
+    },
+  ],
+};
+
+const related = [
+  { href: '/guide/', label: 'How to read the ruler: cm, mm, inches, and pixels' },
+  { href: '/cm/', label: 'Centimeter ruler' },
+  { href: '/inches/', label: 'Inch ruler' },
+];
+---
+
+<ContentLayout
+  title="How to Calibrate Your On-Screen Ruler | Real Online Ruler"
+  description="Calibrate your display in under a minute with four methods: auto-detect, device picker, screen diagonal, or a credit card. Learn which method is most accurate and when to recalibrate."
+  path={path}
+  h1="How to calibrate your on-screen ruler"
+  lede="Your browser draws in CSS pixels, which have no fixed physical size. Calibration teaches this page exactly how many of those pixels make one real inch on your display — after that, every tick mark lands at its true physical position."
+  breadcrumb="How to calibrate"
+  jsonLd={[faqJsonLd]}
+  related={related}
+>
+  <h2>Why calibration is the whole game</h2>
+  <p>
+    A physical ruler is trustworthy because its marks were printed at known distances. A screen
+    ruler has no such guarantee: the same 96 CSS pixels can be a full inch on one laptop and
+    noticeably less on a high-density phone display. The site starts from the web-standard guess of
+    96 pixels per inch, then replaces it with your display's real number. Everything else —
+    centimeters, millimeters, fractions of an inch — is arithmetic built on that one number, so
+    getting it right matters more than anything else on this site.
+  </p>
+
+  <h2>The four methods</h2>
+  <p>
+    Open the calibration dialog from the toolbar on the <a href="/#ruler-app">home page ruler</a>
+    and pick whichever method fits what you have at hand. All four save automatically to your
+    browser.
+  </p>
+
+  <h3>1. Auto-detect</h3>
+  <p>
+    The fastest option. The page reads your screen's resolution and your browser's best guess at the
+    pixel ratio, then estimates the density. It is right surprisingly often on mainstream laptops
+    and desktops, and it is the method to try first. If measurements later feel slightly off, switch
+    to one of the manual methods below.
+  </p>
+
+  <h3>2. Pick your device</h3>
+  <p>
+    Choose your phone, tablet, laptop, or monitor from the built-in list of known displays. Each
+    entry carries that model's manufacturer pixel density, so the math is exact for that panel. This
+    is the best method on mobile, where model detection is reliable — your phone becomes a pocket
+    ruler in about ten seconds.
+  </p>
+
+  <h3>3. Screen diagonal</h3>
+  <p>
+    Enter your screen's advertised diagonal size (13.3″, 15.6″, 24″, 27″ — it's on the box or the
+    manufacturer's spec page) and the page derives the density from your resolution. Quick and
+    decent, but only as accurate as the advertised number, which is sometimes rounded.
+  </p>
+
+  <h3>4. Credit card</h3>
+  <p>
+    The most accurate method for most people. Hold any standard bank or ID card against the
+    on-screen rectangle and drag the slider until the two match exactly. Cards follow the ISO/IEC
+    7810 ID-1 standard — 85.60 × 53.98 mm — so you are calibrating against a physical object of a
+    known size. Take your time with the slider; half a millimeter of mismatch here is the whole
+    error budget.
+  </p>
+
+  <h2>Tips for the best accuracy</h2>
+  <ul>
+    <li>
+      <strong>Use the card method last, not first.</strong> It's worth the extra minute — it removes
+      every assumption about your display.
+    </li>
+    <li>
+      <strong>Keep browser zoom at 100%.</strong> Zooming rescales CSS pixels, so a ruler calibrated
+      at 100% reads wrong at 110%. The app reminds you of this in its status bar.
+    </li>
+    <li>
+      <strong>Calibrate on the display you'll measure on.</strong> Laptop screen and external
+      monitor almost always have different densities.
+    </li>
+    <li>
+      <strong>Check your OS display scaling.</strong> If you change the scaling setting (125%, 150%)
+      after calibrating, recalibrate — the CSS-pixel-to-physical mapping changed.
+    </li>
+    <li>
+      <strong>Sanity-check with something known.</strong> After calibrating, measure your credit
+      card (85.60 mm wide) or a US quarter (24.26 mm across). If it reads right, you're set.
+    </li>
+  </ul>
+
+  <h2>When to recalibrate</h2>
+  <p>
+    Almost never, day to day. Your calibration is stored in your browser under
+    <code>ror-calibration</code> and reloaded on every visit. Recalibrate only when the display
+    itself changes: a new monitor, a different laptop, a changed scaling setting, or docking and
+    undocking. If measurements ever feel like they've drifted, the two-minute card check above will
+    tell you the truth.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  <h3>Which calibration method is the most accurate?</h3>
+  <p>
+    The credit-card method is usually the most accurate because it calibrates against a physical
+    object of a known, standardized size (85.60 mm wide) that you hold against the screen. The
+    device picker is equally good when your exact model is listed. Auto-detect is a solid starting
+    point, and the diagonal method is best used as a fallback.
+  </p>
+  <h3>How often should I recalibrate?</h3>
+  <p>
+    Only when something about your display changes: a new monitor, a different laptop, a changed OS
+    display-scaling setting, or docking/undocking. Your calibration is saved in the browser, so
+    day-to-day you never need to touch it.
+  </p>
+  <h3>Does calibration work on a second monitor?</h3>
+  <p>
+    Each display needs its own calibration, because pixel density differs between screens. Calibrate
+    once per monitor; the saved value applies to whichever display the browser window is on when you
+    calibrate. If you move the window to another monitor, recalibrate there.
+  </p>
+</ContentLayout>

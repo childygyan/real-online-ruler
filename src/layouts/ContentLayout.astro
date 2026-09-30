@@ -1,0 +1,161 @@
+---
+/**
+ * ContentLayout.astro — shared shell for the Phase 5 SEO content pages.
+ * Hero (h1 + lede), prose slot, related links, back-to-ruler CTA,
+ * optional JSON-LD blocks.
+ */
+import BaseLayout from './BaseLayout.astro';
+
+interface RelatedLink {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  h1: string;
+  lede: string;
+  breadcrumb: string;
+  jsonLd?: Record<string, unknown>[];
+  related?: RelatedLink[];
+}
+
+const { title, description, path, h1, lede, breadcrumb, jsonLd = [], related = [] } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} path={path}>
+  {jsonLd.map((ld) => (
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  ))}
+  <article class="ror-container max-w-3xl py-14 sm:py-16">
+    <nav aria-label="Breadcrumb" class="text-xs" style="color: var(--ror-text-muted);">
+      <a href="/" class="hover:underline">
+        Home
+      </a>
+      <span aria-hidden="true" class="mx-1.5">
+        /
+      </span>
+      <span aria-current="page">{breadcrumb}</span>
+    </nav>
+
+    <h1 class="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">{h1}</h1>
+    <p class="mt-5 text-lg leading-relaxed" style="color: var(--ror-text-muted);">
+      {lede}
+    </p>
+
+    <div class="ror-prose mt-10">
+      <slot />
+    </div>
+
+    {related.length > 0 && (
+      <aside class="ror-card mt-12 p-6" aria-label="Related pages">
+        <h2 class="!mt-0 text-lg font-bold">Keep reading</h2>
+        <ul class="!mt-3 space-y-2">
+          {related.map((r) => (
+            <li>
+              <a
+                href={r.href}
+                class="font-medium hover:underline"
+                style="color: var(--ror-brand-700);"
+              >
+                {r.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )}
+
+    <div
+      class="ror-card mt-12 flex flex-col items-center gap-4 p-8 text-center"
+      style="background-color: var(--ror-brand-50);"
+    >
+      <p class="text-xl font-bold">Try it on your screen right now</p>
+      <p class="max-w-md text-sm" style="color: var(--ror-text-muted);">
+        The live ruler is on the home page — calibrated to your display in under a minute.
+      </p>
+      <a href="/#ruler-app" class="ror-btn-primary">
+        Open the ruler
+      </a>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .ror-prose :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .ror-prose :global(h3) {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .ror-prose :global(p) {
+    margin-top: 0.9rem;
+    line-height: 1.75;
+    color: var(--ror-text-muted);
+  }
+  .ror-prose :global(ul),
+  .ror-prose :global(ol) {
+    margin-top: 0.9rem;
+    padding-left: 1.5rem;
+    line-height: 1.75;
+    color: var(--ror-text-muted);
+  }
+  .ror-prose :global(ul) {
+    list-style: disc;
+  }
+  .ror-prose :global(ol) {
+    list-style: decimal;
+  }
+  .ror-prose :global(li) {
+    margin-top: 0.4rem;
+  }
+  .ror-prose :global(li::marker) {
+    color: var(--ror-brand-600);
+  }
+  .ror-prose :global(table) {
+    width: 100%;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border-collapse: collapse;
+  }
+  .ror-prose :global(th),
+  .ror-prose :global(td) {
+    border: 1px solid var(--ror-border);
+    padding: 0.55rem 0.8rem;
+    text-align: left;
+  }
+  .ror-prose :global(th) {
+    background-color: var(--ror-bg-soft);
+    font-weight: 700;
+    color: var(--ror-text);
+  }
+  .ror-prose :global(td) {
+    color: var(--ror-text-muted);
+  }
+  .ror-prose :global(a) {
+    color: var(--ror-brand-700);
+    font-weight: 600;
+  }
+  .ror-prose :global(a:hover) {
+    text-decoration: underline;
+  }
+  .ror-prose :global(strong) {
+    color: var(--ror-text);
+  }
+  .ror-prose :global(code) {
+    font-size: 0.85em;
+    background-color: var(--ror-bg-soft);
+    border: 1px solid var(--ror-border);
+    border-radius: 4px;
+    padding: 0.1em 0.35em;
+  }
+</style>

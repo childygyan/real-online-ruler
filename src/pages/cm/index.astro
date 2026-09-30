@@ -1,0 +1,147 @@
+---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+
+const path = '/cm/';
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How many millimeters are in a centimeter?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ten. A centimeter is defined as exactly 10 millimeters, and the on-screen ruler shows this directly: ten small ticks between every pair of numbered centimeter marks.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How many inches is a centimeter?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'One centimeter equals exactly 0.3937 inches (one inch is defined as exactly 2.54 cm). So 10 cm is about 3.94 inches — just under four inches.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What everyday objects are about one centimeter?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A standard pencil is about 0.7 cm across, a US penny is about 1.9 cm across, and the width of an adult fingertip is roughly 1.5–2 cm. A paperclip is about 3 cm long and a credit card is 8.56 cm wide.',
+      },
+    },
+  ],
+};
+
+const related = [
+  { href: '/mm/', label: 'Millimeter ruler' },
+  { href: '/inches/', label: 'Inch ruler' },
+  { href: '/guide/', label: 'How to read the ruler' },
+];
+---
+
+<ContentLayout
+  title="Online Centimeter Ruler — Measure in cm at True Size | Real Online Ruler"
+  description="A free on-screen centimeter ruler at true physical size. Calibrate once, then measure in cm and mm with numbered centimeter marks and millimeter ticks."
+  path={path}
+  h1="Centimeter ruler"
+  lede="The centimeter is the workhorse of everyday metric measuring — big enough to read at a glance, fine enough for most household tasks. Calibrate your display once, switch the ruler to cm, and the numbered marks on your screen are true centimeters."
+  breadcrumb="Centimeter ruler"
+  jsonLd={[faqJsonLd]}
+  related={related}
+>
+  <h2>What is a centimeter?</h2>
+  <p>
+    A centimeter is one hundredth of a meter — about the width of an adult fingertip. It sits in the
+    sweet spot for everyday measuring: smaller than an inch (2.54 cm), larger than fiddly
+    sub-millimeter units. Most of the world measures daily life in centimeters: heights, paper
+    sizes, furniture, screen diagonals.
+  </p>
+
+  <h2>Reading the cm scale</h2>
+  <p>
+    In cm mode the <strong>long numbered ticks are centimeters</strong> — 1, 2, 3, and so on.
+    Between each pair sit nine shorter ticks: <strong>millimeters</strong>. The medium-length tick
+    halfway between is the half centimeter (5 mm). An object ending at the third short tick past 7
+    measures 7.3 cm. If you need the value purely in millimeters, switch to
+    <a href="/mm/">mm mode</a> and read 73 mm directly.
+  </p>
+
+  <h2>Handy size references</h2>
+  <p>Everyday objects, for sanity-checking your calibration or estimating without the ruler:</p>
+  <ul>
+    <li>
+      Standard paperclip — about <strong>3 cm</strong> long
+    </li>
+    <li>
+      AA battery — about <strong>5 cm</strong> long
+    </li>
+    <li>
+      Credit / bank card — <strong>8.56 cm</strong> wide (an exact standard, great for checking
+      calibration)
+    </li>
+    <li>
+      US penny — about <strong>1.9 cm</strong> across
+    </li>
+    <li>
+      Smartphone width — typically <strong>7–8 cm</strong>
+    </li>
+  </ul>
+
+  <h2>Conversions</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>From</th>
+        <th>To</th>
+        <th>Multiply by</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>cm</td>
+        <td>mm</td>
+        <td>10</td>
+      </tr>
+      <tr>
+        <td>cm</td>
+        <td>m</td>
+        <td>0.01</td>
+      </tr>
+      <tr>
+        <td>cm</td>
+        <td>inches</td>
+        <td>0.3937</td>
+      </tr>
+      <tr>
+        <td>inches</td>
+        <td>cm</td>
+        <td>2.54 (exact)</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    The inch conversion is exact by definition — one inch is <em>defined</em> as 2.54 cm — so
+    switching the ruler between cm and <a href="/inches/">inches</a> never introduces rounding error
+    in the tick positions themselves.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How many millimeters are in a centimeter?</h3>
+  <p>
+    Ten. A centimeter is defined as exactly 10 millimeters, and the on-screen ruler shows this
+    directly: ten small ticks between every pair of numbered centimeter marks.
+  </p>
+  <h3>How many inches is a centimeter?</h3>
+  <p>
+    One centimeter equals exactly 0.3937 inches (one inch is defined as exactly 2.54 cm). So 10 cm
+    is about 3.94 inches — just under four inches.
+  </p>
+  <h3>What everyday objects are about one centimeter?</h3>
+  <p>
+    A standard pencil is about 0.7 cm across, a US penny is about 1.9 cm across, and the width of an
+    adult fingertip is roughly 1.5–2 cm. A paperclip is about 3 cm long and a credit card is 8.56 cm
+    wide.
+  </p>
+</ContentLayout>

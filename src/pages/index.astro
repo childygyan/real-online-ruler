@@ -65,10 +65,61 @@ const FAQS = [
     q: 'Does it work on phones and tablets?',
     a: 'Yes. Open the page in any mobile browser, calibrate with your device model or the credit-card method, and the phone screen becomes a pocket ruler — surprisingly handy for quick checks.',
   },
+  {
+    q: 'Is my calibration data private?',
+    a: 'Completely. Your calibration is stored only in your own browser\u2019s local storage — it is never uploaded, and there is no account to tie it to. Clearing your browser data removes it.',
+  },
+  {
+    q: 'Can I measure something bigger than my screen?',
+    a: 'In sections. Measure the first screen-width, drop a guide at the end point, slide the object along, and add up the segments. The guides keep your place so the segments line up.',
+  },
+  {
+    q: 'Why does the ruler look wrong on my second monitor?',
+    a: 'Each display has its own pixel density, so a calibration done on your laptop does not transfer to an external monitor. Calibrate once per display, with the browser window on the display you are calibrating.',
+  },
+  {
+    q: 'Which calibration method should I choose?',
+    a: 'The credit-card method is the most accurate for most people, because it calibrates against a physical object of a known standard size (85.60 mm). The device picker is equally good when your exact model is listed; auto-detect is the fastest starting point.',
+  },
+  {
+    q: 'Do I need to calibrate for the pixel ruler?',
+    a: 'No. Pixel mode counts the browser\u2019s own CSS pixels, which the page knows exactly — calibration only matters for physical units (cm, mm, inches). The trade-off is that pixel readings have no fixed real-world size.',
+  },
+  {
+    q: 'Does it work in fullscreen?',
+    a: 'Yes — press F or the Fullscreen button in the toolbar. Fullscreen gives you the longest possible ruler and removes browser chrome that could distract from measuring.',
+  },
 ];
+
+const siteUrl = 'https://real-online-ruler.pages.dev';
+
+const webAppJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Real Online Ruler',
+  url: siteUrl + '/',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires a modern web browser with JavaScript enabled.',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  description:
+    'A free on-screen ruler at true physical size. Calibrate your display, then measure in centimeters, millimeters, inches, and pixels.',
+};
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
 ---
 
 <BaseLayout title={title} description={description} path="/">
+  <script type="application/ld+json" set:html={JSON.stringify(webAppJsonLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
   <!-- Hero -->
   <section class="ror-container pb-14 pt-14 text-center sm:pt-20">
     <p

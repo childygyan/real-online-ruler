@@ -1,0 +1,164 @@
+---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+
+const path = '/mm/';
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How small is a millimeter?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A millimeter is one thousandth of a meter — roughly the thickness of a credit card (0.76 mm) or a little less than half the thickness of a US dime (1.35 mm). It is the smallest unit most people measure by eye.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Should I use mm or cm mode?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'They show the same scale with different labels. Use mm mode when you want a single precise number like 47 mm; use cm mode when you think in centimeters like 4.7 cm. For anything under about 5 cm, mm mode is usually easier to read.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How accurate is the on-screen millimeter scale?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'As accurate as your calibration. With the credit-card method, expect accuracy within about half a millimeter on a typical display. For sub-millimeter work — jewelry, electronics — use proper calipers; a screen ruler is a quick check, not a metrology tool.',
+      },
+    },
+  ],
+};
+
+const related = [
+  { href: '/cm/', label: 'Centimeter ruler' },
+  { href: '/inches/', label: 'Inch ruler' },
+  { href: '/guide/', label: 'How to read the ruler' },
+];
+---
+
+<ContentLayout
+  title="Online Millimeter Ruler — Measure in mm at True Size | Real Online Ruler"
+  description="A free on-screen millimeter ruler at true physical size. Calibrate once, then read precise millimeter measurements with labeled 10 mm marks."
+  path={path}
+  h1="Millimeter ruler"
+  lede="When centimeters are too coarse, millimeters take over — one tenth of a centimeter, small enough for screws, gaps, and ring sizes. Calibrate once, switch to mm, and every tiny tick on your screen is a true millimeter."
+  breadcrumb="Millimeter ruler"
+  jsonLd={[faqJsonLd]}
+  related={related}
+>
+  <h2>What is a millimeter?</h2>
+  <p>
+    A millimeter is one thousandth of a meter and one tenth of a centimeter — the smallest unit most
+    people comfortably measure by eye. Anything thinner than a millimeter (paper is about 0.1 mm)
+    belongs to calipers and micrometers; everything from about 1 mm up to a few centimeters is
+    millimeter territory.
+  </p>
+
+  <h2>Reading the mm scale</h2>
+  <p>
+    In mm mode, <strong>every small tick is one millimeter</strong> and the long numbered ticks come
+    every 10 mm, labeled 10, 20, 30… Read the numbered mark below the object's end, then count the
+    small ticks past it: four ticks past 40 is <strong>44 mm</strong>. The medium-length tick at
+    each 5 is the half centimeter — a handy landmark when counting.
+  </p>
+  <p>
+    The scale is identical to <a href="/cm/">cm mode</a>; only the labels differ. Switch freely — 44
+    mm and 4.4 cm are the same mark.
+  </p>
+
+  <h2>Handy size references</h2>
+  <ul>
+    <li>
+      Credit / bank card thickness — <strong>0.76 mm</strong> (an exact standard)
+    </li>
+    <li>
+      US dime thickness — about <strong>1.35 mm</strong>
+    </li>
+    <li>
+      SD card thickness — about <strong>2.1 mm</strong>
+    </li>
+    <li>
+      Standard pencil diameter — about <strong>7 mm</strong>
+    </li>
+    <li>
+      US quarter diameter — <strong>24.26 mm</strong>
+    </li>
+  </ul>
+
+  <h2>Conversions</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>From</th>
+        <th>To</th>
+        <th>Multiply by</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>mm</td>
+        <td>cm</td>
+        <td>0.1</td>
+      </tr>
+      <tr>
+        <td>mm</td>
+        <td>m</td>
+        <td>0.001</td>
+      </tr>
+      <tr>
+        <td>mm</td>
+        <td>inches</td>
+        <td>0.03937</td>
+      </tr>
+      <tr>
+        <td>inches</td>
+        <td>mm</td>
+        <td>25.4 (exact)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Getting precise results</h2>
+  <ul>
+    <li>
+      <strong>Calibrate with the card method.</strong> Millimeter accuracy lives or dies on
+      calibration — the physical-card method is the most accurate.
+    </li>
+    <li>
+      <strong>Zoom the page to 100% and leave it there.</strong> Any zoom rescales the ticks.
+    </li>
+    <li>
+      <strong>Use guides for small objects.</strong> Drop a guide at each end of the object and
+      subtract the readouts — steadier than eyeballing a tick.
+    </li>
+    <li>
+      <strong>View straight on.</strong> Parallax at an angle can shift an apparent edge by a
+      millimeter or more.
+    </li>
+  </ul>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How small is a millimeter?</h3>
+  <p>
+    A millimeter is one thousandth of a meter — roughly the thickness of a credit card (0.76 mm) or
+    a little less than half the thickness of a US dime (1.35 mm). It is the smallest unit most
+    people measure by eye.
+  </p>
+  <h3>Should I use mm or cm mode?</h3>
+  <p>
+    They show the same scale with different labels. Use mm mode when you want a single precise
+    number like 47 mm; use cm mode when you think in centimeters like 4.7 cm. For anything under
+    about 5 cm, mm mode is usually easier to read.
+  </p>
+  <h3>How accurate is the on-screen millimeter scale?</h3>
+  <p>
+    As accurate as your calibration. With the credit-card method, expect accuracy within about half
+    a millimeter on a typical display. For sub-millimeter work — jewelry, electronics — use proper
+    calipers; a screen ruler is a quick check, not a metrology tool.
+  </p>
+</ContentLayout>

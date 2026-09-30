@@ -1,0 +1,151 @@
+---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+
+const path = '/inches/';
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How many sixteenths are in an inch?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sixteen. The on-screen inch ruler divides every inch into 16 equal ticks. The 8th tick is the half inch, the 4th and 12th are quarter inches, and the odd-numbered eighths (2nd, 6th, 10th, 14th) are eighth-inch marks.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How many centimeters is an inch?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Exactly 2.54 centimeters, by international definition. That makes one centimeter about 0.3937 inches.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Why do rulers use fractions instead of decimals?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Tradition and divisibility. Halves, quarters, and eighths come from repeatedly halving an inch, which is easy to do physically and to read by eye. Decimal inches exist too — machinists use thousandths — but fractional inches remain the standard for everyday US measuring.',
+      },
+    },
+  ],
+};
+
+const related = [
+  { href: '/cm/', label: 'Centimeter ruler' },
+  { href: '/mm/', label: 'Millimeter ruler' },
+  { href: '/guide/', label: 'How to read the ruler' },
+];
+---
+
+<ContentLayout
+  title="Online Inch Ruler — Measure in Inches at True Size | Real Online Ruler"
+  description="A free on-screen inch ruler at true physical size with fractional ticks down to 1/16 inch. Calibrate once, then measure in whole and fractional inches."
+  path={path}
+  h1="Inch ruler"
+  lede="The inch remains the everyday unit across the United States — for woodworking, sewing, hardware, and anything sold by the foot. Calibrate your display once, switch the ruler to inches, and read whole inches plus fractions down to a sixteenth."
+  breadcrumb="Inch ruler"
+  jsonLd={[faqJsonLd]}
+  related={related}
+>
+  <h2>What is an inch?</h2>
+  <p>
+    An inch is a US customary (imperial) unit defined as <strong>exactly 2.54 centimeters</strong>.
+    Twelve inches make a foot, 36 make a yard. Unlike metric units, inches are traditionally read as{' '}
+    <strong>fractions</strong> — halves, quarters, eighths, sixteenths — rather than decimals, and
+    the on-screen ruler is drawn exactly that way.
+  </p>
+
+  <h2>Reading the inch scale</h2>
+  <p>
+    Numbered ticks are whole inches. Between them, <strong>tick length encodes the fraction</strong>{' '}
+    — the longer the tick, the simpler the fraction:
+  </p>
+  <ul>
+    <li>
+      <strong>Longest unnumbered tick</strong> — the half inch (½″), one per inch.
+    </li>
+    <li>
+      <strong>Next longest</strong> — quarter inches (¼″, ¾″).
+    </li>
+    <li>
+      <strong>Medium ticks</strong> — eighth inches (⅛″, ⅜″, ⅝″, ⅞″).
+    </li>
+    <li>
+      <strong>Shortest ticks</strong> — sixteenths (1/16″ … 15/16″).
+    </li>
+  </ul>
+  <p>
+    Read from the numbered inch below the object's end and count forward. Two medium ticks past the
+    3″ mark is 3 and 2/8 — simplify it to <strong>3¼″</strong>. Five of the shortest ticks past 1″
+    is 1 and 5/16 inches. The full reading method, with worked examples, is in the
+    <a href="/guide/">reading guide</a>.
+  </p>
+
+  <h2>Fraction ↔ decimal ↔ metric</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Fraction</th>
+        <th>Decimal (in)</th>
+        <th>Metric</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1/16″</td>
+        <td>0.0625</td>
+        <td>1.59 mm</td>
+      </tr>
+      <tr>
+        <td>⅛″</td>
+        <td>0.125</td>
+        <td>3.18 mm</td>
+      </tr>
+      <tr>
+        <td>¼″</td>
+        <td>0.25</td>
+        <td>6.35 mm</td>
+      </tr>
+      <tr>
+        <td>½″</td>
+        <td>0.5</td>
+        <td>12.7 mm</td>
+      </tr>
+      <tr>
+        <td>1″</td>
+        <td>1.0</td>
+        <td>25.4 mm (exact)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>When inches beat metric</h2>
+  <p>
+    If the thing you're measuring was <em>made</em> in inches — lumber dimensions, screw sizes, pipe
+    fittings, US clothing patterns — measure in inches and skip the conversion. A "2×4" stud, a ¼″
+    bolt, or a 9″ cake pan all have round numbers in inches and awkward ones in metric. Match the
+    ruler to the object's native unit and the numbers stay friendly.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How many sixteenths are in an inch?</h3>
+  <p>
+    Sixteen. The on-screen inch ruler divides every inch into 16 equal ticks. The 8th tick is the
+    half inch, the 4th and 12th are quarter inches, and the 2nd, 6th, 10th, and 14th are eighth-inch
+    marks.
+  </p>
+  <h3>How many centimeters is an inch?</h3>
+  <p>
+    Exactly 2.54 centimeters, by international definition. One centimeter is about 0.3937 inches.
+  </p>
+  <h3>Why do rulers use fractions instead of decimals?</h3>
+  <p>
+    Tradition and divisibility. Halves, quarters, and eighths come from repeatedly halving an inch,
+    which is easy to do physically and to read by eye. Decimal inches exist too — machinists work in
+    thousandths — but fractional inches remain the standard for everyday US measuring.
+  </p>
+</ContentLayout>

@@ -1,0 +1,123 @@
+---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+
+const path = '/pixels/';
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How big is a pixel in real life?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'There is no fixed answer. A CSS pixel has no physical size — it is 1/96th of an inch only by convention for print. On your screen its physical size depends on the display density, which is exactly why the ruler needs calibration for physical units but not for pixel mode.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does the pixel ruler need calibration?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Pixel mode counts the browser\u2019s own CSS pixels, which the page knows exactly without any physical measurement. Calibration only matters for cm, mm, and inches — the units with real-world sizes.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is device pixel ratio (DPR)?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The number of physical screen pixels used to draw one CSS pixel. A DPR of 2 (a Retina display) packs four physical pixels into each CSS pixel for sharper rendering. The ruler\u2019s pixel mode always shows CSS pixels, which is what web designers work in.',
+      },
+    },
+  ],
+};
+
+const related = [
+  { href: '/cm/', label: 'Centimeter ruler' },
+  { href: '/inches/', label: 'Inch ruler' },
+  { href: '/guide/', label: 'How to read the ruler' },
+];
+---
+
+<ContentLayout
+  title="Online Pixel Ruler — Measure in CSS Pixels | Real Online Ruler"
+  description="A free on-screen pixel ruler for designers: measure in CSS pixels with 10 px ticks and 100 px numbered marks. No calibration needed — pixels are the browser's own unit."
+  path={path}
+  h1="Pixel ruler"
+  lede="Pixels are the designer's unit — the language of mockups, buttons, and breakpoints. The px ruler counts your browser's own CSS pixels, so it needs no calibration at all: switch to px mode and measure anything on the page in the same units your stylesheet uses."
+  breadcrumb="Pixel ruler"
+  jsonLd={[faqJsonLd]}
+  related={related}
+>
+  <h2>What is a CSS pixel?</h2>
+  <p>
+    A CSS pixel is the browser's abstract unit — the <code>px</code> in your stylesheet. It is
+    deliberately <em>not</em> a physical size: on a standard display one CSS pixel maps to one
+    physical pixel, while on a high-density ("Retina") display several physical pixels team up to
+    draw a single CSS pixel more sharply. The ratio is the <strong>device pixel ratio (DPR)</strong>
+    . Web design happens in CSS pixels, which is exactly what this ruler counts.
+  </p>
+
+  <h2>Reading the px scale</h2>
+  <p>
+    In px mode, small ticks come every <strong>10 px</strong>, medium ticks every 50 px, and the
+    numbered marks every <strong>100 px</strong>. Measuring a button: line up its left edge with
+    zero and read where the right edge lands — say, just past 120, i.e. about 124 px wide. For exact
+    work, drop <a href="/guide/">guides</a> at both edges and subtract their readouts.
+  </p>
+
+  <h2>Why px mode needs no calibration</h2>
+  <p>
+    Calibration answers a physical question: "how many CSS pixels make a real inch on this display?"
+    Pixel mode never asks that question — it simply counts the browser's own units, which the page
+    knows exactly. That's also why px measurements are meaningless as physical sizes: 100 px is a
+    different number of millimeters on every display. Use px for design, and cm/mm/inches (after{' '}
+    <a href="/how-to-calibrate/">calibration</a>) for the physical world.
+  </p>
+
+  <h2>Pixels vs. print points</h2>
+  <p>
+    You'll sometimes see "1 px = 1/96 inch." That's a <em>print</em> convention from CSS, used so
+    stylesheets can convert to physical units on paper — it says nothing about your screen. On
+    screen, the only honest statement is: a CSS pixel is however big the display's density makes it,
+    and the calibrated ruler is how you find out.
+  </p>
+
+  <h2>Handy pixel references</h2>
+  <ul>
+    <li>
+      Typical body text (16 px) cap height — roughly <strong>11 px</strong>
+    </li>
+    <li>
+      Common button height — <strong>36–48 px</strong>
+    </li>
+    <li>
+      Favicon — <strong>16 × 16 px</strong>
+    </li>
+    <li>
+      Full HD viewport width — <strong>1920 px</strong> (CSS px, regardless of DPR)
+    </li>
+  </ul>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How big is a pixel in real life?</h3>
+  <p>
+    There is no fixed answer. A CSS pixel has no physical size — it is 1/96th of an inch only by
+    convention for print. On your screen its physical size depends on the display density, which is
+    exactly why the ruler needs calibration for physical units but not for pixel mode.
+  </p>
+  <h3>Does the pixel ruler need calibration?</h3>
+  <p>
+    No. Pixel mode counts the browser's own CSS pixels, which the page knows exactly without any
+    physical measurement. Calibration only matters for cm, mm, and inches — the units with
+    real-world sizes.
+  </p>
+  <h3>What is device pixel ratio (DPR)?</h3>
+  <p>
+    The number of physical screen pixels used to draw one CSS pixel. A DPR of 2 (a Retina display)
+    packs four physical pixels into each CSS pixel for sharper rendering. The ruler's pixel mode
+    always shows CSS pixels, which is what web designers work in.
+  </p>
+</ContentLayout>
