@@ -1,5 +1,16 @@
 ---
-/** Site footer. */
+/** Site footer. Phase 8: strings from the locale dictionary, links localized. */
+import { getDict, fill } from '../i18n/dict.js';
+import { DEFAULT_LOCALE, type LocaleCode } from '../i18n/locales.js';
+import { localizePath } from '../i18n/urls.js';
+
+interface Props {
+  locale?: LocaleCode;
+}
+
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = getDict(locale);
+const f = t.footer;
 const year = new Date().getFullYear();
 ---
 
@@ -11,8 +22,7 @@ const year = new Date().getFullYear();
     <div>
       <p class="text-base font-bold">Real Online Ruler</p>
       <p class="mt-3 max-w-xs text-sm leading-relaxed" style="color: var(--ror-text-muted);">
-        A free, no-signup measuring tool that turns your screen into a ruler at true physical size —
-        in centimeters, millimeters, inches, and pixels.
+        {f.tagline}
       </p>
     </div>
     <nav aria-label="Footer">
@@ -20,29 +30,16 @@ const year = new Date().getFullYear();
         class="text-sm font-semibold uppercase tracking-wider"
         style="color: var(--ror-text-muted);"
       >
-        Explore
+        {f.explore}
       </p>
       <ul class="mt-3 space-y-2 text-sm">
-        <li>
-          <a class="hover:underline" href="/">
-            Home
-          </a>
-        </li>
-        <li>
-          <a class="hover:underline" href="/#calibration">
-            How to calibrate
-          </a>
-        </li>
-        <li>
-          <a class="hover:underline" href="/#guide">
-            Reading guide
-          </a>
-        </li>
-        <li>
-          <a class="hover:underline" href="/#faq">
-            FAQ
-          </a>
-        </li>
+        {f.exploreLinks.map((l) => (
+          <li>
+            <a class="hover:underline" href={localizePath(l.href, locale)}>
+              {l.label}
+            </a>
+          </li>
+        ))}
       </ul>
     </nav>
     <nav aria-label="Ruler guides">
@@ -50,39 +47,16 @@ const year = new Date().getFullYear();
         class="text-sm font-semibold uppercase tracking-wider"
         style="color: var(--ror-text-muted);"
       >
-        Ruler guides
+        {f.rulerGuides}
       </p>
       <ul class="mt-3 space-y-2 text-sm">
-        <li>
-          <a class="hover:underline" href="/how-to-calibrate/">
-            How to calibrate
-          </a>
-        </li>
-        <li>
-          <a class="hover:underline" href="/guide/">
-            Reading the ruler
-          </a>
-        </li>
-        <li>
-          <a class="hover:underline" href="/cm/">
-            Centimeter ruler
-          </a>
-        </li>
-        <li>
-          <a class="hover:underline" href="/inches/">
-            Inch ruler
-          </a>
-        </li>
-        <li>
-          <a class="hover:underline" href="/mm/">
-            Millimeter ruler
-          </a>
-        </li>
-        <li>
-          <a class="hover:underline" href="/pixels/">
-            Pixel ruler
-          </a>
-        </li>
+        {f.guideLinks.map((l) => (
+          <li>
+            <a class="hover:underline" href={localizePath(l.href, locale)}>
+              {l.label}
+            </a>
+          </li>
+        ))}
       </ul>
     </nav>
     <div>
@@ -90,17 +64,16 @@ const year = new Date().getFullYear();
         class="text-sm font-semibold uppercase tracking-wider"
         style="color: var(--ror-text-muted);"
       >
-        Accuracy note
+        {f.accuracyTitle}
       </p>
       <p class="mt-3 text-sm leading-relaxed" style="color: var(--ror-text-muted);">
-        On-screen measurements are only as accurate as your calibration. Calibrate once for your
-        display, keep browser zoom at 100%, and the ruler stays true on every visit.
+        {f.accuracyBody}
       </p>
     </div>
   </div>
   <div class="border-t py-6" style="border-color: var(--ror-border);">
     <p class="ror-container text-xs" style="color: var(--ror-text-muted);">
-      © {year} Real Online Ruler. Free for everyone — no account, no download.
+      {fill(f.copyright, { year })}
     </p>
   </div>
 </footer>

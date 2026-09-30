@@ -50,3 +50,23 @@ export function ogLocale(code: LocaleCode): string {
       return 'id_ID';
   }
 }
+
+/**
+ * Rewrite root-relative hrefs in an HTML snippet for a locale.
+ * "/guide/" becomes "/es/guide/" under the es locale; the default locale,
+ * fragment-only hrefs, and absolute URLs are left untouched.
+ */
+export function localizeHtml(html: string, locale: LocaleCode): string {
+  if (locale === DEFAULT_LOCALE) return html;
+  return html.replace(/href="\/(?!\/)/g, `href="/${locale}/`);
+}
+
+/**
+ * Detect the locale from a URL pathname by its leading segment
+ * ("/es/guide/" -> "es"). Unknown or missing segments mean English.
+ */
+export function getLocaleFromPath(pathname: string): LocaleCode {
+  const seg = pathname.split('/').filter(Boolean)[0] ?? '';
+  const found = LOCALES.find((l) => l.code !== DEFAULT_LOCALE && l.prefix === `/${seg}`);
+  return found ? found.code : DEFAULT_LOCALE;
+}

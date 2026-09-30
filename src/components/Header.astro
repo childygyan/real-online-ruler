@@ -1,11 +1,22 @@
 ---
-/** Site header: wordmark, primary nav, theme toggle. */
-const NAV = [
-  { label: 'Home', href: '/' },
-  { label: 'How to calibrate', href: '/#calibration' },
-  { label: 'Guide', href: '/#guide' },
-  { label: 'FAQ', href: '/#faq' },
-];
+/**
+ * Site header: wordmark, primary nav, language switcher, theme toggle.
+ * Phase 8: all strings from the locale dictionary; nav hrefs localized.
+ */
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { getDict } from '../i18n/dict.js';
+import { DEFAULT_LOCALE, type LocaleCode } from '../i18n/locales.js';
+import { localizePath } from '../i18n/urls.js';
+
+interface Props {
+  locale?: LocaleCode;
+  path?: string;
+}
+
+const { locale = DEFAULT_LOCALE, path = '/' } = Astro.props;
+const t = getDict(locale);
+const h = t.header;
+const homeHref = localizePath('/', locale);
 ---
 
 <header
@@ -13,7 +24,7 @@ const NAV = [
   style="background-color: var(--ror-bg); border-color: var(--ror-border);"
 >
   <div class="ror-container flex h-16 items-center justify-between gap-4">
-    <a href="/" class="flex items-center gap-2.5" aria-label="Real Online Ruler — home">
+    <a href={homeHref} class="flex items-center gap-2.5" aria-label={h.wordmarkAria}>
       <!-- Wordmark: a small ruler glyph drawn inline (original artwork). -->
       <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
         <rect x="2" y="9" width="30" height="16" rx="3" fill="#0e7490" />
@@ -39,10 +50,10 @@ const NAV = [
       </span>
     </a>
 
-    <nav aria-label="Primary" class="hidden items-center gap-1 md:flex">
-      {NAV.map((item) => (
+    <nav aria-label={h.navAria} class="hidden items-center gap-1 md:flex">
+      {h.nav.map((item) => (
         <a
-          href={item.href}
+          href={localizePath(item.href, locale)}
           class="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
           style="color: var(--ror-text-muted);"
         >
@@ -52,12 +63,13 @@ const NAV = [
     </nav>
 
     <div class="flex items-center gap-2">
+      <LanguageSwitcher locale={locale} path={path} label={h.languageAria} />
       <button
         id="theme-toggle"
         type="button"
         class="ror-btn-ghost !px-3 !py-2"
-        aria-label="Toggle dark mode"
-        title="Toggle dark / light mode (D)"
+        aria-label={h.themeAria}
+        title={h.themeTitle}
       >
         <svg
           class="hidden dark:block"
@@ -86,22 +98,22 @@ const NAV = [
         >
           <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
         </svg>
-        <span class="sr-only">Toggle theme</span>
+        <span class="sr-only">{h.themeSr}</span>
       </button>
     </div>
   </div>
 
   <!-- Mobile nav -->
   <nav
-    aria-label="Primary mobile"
+    aria-label={h.navMobileAria}
     class="border-t px-4 py-2 md:hidden"
     style="border-color: var(--ror-border);"
   >
     <ul class="flex flex-wrap gap-1">
-      {NAV.map((item) => (
+      {h.nav.map((item) => (
         <li>
           <a
-            href={item.href}
+            href={localizePath(item.href, locale)}
             class="block rounded-md px-3 py-2 text-sm font-medium"
             style="color: var(--ror-text-muted);"
           >

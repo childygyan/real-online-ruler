@@ -1,0 +1,52 @@
+---
+/**
+ * ContentBlocks.astro — renders a locale dictionary's ContentBlock list
+ * (Phase 8). Root-relative links inside block HTML are localized.
+ */
+import type { ContentBlock } from '../i18n/content.js';
+import { DEFAULT_LOCALE, type LocaleCode } from '../i18n/locales.js';
+import { localizeHtml } from '../i18n/urls.js';
+
+interface Props {
+  blocks: ContentBlock[];
+  locale?: LocaleCode;
+}
+
+const { blocks, locale = DEFAULT_LOCALE } = Astro.props;
+const html = (s: string) => localizeHtml(s, locale);
+---
+
+{blocks.map((b) =>
+  b.kind === 'h2' ? (
+    <h2>{b.text}</h2>
+  ) : b.kind === 'h3' ? (
+    <h3>{b.text}</h3>
+  ) : b.kind === 'p' ? (
+    <p set:html={html(b.html)} />
+  ) : b.kind === 'ul' ? (
+    <ul>
+      {b.items.map((item) => (
+        <li set:html={html(item)} />
+      ))}
+    </ul>
+  ) : (
+    <table>
+      <thead>
+        <tr>
+          {b.head.map((cell) => (
+            <th set:html={html(cell)} />
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {b.rows.map((row) => (
+          <tr>
+            {row.map((cell) => (
+              <td set:html={html(cell)} />
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+)}

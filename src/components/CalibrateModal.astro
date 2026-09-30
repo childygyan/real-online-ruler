@@ -3,7 +3,42 @@
  * CalibrateModal.astro — the four-method calibration dialog.
  * Opens when any [data-open-calibrate] element is clicked; Esc closes it.
  * All logic lives in the client script below (plain JS, bundled by Astro).
+ * Phase 8: locale prop — UI strings from the locale dictionary; the client
+ * script reads its strings from the #cal-i18n JSON blob.
  */
+import { getDict } from '../i18n/dict.js';
+import { DEFAULT_LOCALE, type LocaleCode } from '../i18n/locales.js';
+
+interface Props {
+  locale?: LocaleCode;
+}
+
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = getDict(locale);
+const c = t.calibrate;
+
+/** Strings the client script needs (templates keep {placeholders} intact). */
+const calI18n = {
+  methods: c.methods,
+  tabs: c.tabs,
+  useCalibration: c.useCalibration,
+  autoDetected: c.autoDetected,
+  factoryPpi: c.factoryPpi,
+  highConfidence: c.highConfidence,
+  mediumConfidence: c.mediumConfidence,
+  computedAtScaling: c.computedAtScaling,
+  recognizedAs: c.recognizedAs,
+  notRecognized: c.notRecognized,
+  tryTabs: c.tryTabs,
+  factoryWord: c.factoryWord,
+  atScaling: c.atScaling,
+  invalidDiagonal: c.invalidDiagonal,
+  screenIs: c.screenIs,
+  computedDensity: c.computedDensity,
+  diagonalDeviceName: c.diagonalDeviceName,
+  cardDeviceName: c.cardDeviceName,
+  pxPerInch: c.pxPerInch,
+};
 ---
 
 <div
@@ -22,16 +57,16 @@
     <div class="flex items-start justify-between gap-4">
       <div>
         <h2 id="calibrate-title" class="text-2xl font-bold tracking-tight">
-          Calibrate your display
+          {c.title}
         </h2>
         <p class="mt-1 text-sm" style="color: var(--ror-text-muted);">
-          Current: <strong id="cal-readout">96 px/in (default)</strong>
+          {c.currentLabel} <strong id="cal-readout">{c.defaultReadout}</strong>
           <span
             id="cal-saved-note"
             class="ml-2 hidden font-semibold"
             style="color: var(--ror-brand-700);"
           >
-            Saved
+            {c.saved}
           </span>
         </p>
       </div>
@@ -39,7 +74,7 @@
         type="button"
         class="ror-btn-ghost !px-3 !py-2"
         data-close-calibrate
-        aria-label="Close calibration dialog"
+        aria-label={c.closeAria}
       >
         ✕
       </button>
@@ -49,7 +84,7 @@
     <div
       class="mt-6 flex flex-wrap gap-2 border-b pb-1"
       role="tablist"
-      aria-label="Calibration methods"
+      aria-label={c.tablistAria}
       style="border-color: var(--ror-border);"
     >
       <button
@@ -59,7 +94,7 @@
         data-cal-tab="auto"
         class="cal-tab rounded-t-lg px-4 py-2 text-sm font-semibold"
       >
-        Auto-detect
+        {c.tabs.auto}
       </button>
       <button
         type="button"
@@ -68,7 +103,7 @@
         data-cal-tab="device"
         class="cal-tab rounded-t-lg px-4 py-2 text-sm font-semibold"
       >
-        Pick device
+        {c.tabs.device}
       </button>
       <button
         type="button"
@@ -77,7 +112,7 @@
         data-cal-tab="diagonal"
         class="cal-tab rounded-t-lg px-4 py-2 text-sm font-semibold"
       >
-        Screen diagonal
+        {c.tabs.diagonal}
       </button>
       <button
         type="button"
@@ -86,19 +121,17 @@
         data-cal-tab="card"
         class="cal-tab rounded-t-lg px-4 py-2 text-sm font-semibold"
       >
-        Credit card
+        {c.tabs.card}
       </button>
     </div>
 
     <!-- AUTO -->
     <section data-cal-panel="auto" role="tabpanel" class="pt-6">
       <p class="text-sm leading-relaxed" style="color: var(--ror-text-muted);">
-        We look at your browser and screen resolution, match them against a built-in database of
-        published display specs, and apply the factory pixel density. Fastest option when it finds
-        your device.
+        {c.autoBody}
       </p>
       <button type="button" id="cal-auto-run" class="ror-btn-primary mt-4">
-        Detect my device
+        {c.detectButton}
       </button>
       <div
         id="cal-auto-result"
@@ -110,12 +143,11 @@
     <!-- DEVICE -->
     <section data-cal-panel="device" role="tabpanel" class="hidden pt-6">
       <p class="text-sm leading-relaxed" style="color: var(--ror-text-muted);">
-        Know your exact model? Select it below — we apply its published pixel density, adjusted for
-        your display scaling.
+        {c.deviceBody}
       </p>
       <div class="mt-4 grid gap-4 sm:grid-cols-2">
         <label class="block text-sm">
-          <span class="mb-1 block font-semibold">Category</span>
+          <span class="mb-1 block font-semibold">{c.categoryLabel}</span>
           <select
             id="cal-device-category"
             class="w-full rounded-lg border px-3 py-2"
@@ -123,7 +155,7 @@
           ></select>
         </label>
         <label class="block text-sm">
-          <span class="mb-1 block font-semibold">Device</span>
+          <span class="mb-1 block font-semibold">{c.deviceLabel}</span>
           <select
             id="cal-device-name"
             class="w-full rounded-lg border px-3 py-2"
@@ -141,13 +173,11 @@
     <!-- DIAGONAL -->
     <section data-cal-panel="diagonal" role="tabpanel" class="hidden pt-6">
       <p class="text-sm leading-relaxed" style="color: var(--ror-text-muted);">
-        Type your screen&rsquo;s diagonal size in inches (it&rsquo;s usually on the box or the
-        manufacturer&rsquo;s spec page — e.g. 15.6 for a typical laptop). We combine it with your
-        screen resolution to compute the exact density. Keep browser zoom at 100%.
+        {c.diagonalBody}
       </p>
       <div class="mt-4 flex flex-wrap items-end gap-3">
         <label class="block text-sm">
-          <span class="mb-1 block font-semibold">Diagonal (inches)</span>
+          <span class="mb-1 block font-semibold">{c.diagonalLabel}</span>
           <input
             id="cal-diagonal-input"
             type="number"
@@ -161,7 +191,7 @@
           />
         </label>
         <button type="button" id="cal-diagonal-run" class="ror-btn-primary">
-          Calculate
+          {c.calculate}
         </button>
       </div>
       <div
@@ -174,9 +204,7 @@
     <!-- CARD -->
     <section data-cal-panel="card" role="tabpanel" class="hidden pt-6">
       <p class="text-sm leading-relaxed" style="color: var(--ror-text-muted);">
-        Place any credit card, debit card, or ID card flat against your screen, on top of the
-        outline below. Drag the slider until the outline matches the card&rsquo;s edges exactly,
-        then use the calibration. Standard cards are 85.60 × 53.98&nbsp;mm.
+        {c.cardBody}
       </p>
       <div
         class="mt-4 overflow-x-auto rounded-lg border p-6"
@@ -189,13 +217,13 @@
           aria-hidden="true"
         ></div>
         <p class="mt-2 text-center text-xs" style="color: var(--ror-text-muted);">
-          85.60 × 53.98 mm
+          {c.cardSize}
         </p>
       </div>
       <label class="mt-4 block text-sm">
         <span class="mb-1 flex justify-between font-semibold">
-          <span>Assumed density</span>
-          <span id="cal-card-value">96.0 px/in</span>
+          <span>{c.assumedDensity}</span>
+          <span id="cal-card-value">96.0 {c.pxPerInch}</span>
         </span>
         <input
           id="cal-card-slider"
@@ -209,7 +237,7 @@
         />
       </label>
       <button type="button" id="cal-card-apply" class="ror-btn-primary mt-4">
-        Use this calibration
+        {c.useCalibration}
       </button>
     </section>
 
@@ -218,19 +246,35 @@
       style="border-color: var(--ror-border);"
     >
       <p class="text-xs" style="color: var(--ror-text-muted);">
-        Saved in this browser only. Re-calibrate if you change monitors or display scaling.
+        {c.footerNote}
       </p>
       <button type="button" id="cal-reset" class="ror-btn-ghost !px-4 !py-2 text-xs">
-        Reset to 96 PPI
+        {c.reset}
       </button>
     </div>
   </div>
 </div>
 
+<script type="application/json" id="cal-i18n" set:html={JSON.stringify(calI18n)} />
 <script>
   import { diagonalPpi, deviceCssPxPerInch } from '../lib/ppi.js';
   import { getDevicesByCategory, detectDevice, DEVICE_CATEGORIES } from '../lib/devices.js';
   import { loadCalibration, saveCalibration, resetCalibration } from '../lib/calibration.js';
+
+  /**
+   * Phase 8: localized strings come from the server-rendered #cal-i18n
+   * JSON blob. Templates keep their {placeholders} for fill() below.
+   */
+  var I18N = JSON.parse(
+    (document.getElementById('cal-i18n') || { textContent: '{}' }).textContent || '{}'
+  );
+
+  /** Fill {placeholders} in a localized template. */
+  function fill(template, vars) {
+    return String(template).replace(/\{(\w+)\}/g, function (_m, key) {
+      return vars[key] === undefined ? '' : String(vars[key]);
+    });
+  }
 
   var modal = document.getElementById('calibrate-modal');
   var readout = document.getElementById('cal-readout');
@@ -238,22 +282,17 @@
   var lastOpener = null;
 
   function methodLabel(m) {
-    return (
-      {
-        auto: 'auto-detect',
-        device: 'device pick',
-        diagonal: 'screen diagonal',
-        card: 'credit card',
-        default: 'default',
-      }[m] || m
-    );
+    var methods = I18N.methods || {};
+    return methods[m] || m;
   }
 
   function refreshReadout() {
     var cal = loadCalibration();
     readout.textContent =
       cal.pxPerInch.toFixed(1) +
-      ' px/in (' +
+      ' ' +
+      I18N.pxPerInch +
+      ' (' +
       methodLabel(cal.method) +
       (cal.deviceName ? ' · ' + cal.deviceName : '') +
       ')';
@@ -336,7 +375,9 @@
       method +
       '" data-device="' +
       (deviceName || '').replace(/"/g, '&quot;') +
-      '">Use this calibration</button>'
+      '">' +
+      I18N.useCalibration +
+      '</button>'
     );
   }
 
@@ -362,33 +403,36 @@
     var html;
     if (r.device) {
       var px = deviceCssPxPerInch(r.device.physicalPpi, window.devicePixelRatio || 1);
-      var conf =
-        r.confidence === 'high'
-          ? 'High confidence — exact model match.'
-          : 'Medium confidence — matched a display shared by similar models (same density).';
+      var conf = r.confidence === 'high' ? I18N.highConfidence : I18N.mediumConfidence;
       html =
-        '<p><strong>Detected:</strong> ' +
+        '<p><strong>' +
+        I18N.autoDetected +
+        '</strong> ' +
         r.device.name +
         ' (' +
-        r.device.physicalPpi +
-        ' PPI factory)</p>' +
+        fill(I18N.factoryPpi, { ppi: r.device.physicalPpi }) +
+        ')</p>' +
         '<p class="mt-1">' +
         conf +
         '</p>' +
-        '<p class="mt-1">Computed density at your display scaling: <strong>' +
-        px.toFixed(1) +
-        ' px/in</strong></p>' +
+        '<p class="mt-1">' +
+        fill(I18N.computedAtScaling, { px: px.toFixed(1) }) +
+        '</p>' +
         applyButtonHtml(px, 'auto', r.device.name);
     } else {
       var hint = r.category
-        ? 'We recognize this as a <strong>' +
-          r.category +
-          '</strong> display, but could not pin down the exact model.'
-        : 'We could not recognize this device from your browser information.';
+        ? fill(I18N.recognizedAs, { category: r.category })
+        : I18N.notRecognized;
       html =
         '<p>' +
         hint +
-        '</p><p class="mt-1">Try the <strong>Pick device</strong>, <strong>Screen diagonal</strong>, or <strong>Credit card</strong> tab instead.</p>';
+        '</p><p class="mt-1">' +
+        fill(I18N.tryTabs, {
+          a: I18N.tabs.device,
+          b: I18N.tabs.diagonal,
+          c: I18N.tabs.card,
+        }) +
+        '</p>';
     }
     showResult('cal-auto-result', html);
   });
@@ -423,16 +467,16 @@
       'cal-device-result',
       '<p><strong>' +
         d.name +
-        '</strong> — factory ' +
+        '</strong> — ' +
+        I18N.factoryWord +
+        ' ' +
         d.physicalPpi +
         ' PPI' +
         (d.note ? ' <span style="color: var(--ror-text-muted);">(' + d.note + ')</span>' : '') +
         '</p>' +
-        '<p class="mt-1">At your current display scaling (×' +
-        dpr +
-        '): <strong>' +
-        px.toFixed(1) +
-        ' px/in</strong></p>' +
+        '<p class="mt-1">' +
+        fill(I18N.atScaling, { dpr: dpr, px: px.toFixed(1) }) +
+        '</p>' +
         applyButtonHtml(px, 'device', d.name)
     );
   }
@@ -444,23 +488,19 @@
   document.getElementById('cal-diagonal-run').addEventListener('click', function () {
     var diag = parseFloat(document.getElementById('cal-diagonal-input').value);
     if (!isFinite(diag) || diag <= 0) {
-      showResult('cal-diagonal-result', '<p>Please enter a valid diagonal in inches.</p>');
+      showResult('cal-diagonal-result', '<p>' + I18N.invalidDiagonal + '</p>');
       return;
     }
     var px = diagonalPpi(window.screen.width, window.screen.height, diag);
     showResult(
       'cal-diagonal-result',
-      '<p>Screen: ' +
-        window.screen.width +
-        ' × ' +
-        window.screen.height +
-        ' px, diagonal ' +
-        diag +
-        ' in</p>' +
-        '<p class="mt-1">Computed density: <strong>' +
-        px.toFixed(1) +
-        ' px/in</strong></p>' +
-        applyButtonHtml(px, 'diagonal', diag + ' in diagonal')
+      '<p>' +
+        fill(I18N.screenIs, { w: window.screen.width, h: window.screen.height, d: diag }) +
+        '</p>' +
+        '<p class="mt-1">' +
+        fill(I18N.computedDensity, { px: px.toFixed(1) }) +
+        '</p>' +
+        applyButtonHtml(px, 'diagonal', fill(I18N.diagonalDeviceName, { d: diag }))
     );
   });
 
@@ -470,7 +510,7 @@
   var outline = document.getElementById('cal-card-outline');
   function updateCardOutline() {
     var pxPerInch = parseFloat(slider.value);
-    cardValue.textContent = pxPerInch.toFixed(1) + ' px/in';
+    cardValue.textContent = pxPerInch.toFixed(1) + ' ' + I18N.pxPerInch;
     outline.style.width = ((85.6 / 25.4) * pxPerInch).toFixed(1) + 'px';
     outline.style.height = ((53.98 / 25.4) * pxPerInch).toFixed(1) + 'px';
   }
@@ -479,7 +519,7 @@
     saveCalibration({
       method: 'card',
       pxPerInch: parseFloat(slider.value),
-      deviceName: '85.60 × 53.98 mm card',
+      deviceName: I18N.cardDeviceName,
     });
     flashSaved();
   });

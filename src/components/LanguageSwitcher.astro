@@ -1,0 +1,51 @@
+---
+/**
+ * LanguageSwitcher.astro — locale <select> for the site header (Phase 8).
+ * Navigates to the same page in the chosen locale and persists the choice in
+ * localStorage ("ror-locale"). Never redirects on its own.
+ */
+import { LOCALES, type LocaleCode } from '../i18n/locales.js';
+import { localizePath } from '../i18n/urls.js';
+
+interface Props {
+  locale: LocaleCode;
+  /** English root path of the current page, e.g. "/guide/". */
+  path: string;
+  label: string;
+}
+
+const { locale, path, label } = Astro.props;
+---
+
+<label class="flex items-center">
+  <span class="sr-only">{label}</span>
+  <select
+    id="lang-switcher"
+    aria-label={label}
+    class="cursor-pointer rounded-lg border bg-transparent px-2 py-1.5 text-sm font-semibold"
+    style="border-color: var(--ror-border); color: var(--ror-text-muted);"
+  >
+    {LOCALES.map((l) => (
+      <option value={l.code} selected={l.code === locale} data-href={localizePath(path, l.code)}>
+        {l.label}
+      </option>
+    ))}
+  </select>
+</label>
+
+<script is:inline>
+  (function () {
+    var sel = document.getElementById('lang-switcher');
+    if (!sel) return;
+    sel.addEventListener('change', function () {
+      var opt = sel.options[sel.selectedIndex];
+      try {
+        localStorage.setItem('ror-locale', sel.value);
+      } catch {
+        /* storage unavailable */
+      }
+      var href = opt && opt.getAttribute('data-href');
+      if (href) window.location.href = href;
+    });
+  })();
+</script>

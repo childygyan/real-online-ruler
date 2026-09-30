@@ -1,22 +1,32 @@
 ---
+/**
+ * 404.astro — localized "page not found" page.
+ * Phase 8: strings from the locale dictionary; mirrored under /{locale}/404/.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getDict } from '../i18n/dict.js';
+import { DEFAULT_LOCALE, type LocaleCode } from '../i18n/locales.js';
+import { localizePath } from '../i18n/urls.js';
+
+interface Props {
+  locale?: LocaleCode;
+}
+
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = getDict(locale).notFound;
 ---
 
-<BaseLayout
-  title="Page not found — Real Online Ruler"
-  description="The page you were looking for does not exist on Real Online Ruler."
-  path="/404"
->
+<BaseLayout title={t.title} description={t.description} path="/404/" locale={locale}>
   <section class="ror-container py-24 text-center">
     <p class="font-mono text-7xl font-bold" style="color: var(--ror-brand-600);">
       404
     </p>
-    <h1 class="mt-4 text-2xl font-bold">This mark isn&rsquo;t on the ruler</h1>
+    <h1 class="mt-4 text-2xl font-bold">{t.heading}</h1>
     <p class="mx-auto mt-3 max-w-md" style="color: var(--ror-text-muted);">
-      The page you asked for doesn&rsquo;t exist. Let&rsquo;s get you back to measuring.
+      {t.body}
     </p>
-    <a href="/" class="ror-btn-primary mt-8">
-      Back to the ruler
+    <a href={localizePath('/', locale)} class="ror-btn-primary mt-8">
+      {t.cta}
     </a>
   </section>
 </BaseLayout>

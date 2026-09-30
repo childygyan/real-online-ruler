@@ -1,250 +1,42 @@
 ---
+/**
+ * /guide/ — how to read the ruler. Phase 8: fully locale-driven via the
+ * content.guide dictionary; mirrored under /{locale}/guide/.
+ */
 import ContentLayout from '../../layouts/ContentLayout.astro';
+import ContentBlocks from '../../components/ContentBlocks.astro';
+import { getDict } from '../../i18n/dict.js';
+import { DEFAULT_LOCALE, type LocaleCode } from '../../i18n/locales.js';
 
+interface Props {
+  locale?: LocaleCode;
+}
+
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = getDict(locale).content.guide;
 const path = '/guide/';
 
 const faqJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'How do I read fractions of an inch on the ruler?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Find the nearest numbered inch, then count the smaller ticks past it. The longest unnumbered ticks are halves, the next longest are quarters, then eighths, and the shortest are sixteenths. Three short ticks past the 2-inch mark, for example, is 2 and 3/16 inches.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'What is the difference between the cm and mm modes?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'They show the same scale with different labels. In cm mode the numbered marks read 1, 2, 3 (centimeters); in mm mode the same marks read 10, 20, 30 (millimeters). Use mm mode when you want to read a value like 47 mm without multiplying.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How do guide lines help me measure?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Guides let you mark positions on the measuring area without holding the object against a ruler edge. Drop a guide at each end of the object and read the distance between their readouts — useful for things you cannot press flat against the screen edge.',
-      },
-    },
-  ],
+  mainEntity: t.faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
 };
-
-const related = [
-  { href: '/how-to-calibrate/', label: 'How to calibrate your on-screen ruler' },
-  { href: '/cm/', label: 'Centimeter ruler' },
-  { href: '/inches/', label: 'Inch ruler' },
-  { href: '/mm/', label: 'Millimeter ruler' },
-  { href: '/pixels/', label: 'Pixel ruler' },
-];
 ---
 
 <ContentLayout
-  title="How to Read an Online Ruler (cm, mm, Inches, Pixels) | Real Online Ruler"
-  description="Learn to read the on-screen ruler: centimeter and millimeter ticks, inch fractions down to sixteenths, pixel mode, plus guides, crosshair, and six advanced measuring tools."
+  title={t.title}
+  description={t.description}
   path={path}
-  h1="How to read the ruler"
-  lede="Four units, one screen. This guide teaches you to read every scale the ruler offers — metric ticks, inch fractions, and pixel mode — to use the guides and crosshair, and to master the six advanced tools: drag-to-measure, protractor, loupe, floating ruler, measurement log, and grid."
-  breadcrumb="Reading guide"
+  h1={t.h1}
+  lede={t.lede}
+  breadcrumb={t.breadcrumb}
+  locale={locale}
   jsonLd={[faqJsonLd]}
-  related={related}
+  related={t.related}
 >
-  <h2>Meet the four units</h2>
-  <p>
-    Switch units anytime from the toolbar or with the <code>1</code>–<code>4</code> keys. The tick
-    marks are redrawn from your calibration, so switching never changes the physical size — only the
-    labels.
-  </p>
-  <ul>
-    <li>
-      <strong>cm (1)</strong> — centimeters, the everyday metric unit. Best for general measuring.
-    </li>
-    <li>
-      <strong>mm (2)</strong> — millimeters, for precision. Same scale as cm, labeled in mm.
-    </li>
-    <li>
-      <strong>in (3)</strong> — inches with fractional ticks down to 1/16″. Best for US customary
-      work.
-    </li>
-    <li>
-      <strong>px (4)</strong> — CSS pixels, for design mockups. Not a physical unit (see below).
-    </li>
-  </ul>
-
-  <h2>Reading centimeters and millimeters</h2>
-  <p>
-    In <strong>cm mode</strong>, the long numbered ticks are centimeters (1, 2, 3…) and there are
-    nine short ticks between each pair — those are millimeters. An object ending four short ticks
-    past the 5 cm mark is 5.4 cm long. In <strong>mm mode</strong> the scale is identical but the
-    numbered ticks read 10, 20, 30 — so that same object reads 54 mm directly, no multiplying.
-  </p>
-  <p>
-    The practical rule: use cm when the number of centimeters is what you care about ("about twelve
-    and a half centimeters"), and mm when you want a single precise number ("127 mm").
-  </p>
-
-  <h2>Reading inches and fractions</h2>
-  <p>
-    In <strong>in mode</strong>, numbered ticks are whole inches. Between them, tick length tells
-    you the fraction — longer means a simpler fraction:
-  </p>
-  <table>
-    <thead>
-      <tr>
-        <th>Tick length</th>
-        <th>Fraction</th>
-        <th>Example</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Longest unnumbered</td>
-        <td>½ inch</td>
-        <td>2½″</td>
-      </tr>
-      <tr>
-        <td>Next longest</td>
-        <td>¼ inch</td>
-        <td>1¼″, 1¾″</td>
-      </tr>
-      <tr>
-        <td>Medium</td>
-        <td>⅛ inch</td>
-        <td>3⅜″</td>
-      </tr>
-      <tr>
-        <td>Shortest</td>
-        <td>1/16 inch</td>
-        <td>5/16″</td>
-      </tr>
-    </tbody>
-  </table>
-  <p>
-    To read a measurement, find the nearest numbered inch <em>below</em> the object's end, then
-    count the small ticks past it and take the longest tick your count reaches. Three of the
-    shortest ticks past the 2″ mark is 2 and 3/16 inches. If the object's end lands exactly on a
-    medium tick, read the eighths instead — 2 and 6/16 is really 2⅜″, and woodworkers will thank you
-    for simplifying.
-  </p>
-
-  <h2>Reading pixels</h2>
-  <p>
-    <strong>px mode</strong> is the odd one out: a CSS pixel is not a physical size, it's the
-    browser's own unit. The px ruler shows 10-pixel minor ticks and numbered marks every 100 px. Use
-    it when you're mocking up a design ("this button should be about 120 px wide"), not when you
-    need a physical measurement — for that, stay in cm, mm, or inches after calibrating.
-  </p>
-
-  <h2>Measuring with guides</h2>
-  <p>
-    Press <code>G</code> (or the Guides button) and click anywhere in the measuring area to drop a
-    guide line — horizontal or vertical, chosen with the H/V selector. Each guide shows its position
-    in the current unit. Drag a guide to reposition it, double-click to remove one, and press{' '}
-    <code>Esc</code> to clear them all.
-  </p>
-  <p>
-    Guides shine when the object can't sit against a ruler's edge: drop one guide at each end of the
-    object and subtract the two readouts. The guides always report in the active unit, so switching
-    units mid-measurement converts the readouts for you.
-  </p>
-
-  <h2>Measuring with the crosshair</h2>
-  <p>
-    Press <code>C</code> and a dashed crosshair follows your pointer across the measuring area, with
-    a live badge showing the exact X/Y position in the current unit. It's the fastest way to check a
-    single point — the corner of a photo, the edge of a widget — without dropping guides.
-  </p>
-
-  <h2>Advanced tools</h2>
-  <p>
-    The toolbar's <strong>Advanced</strong> row adds six tools that go beyond the edge rulers. All
-    of them measure in CSS pixels scaled by your calibration, in the currently selected unit.
-  </p>
-  <ul>
-    <li>
-      <strong>Measure (M)</strong> — drag anywhere on the canvas to draw a measurement line. The
-      live readout shows the distance in the current unit and the line's angle in degrees. Endpoints
-      snap to nearby guide lines. Release to get Save (sends the reading to the log) or Discard;
-      <code>Esc</code> cancels while drawing.
-    </li>
-    <li>
-      <strong>Protractor (P)</strong> — a circular protractor you can drag anywhere. Drag the center
-      to move it, the ring handle to rotate the scale, and the two arm handles to set the arms; the
-      digital readout shows the angle between the arms in degrees.
-    </li>
-    <li>
-      <strong>Loupe (L)</strong> — a 3&times; magnifier that follows your cursor, showing a zoomed
-      view of the rulers, guides, and canvas beneath it for precise tick reading.
-    </li>
-    <li>
-      <strong>Ruler (R)</strong> — a floating ruler, independent of the screen edges. Drag its body
-      to move it and the amber handle at its end to rotate it to any angle; it renders ticks in the
-      current unit along its length, with a small badge showing its rotation.
-    </li>
-    <li>
-      <strong>Log (O)</strong> — every saved measurement lands here with an editable label. Copy a
-      single entry or the whole list, export as CSV or TXT, or delete entries. The log persists in
-      your browser's local storage.
-    </li>
-    <li>
-      <strong>Grid (N)</strong> — a subtle overlay grid for alignment work. Each cell is exactly 1
-      cm (or 1 inch — switch with the Grid unit selector), with a stronger line every 5 cells.
-    </li>
-  </ul>
-
-  <h2>Keyboard shortcuts</h2>
-  <p>
-    Press <code>H</code> anywhere in the ruler app to open the shortcut reference. The full map:
-  </p>
-  <ul>
-    <li>
-      <code>1</code>–<code>4</code> — units: cm, in, mm, px
-    </li>
-    <li>
-      <code>G</code> guides &middot; <code>C</code> crosshair &middot; <code>F</code> fullscreen
-      &middot; <code>D</code> theme
-    </li>
-    <li>
-      <code>M</code> drag-to-measure &middot; <code>P</code> protractor &middot; <code>L</code>{' '}
-      loupe
-    </li>
-    <li>
-      <code>R</code> floating ruler &middot; <code>O</code> measurement log &middot; <code>N</code>{' '}
-      grid
-    </li>
-    <li>
-      <code>Esc</code> — cancel the current drawing, close dialogs, or clear all guides
-    </li>
-  </ul>
-
-  <h2>Tips for trustworthy measurements</h2>
-  <ul>
-    <li>
-      Measure against the ruler's <strong>highlighted measuring edge</strong> (the teal baseline),
-      not the outer edge of the bar.
-    </li>
-    <li>
-      Line up the object's <strong>start</strong> with the zero mark, not with the end of the
-      screen.
-    </li>
-    <li>
-      For objects longer than the ruler, measure in sections with guides marking each segment.
-    </li>
-    <li>
-      View the screen straight on; at a steep angle, parallax shifts where the edge appears to be.
-    </li>
-    <li>
-      Every tool measures in CSS pixels scaled by your calibration. Browser zoom, OS display
-      scaling, or an external monitor with a different pixel density will rescale the ruler — keep
-      zoom at 100% and recalibrate if you move the window to another display.
-    </li>
-    <li>
-      When in doubt, re-check with the <a href="/how-to-calibrate/">credit-card calibration</a> — it
-      takes a minute.
-    </li>
-  </ul>
+  <ContentBlocks blocks={t.blocks} locale={locale} />
 </ContentLayout>

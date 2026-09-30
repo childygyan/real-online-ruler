@@ -5,10 +5,38 @@
  * Phase 4: guides, crosshair, fullscreen, theme, persisted prefs.
  * Phase 7: drag-to-measure, protractor, magnifier loupe, floating ruler,
  *          measurement log, grid overlay, shortcuts help.
+ * Phase 8: locale prop — every UI string comes from the locale dictionary.
+ *          The client script reads its strings from the #ruler-i18n JSON blob.
  */
+import { getDict } from '../i18n/dict.js';
+import { DEFAULT_LOCALE, type LocaleCode } from '../i18n/locales.js';
+
+interface Props {
+  locale?: LocaleCode;
+}
+
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = getDict(locale);
+
+/** Strings the client script needs (plain data, no HTML). */
+const i18nPayload = {
+  guideAt: t.stage.guideAt,
+  loading: t.status.loading,
+  uncalibrated: t.status.uncalibrated,
+  calibrateNow: t.status.calibrateNow,
+  calibrated: t.status.calibrated,
+  methods: t.calibrate.methods,
+  defaultReadout: t.calibrate.defaultReadout,
+  logEmpty: t.log.empty,
+  copied: t.log.copied,
+  failed: t.log.failed,
+};
+/** "Press {key} for the full keyboard shortcut map." split around the key. */
+const hintParts = t.status.shortcutHint.split('{key}');
 ---
 
 <div id="ruler-app-root" class="ror-card overflow-hidden">
+  <script type="application/json" id="ruler-i18n" set:html={JSON.stringify(i18nPayload)} />
   <!-- Toolbar -->
   <div
     class="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-4 py-3"
@@ -16,7 +44,7 @@
   >
     <div
       role="group"
-      aria-label="Measurement unit"
+      aria-label={t.toolbar.unitGroup}
       class="flex overflow-hidden rounded-lg border"
       style="border-color: var(--ror-border);"
     >
@@ -36,28 +64,28 @@
 
     <div
       role="group"
-      aria-label="Ruler edges"
+      aria-label={t.toolbar.edgeGroup}
       class="flex overflow-hidden rounded-lg border"
       style="border-color: var(--ror-border);"
     >
       <button type="button" class="ruler-tool" data-edge="top" aria-pressed="true">
-        Top
+        {t.toolbar.edgeTop}
       </button>
       <button type="button" class="ruler-tool" data-edge="bottom" aria-pressed="false">
-        Bottom
+        {t.toolbar.edgeBottom}
       </button>
       <button type="button" class="ruler-tool" data-edge="left" aria-pressed="false">
-        Left
+        {t.toolbar.edgeLeft}
       </button>
       <button type="button" class="ruler-tool" data-edge="right" aria-pressed="false">
-        Right
+        {t.toolbar.edgeRight}
       </button>
     </div>
 
     <div class="flex items-center gap-2">
       <div
         role="group"
-        aria-label="Precision tools"
+        aria-label={t.toolbar.precisionGroup}
         class="flex overflow-hidden rounded-lg border"
         style="border-color: var(--ror-border);"
       >
@@ -66,24 +94,24 @@
           class="ruler-tool"
           id="tool-guides"
           aria-pressed="false"
-          title="Toggle guide lines (G)"
+          title={t.toolbar.guidesTitle}
         >
-          Guides
+          {t.toolbar.guides}
         </button>
         <button
           type="button"
           class="ruler-tool"
           id="tool-crosshair"
           aria-pressed="false"
-          title="Toggle crosshair (C)"
+          title={t.toolbar.crosshairTitle}
         >
-          Crosshair
+          {t.toolbar.crosshair}
         </button>
       </div>
       <div
         id="guide-orient"
         role="group"
-        aria-label="New guide orientation"
+        aria-label={t.toolbar.orientGroup}
         class="hidden overflow-hidden rounded-lg border"
         style="border-color: var(--ror-border);"
       >
@@ -92,7 +120,7 @@
           class="ruler-tool"
           data-orient="h"
           aria-pressed="true"
-          title="New guides are horizontal"
+          title={t.toolbar.orientHTitle}
         >
           H
         </button>
@@ -101,7 +129,7 @@
           class="ruler-tool"
           data-orient="v"
           aria-pressed="false"
-          title="New guides are vertical"
+          title={t.toolbar.orientVTitle}
         >
           V
         </button>
@@ -116,21 +144,21 @@
         class="ruler-tool"
         id="tool-fullscreen"
         aria-pressed="false"
-        title="Fullscreen (F)"
+        title={t.toolbar.fullscreenTitle}
       >
-        Fullscreen
+        {t.toolbar.fullscreen}
       </button>
-      <button type="button" class="ruler-tool" id="tool-theme" title="Toggle theme (D)">
-        Theme
+      <button type="button" class="ruler-tool" id="tool-theme" title={t.toolbar.themeTitle}>
+        {t.toolbar.theme}
       </button>
       <button
         type="button"
         data-open-calibrate
         class="ruler-tool"
         style="border-right: none;"
-        title="Calibrate display"
+        title={t.toolbar.calibrateTitle}
       >
-        Calibrate
+        {t.toolbar.calibrate}
       </button>
     </div>
 
@@ -143,11 +171,11 @@
         class="text-[11px] font-bold uppercase tracking-wider"
         style="color: var(--ror-text-muted);"
       >
-        Advanced
+        {t.toolbar.advanced}
       </span>
       <div
         role="group"
-        aria-label="Advanced measuring tools"
+        aria-label={t.toolbar.advancedGroup}
         class="flex overflow-hidden rounded-lg border"
         style="border-color: var(--ror-border);"
       >
@@ -156,54 +184,54 @@
           class="ruler-tool"
           id="tool-measure"
           aria-pressed="false"
-          title="Drag on the canvas to measure distance and angle (M)"
+          title={t.toolbar.measureTitle}
         >
-          Measure
+          {t.toolbar.measure}
         </button>
         <button
           type="button"
           class="ruler-tool"
           id="tool-protractor"
           aria-pressed="false"
-          title="Protractor overlay (P)"
+          title={t.toolbar.protractorTitle}
         >
-          Protractor
+          {t.toolbar.protractor}
         </button>
         <button
           type="button"
           class="ruler-tool"
           id="tool-loupe"
           aria-pressed="false"
-          title="Magnifier loupe, 3x (L)"
+          title={t.toolbar.loupeTitle}
         >
-          Loupe
+          {t.toolbar.loupe}
         </button>
         <button
           type="button"
           class="ruler-tool"
           id="tool-fruler"
           aria-pressed="false"
-          title="Floating rotatable ruler (R)"
+          title={t.toolbar.rulerTitle}
         >
-          Ruler
+          {t.toolbar.ruler}
         </button>
         <button
           type="button"
           class="ruler-tool"
           id="tool-log"
           aria-pressed="false"
-          title="Measurement log (O)"
+          title={t.toolbar.logTitle}
         >
-          Log
+          {t.toolbar.log}
         </button>
         <button
           type="button"
           class="ruler-tool"
           id="tool-grid"
           aria-pressed="false"
-          title="Grid overlay (N)"
+          title={t.toolbar.gridTitle}
         >
-          Grid
+          {t.toolbar.grid}
         </button>
       </div>
       <label
@@ -211,17 +239,17 @@
         class="hidden items-center gap-1 text-xs font-semibold"
         style="color: var(--ror-text-muted);"
       >
-        Grid unit
+        {t.toolbar.gridUnit}
         <select
           id="grid-unit"
           class="rounded border px-1 py-0.5 text-xs"
           style="border-color: var(--ror-border); background-color: var(
               --ror-surface
             ); color: var(--ror-text);"
-          aria-label="Grid cell unit"
+          aria-label={t.toolbar.gridUnitAria}
         >
-          <option value="cm">cm</option>
-          <option value="in">inch</option>
+          <option value="cm">{t.toolbar.gridCm}</option>
+          <option value="in">{t.toolbar.gridInch}</option>
         </select>
       </label>
       <span class="flex-1"></span>
@@ -230,9 +258,9 @@
         id="tool-help"
         class="ruler-tool rounded-lg border"
         style="border-color: var(--ror-border);"
-        title="Keyboard shortcuts (H)"
+        title={t.toolbar.helpTitle}
       >
-        ? Shortcuts
+        {t.toolbar.help}
       </button>
     </div>
   </div>
@@ -242,7 +270,7 @@
     id="ruler-stage"
     class="relative overflow-hidden"
     style="height: min(46vh, 420px); min-height: 300px; background-color: var(--ror-canvas-bg);"
-    aria-label="Measuring area"
+    aria-label={t.stage.aria}
   >
     <div id="ruler-bar-top" class="absolute left-0 top-0" aria-hidden="true"></div>
     <div id="ruler-bar-bottom" class="absolute bottom-0 left-0" aria-hidden="true"></div>
@@ -288,24 +316,22 @@
         class="absolute z-20 hidden rounded-lg border px-3 py-2 shadow-xl"
         style="border-color: var(--ror-border); background-color: var(--ror-surface);"
         role="dialog"
-        aria-label="Save measurement"
+        aria-label={t.measure.popupAria}
       >
         <div id="measure-popup-text" class="text-sm font-bold"></div>
         <div class="mt-1.5 flex gap-1">
           <button type="button" id="measure-save" class="log-btn">
-            Save to log
+            {t.measure.save}
           </button>
           <button type="button" id="measure-discard" class="log-btn">
-            Discard
+            {t.measure.discard}
           </button>
         </div>
       </div>
       <p class="max-w-sm text-center text-sm" style="color: var(--ror-text-muted);">
-        Toggle the edges above to frame this area with rulers. Hold a small object against a
-        ruler&rsquo;s highlighted measuring edge and read its size.
+        {t.stage.hint}
         <span id="guides-hint" class="hidden">
-          With Guides on, click anywhere here to drop a guide line; drag a line to move it,
-          double-click it to remove it, Esc clears all guides.
+          {t.stage.guidesHint}
         </span>
       </p>
     </div>
@@ -316,7 +342,7 @@
       class="absolute hidden select-none"
       style="width: 240px; height: 240px; z-index: 10; touch-action: none;"
       role="img"
-      aria-label="Protractor overlay: drag the center to move, the amber handle to rotate, the teal and amber arm handles to measure an angle"
+      aria-label={t.protractor.aria}
     >
       <svg id="protractor-svg" viewBox="0 0 240 240" class="h-full w-full">
         <circle
@@ -355,7 +381,7 @@
             stroke-width="2"
             style="cursor: grab;"
           >
-            <title>Drag to move arm A</title>
+            <title>{t.protractor.moveArmA}</title>
           </circle>
           <line
             id="prot-arm-b"
@@ -374,7 +400,7 @@
             stroke-width="2"
             style="cursor: grab;"
           >
-            <title>Drag to move arm B</title>
+            <title>{t.protractor.moveArmB}</title>
           </circle>
           <g data-action="rotate" style="cursor: grab;">
             <circle
@@ -384,7 +410,7 @@
               stroke="#fff"
               stroke-width="2"
             >
-              <title>Drag to rotate the protractor</title>
+              <title>{t.protractor.rotate}</title>
             </circle>
           </g>
         </g>
@@ -398,7 +424,7 @@
           stroke-width="2"
           style="cursor: move;"
         >
-          <title>Drag to move the protractor</title>
+          <title>{t.protractor.move}</title>
         </circle>
         <text
           id="prot-readout"
@@ -415,7 +441,7 @@
           90&deg;
         </text>
         <text x="120" y="182" text-anchor="middle" font-size="10" fill="var(--ror-text-muted)">
-          center moves &middot; ring rotates
+          {t.protractor.caption}
         </text>
       </svg>
     </div>
@@ -426,7 +452,7 @@
       class="absolute hidden"
       style="z-index: 10; touch-action: none;"
       role="img"
-      aria-label="Floating ruler: drag the body to move, the handle at the right end to rotate"
+      aria-label={t.floatingRuler.aria}
     >
       <div id="fr-body" class="relative" style="cursor: move;"></div>
       <span
@@ -439,7 +465,7 @@
       <span
         id="fr-rotate"
         class="absolute rounded-full"
-        title="Drag to rotate"
+        title={t.floatingRuler.rotateTitle}
         style="width: 18px; height: 18px; right: -9px; top: 50%; margin-top: -9px; cursor: grab; background-color: var(--ror-accent-500); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3);"
       ></span>
     </div>
@@ -466,21 +492,21 @@
       class="absolute bottom-3 right-3 top-3 z-40 hidden w-72 flex-col rounded-lg border shadow-xl"
       style="border-color: var(--ror-border); background-color: var(--ror-surface);"
       role="complementary"
-      aria-label="Measurement log"
+      aria-label={t.log.panelAria}
     >
       <div
         class="flex items-center justify-between border-b px-3 py-2"
         style="border-color: var(--ror-border);"
       >
-        <h2 class="text-sm font-bold">Measurement log</h2>
-        <button type="button" id="log-close" class="log-btn" aria-label="Close measurement log">
-          Close
+        <h2 class="text-sm font-bold">{t.log.title}</h2>
+        <button type="button" id="log-close" class="log-btn" aria-label={t.log.closeAria}>
+          {t.log.close}
         </button>
       </div>
       <div id="log-list" class="flex-1 space-y-2 overflow-y-auto p-3"></div>
       <div class="flex flex-wrap gap-1 border-t p-2" style="border-color: var(--ror-border);">
         <button type="button" id="log-copy-all" class="log-btn">
-          Copy all
+          {t.log.copyAll}
         </button>
         <button type="button" id="log-csv" class="log-btn">
           CSV
@@ -489,7 +515,7 @@
           TXT
         </button>
         <button type="button" id="log-clear" class="log-btn">
-          Clear
+          {t.log.clear}
         </button>
       </div>
     </div>
@@ -505,92 +531,25 @@
         class="ror-card relative w-full max-w-md p-5"
         role="dialog"
         aria-modal="true"
-        aria-label="Keyboard shortcuts"
+        aria-label={t.help.title}
       >
-        <h2 class="text-base font-bold">Keyboard shortcuts</h2>
+        <h2 class="text-base font-bold">{t.help.title}</h2>
         <dl class="mt-3 grid grid-cols-1 gap-y-1.5 text-sm">
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">1</span> <span class="kbd">2</span> <span class="kbd">3</span>{' '}
-              <span class="kbd">4</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Units: cm, in, mm, px</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">G</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Toggle guide lines</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">C</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Toggle crosshair</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">F</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Fullscreen</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">D</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Toggle theme</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">M</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Drag-to-measure tool</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">P</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Protractor overlay</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">L</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Magnifier loupe (3&times;)</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">R</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Floating ruler</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">O</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Measurement log</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">N</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Grid overlay</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">H</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">This shortcut help</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt>
-              <span class="kbd">Esc</span>
-            </dt>
-            <dd style="color: var(--ror-text-muted);">Cancel drawing / close / clear guides</dd>
-          </div>
+          {t.help.rows.map((row) => (
+            <div class="flex items-center justify-between gap-4">
+              <dt>
+                {row.keys.map((k) => (
+                  <>
+                    <span class="kbd">{k}</span>{' '}
+                  </>
+                ))}
+              </dt>
+              <dd style="color: var(--ror-text-muted);">{row.label}</dd>
+            </div>
+          ))}
         </dl>
         <button type="button" id="help-close" class="btn-primary mt-4 w-full">
-          Close
+          {t.help.close}
         </button>
       </div>
     </div>
@@ -601,10 +560,11 @@
     class="flex flex-wrap items-center justify-between gap-2 border-t px-4 py-2 text-xs"
     style="border-color: var(--ror-border); color: var(--ror-text-muted);"
   >
-    <span id="ruler-cal-status">Loading calibration&hellip;</span>
+    <span id="ruler-cal-status">{t.status.loading}</span>
     <span>
-      Keep browser zoom at 100% &mdash; zooming rescales the ruler. Press
-      <span class="kbd">H</span> for the full keyboard shortcut map.
+      {t.status.zoomNote} {hintParts[0]}
+      <span class="kbd">H</span>
+      {hintParts[1]}
     </span>
   </div>
 </div>
@@ -752,6 +712,21 @@
     toTXT,
     updateLabel,
   } from '../lib/measurements.js';
+
+  /**
+   * Phase 8: localized UI strings come from the server-rendered #ruler-i18n
+   * JSON blob. All other visible strings are rendered server-side.
+   */
+  var I18N = JSON.parse(
+    (document.getElementById('ruler-i18n') || { textContent: '{}' }).textContent || '{}'
+  );
+
+  /** Fill {placeholders} in a localized template. */
+  function fill(template, vars) {
+    return String(template).replace(/\{(\w+)\}/g, function (_m, key) {
+      return vars[key] === undefined ? '' : String(vars[key]);
+    });
+  }
 
   var BAR = 56; // ruler bar thickness, px
   var TICK_LEN = { major: 24, long: 18, medium: 13, minor: 8 };
@@ -1121,7 +1096,7 @@
       var label = el.querySelector('.guide-label');
       var aria = guideLabelText(pos);
       if (label) label.textContent = aria;
-      el.setAttribute('aria-label', 'Guide at ' + aria);
+      el.setAttribute('aria-label', fill(I18N.guideAt, { value: aria }));
     }
     function onUp() {
       window.removeEventListener('pointermove', onMove);
@@ -1813,7 +1788,7 @@
       if (!btn) return;
       var original = btn.getAttribute('data-label') || btn.textContent;
       btn.setAttribute('data-label', original);
-      btn.textContent = ok ? 'Copied' : 'Failed';
+      btn.textContent = ok ? I18N.copied : I18N.failed;
       setTimeout(function () {
         btn.textContent = original;
       }, 1200);
@@ -1860,8 +1835,7 @@
       var empty = document.createElement('p');
       empty.className = 'text-xs';
       empty.style.color = 'var(--ror-text-muted)';
-      empty.textContent =
-        'No measurements yet. Turn on Measure (M), drag across the canvas, then Save.';
+      empty.textContent = fill(I18N.logEmpty, { key: 'M' });
       logList.appendChild(empty);
       return;
     }
@@ -2023,15 +1997,8 @@
   /* ---------- calibration ---------- */
 
   function methodLabel(m) {
-    return (
-      {
-        auto: 'auto-detect',
-        device: 'device pick',
-        diagonal: 'screen diagonal',
-        card: 'credit card',
-        default: 'default',
-      }[m] || m
-    );
+    var methods = I18N.methods || {};
+    return methods[m] || m;
   }
 
   function refreshCalibration() {
@@ -2039,10 +2006,16 @@
     state.pxPerInch = cal.pxPerInch;
     if (cal.method === 'default') {
       statusEl.innerHTML =
-        'Uncalibrated — using the 96 px/in CSS default. <button type="button" data-open-calibrate class="underline font-semibold" style="color: var(--ror-brand-700);">Calibrate now</button>';
+        I18N.uncalibrated +
+        ' <button type="button" data-open-calibrate class="underline font-semibold" style="color: var(--ror-brand-700);">' +
+        I18N.calibrateNow +
+        '</button>';
     } else {
       var what = cal.deviceName ? cal.deviceName : methodLabel(cal.method);
-      statusEl.textContent = cal.pxPerInch.toFixed(1) + ' px/in · calibrated via ' + what + '.';
+      statusEl.textContent = fill(I18N.calibrated, {
+        px: cal.pxPerInch.toFixed(1),
+        what: what,
+      });
     }
     renderRulers();
   }

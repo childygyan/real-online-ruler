@@ -1,32 +1,46 @@
 ---
 /**
  * BaseLayout.astro — shared page shell.
- * Props: title, description, canonical path, optional OG extras.
+ * Props: title, description, canonical path (ENGLISH root path), locale,
+ * optional OG extras. Phase 8: locale-aware <html lang>, hreflang alternates,
+ * og:locale, translated chrome.
  */
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getDict } from '../i18n/dict.js';
+import { DEFAULT_LOCALE, LOCALES, type LocaleCode } from '../i18n/locales.js';
+import { alternateLinks, localizePath, ogLocale } from '../i18n/urls.js';
 import '../styles/global.css';
 
 interface Props {
   title: string;
   description: string;
   path?: string;
+  locale?: LocaleCode;
   ogType?: string;
 }
 
-const { title, description, path = '/', ogType = 'website' } = Astro.props;
+const { title, description, path = '/', locale = DEFAULT_LOCALE, ogType = 'website' } = Astro.props;
+const t = getDict(locale);
 const site = Astro.site?.toString().replace(/\/$/, '') ?? '';
-const canonical = site ? `${site}${path}` : path;
+const localizedPath = localizePath(path, locale);
+const canonical = site ? `${site}${localizedPath}` : localizedPath;
+const htmlLang = LOCALES.find((l) => l.code === locale)?.htmlLang ?? 'en';
+const alternates = alternateLinks(path, site);
+const ogLoc = ogLocale(locale);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {alternates.map((a) => (
+      <link rel="alternate" hreflang={a.hreflang} href={a.href} />
+    ))}
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
@@ -34,6 +48,10 @@ const canonical = site ? `${site}${path}` : path;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLoc} />
+    {LOCALES.filter((l) => l.code !== locale).map((l) => (
+      <meta property="og:locale:alternate" content={ogLocale(l.code)} />
+    ))}
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary" />
@@ -65,12 +83,12 @@ const canonical = site ? `${site}${path}` : path;
       href="#main-content"
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-cyan-700 focus:px-4 focus:py-2 focus:text-white"
     >
-      Skip to content
+      {t.skipToContent}
     </a>
-    <Header />
+    <Header locale={locale} path={path} />
     <main id="main-content">
       <slot />
     </main>
-    <Footer />
+    <Footer locale={locale} />
   </body>
 </html>
