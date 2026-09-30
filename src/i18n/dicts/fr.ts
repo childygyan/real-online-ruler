@@ -7,6 +7,7 @@
  */
 
 import type { Dict } from '../dict.js';
+import { legalFr } from './legal-fr.js';
 
 export const fr: Dict = {
   skipToContent: 'Aller au contenu',
@@ -50,6 +51,13 @@ export const fr: Dict = {
     accuracyBody:
       'Les mesures à l’écran ne sont précises qu’en fonction de votre étalonnage. Étalonnez une fois votre écran, gardez le zoom du navigateur à 100 %, et la règle restera fidèle à chaque visite.',
     copyright: '© {year} Real Online Ruler. Gratuit pour tous — sans compte, sans téléchargement.',
+    legalLabel: 'Mentions légales',
+    legalLinks: [
+      { label: 'À propos', href: '/about/' },
+      { label: 'Politique de Confidentialité', href: '/privacy-policy/' },
+      { label: "Conditions d'Utilisation", href: '/terms-of-service/' },
+      { label: 'Contact', href: '/contact/' },
+    ],
   },
 
   layout: {
@@ -408,6 +416,7 @@ export const fr: Dict = {
   },
 
   content: {
+    legal: legalFr,
     guide: {
       title: 'Comment lire une règle en ligne (cm, mm, pouces, pixels) | Real Online Ruler',
       description:

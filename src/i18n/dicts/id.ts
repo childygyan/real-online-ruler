@@ -9,6 +9,7 @@
  */
 
 import type { Dict } from '../dict.js';
+import { legalId } from './legal-id.js';
 
 export const id: Dict = {
   skipToContent: 'Lewati ke konten',
@@ -52,6 +53,13 @@ export const id: Dict = {
     accuracyBody:
       'Pengukuran di layar hanya seakurat kalibrasi Anda. Kalibrasi sekali untuk tampilan Anda, pertahankan zoom browser di 100%, dan penggaris tetap benar setiap kunjungan.',
     copyright: '© {year} Real Online Ruler. Gratis untuk semua — tanpa akun, tanpa unduhan.',
+    legalLabel: 'Legal',
+    legalLinks: [
+      { label: 'Tentang Kami', href: '/about/' },
+      { label: 'Kebijakan Privasi', href: '/privacy-policy/' },
+      { label: 'Syarat Layanan', href: '/terms-of-service/' },
+      { label: 'Kontak', href: '/contact/' },
+    ],
   },
 
   layout: {
@@ -407,6 +415,7 @@ export const id: Dict = {
   },
 
   content: {
+    legal: legalId,
     guide: {
       title: 'Cara Membaca Penggaris Online (cm, mm, Inci, Piksel) | Real Online Ruler',
       description:

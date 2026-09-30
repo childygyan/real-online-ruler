@@ -8,6 +8,7 @@
  */
 
 import type { Dict } from '../dict.js';
+import { legalPt } from './legal-pt.js';
 
 export const pt: Dict = {
   skipToContent: 'Pular para o conteúdo',
@@ -51,6 +52,13 @@ export const pt: Dict = {
     accuracyBody:
       'As medições na tela só são tão precisas quanto a sua calibração. Calibre uma vez para o seu monitor, mantenha o zoom do navegador em 100% e a régua continua fiel a cada visita.',
     copyright: '© {year} Real Online Ruler. Grátis para todos — sem conta, sem download.',
+    legalLabel: 'Legal',
+    legalLinks: [
+      { label: 'Sobre Nós', href: '/about/' },
+      { label: 'Política de Privacidade', href: '/privacy-policy/' },
+      { label: 'Termos de Serviço', href: '/terms-of-service/' },
+      { label: 'Contato', href: '/contact/' },
+    ],
   },
 
   layout: {
@@ -404,6 +412,7 @@ export const pt: Dict = {
   },
 
   content: {
+    legal: legalPt,
     guide: {
       title: 'Como Ler uma Régua Online (cm, mm, Polegadas, Pixels) | Real Online Ruler',
       description:

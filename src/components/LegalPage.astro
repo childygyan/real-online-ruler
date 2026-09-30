@@ -1,0 +1,156 @@
+---
+/**
+ * LegalPage.astro — shared renderer for the legal pages:
+ * About, Privacy Policy, Terms of Service, Contact.
+ *
+ * All copy comes from the locale dictionary (content.legal.*); the
+ * `page` prop selects which page, `locale` selects the language.
+ * Canonical path, hreflang alternates and sitemap entries are derived
+ * from the English root path by ContentLayout/BaseLayout.
+ */
+import ContentLayout from '../layouts/ContentLayout.astro';
+import { getDict } from '../i18n/dict.js';
+import { DEFAULT_LOCALE, type LocaleCode } from '../i18n/locales.js';
+import type { legalEn } from '../i18n/dicts/legal-en.js';
+
+export type LegalPageKind = 'about' | 'privacy' | 'terms' | 'contact';
+
+interface Props {
+  page: LegalPageKind;
+  locale?: LocaleCode;
+}
+
+type LegalDict = typeof legalEn;
+
+const { page, locale = DEFAULT_LOCALE } = Astro.props;
+const legal = getDict(locale).content.legal as LegalDict;
+const t = legal[page];
+
+const PATHS: Record<LegalPageKind, string> = {
+  about: '/about/',
+  privacy: '/privacy-policy/',
+  terms: '/terms-of-service/',
+  contact: '/contact/',
+};
+const path = PATHS[page];
+
+const SOCIALS = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/firoz-khan-1153358a/' },
+  { label: 'GitHub', href: 'https://github.com/fkdigitalmedia' },
+  { label: 'Instagram', href: 'https://www.instagram.com/rtibyfiroz/' },
+];
+---
+
+<ContentLayout
+  title={t.title}
+  description={t.description}
+  path={path}
+  h1={t.h1}
+  lede={t.lede}
+  breadcrumb={t.breadcrumb}
+  locale={locale}
+>
+  {page === 'about' && (
+    <>
+      <div class="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+        <img
+          src="/images/firoz-khan.webp"
+          alt={(t as LegalDict['about']).photoAlt}
+          width="160"
+          height="160"
+          loading="lazy"
+          class="h-40 w-40 shrink-0 rounded-2xl object-cover shadow-md"
+        />
+        <div>
+          <p class="text-lg font-bold" style="color: var(--ror-text);">
+            {(t as LegalDict['about']).makerName}
+          </p>
+          <p class="text-sm" style="color: var(--ror-text-muted);">
+            {(t as LegalDict['about']).makerOrg}
+          </p>
+        </div>
+      </div>
+      <h2>{(t as LegalDict['about']).whoTitle}</h2>
+      {(t as LegalDict['about']).whoBody.map((p) => (
+        <p>{p}</p>
+      ))}
+      <h2>{(t as LegalDict['about']).whatTitle}</h2>
+      {(t as LegalDict['about']).whatBody.map((p) => (
+        <p>{p}</p>
+      ))}
+      <h2>{(t as LegalDict['about']).principlesTitle}</h2>
+      <ul>
+        {(t as LegalDict['about']).principles.map((pr) => (
+          <li>
+            <strong style="color: var(--ror-text);">{pr.t}</strong>
+            {' — '}
+            {pr.d}
+          </li>
+        ))}
+      </ul>
+      <h2>{(t as LegalDict['about']).connectTitle}</h2>
+      <p>{(t as LegalDict['about']).connectBody}</p>
+      <ul>
+        {SOCIALS.map((s) => (
+          <li>
+            <a
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-medium hover:underline"
+              style="color: var(--ror-brand-700);"
+            >
+              {s.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  {(page === 'privacy' || page === 'terms') && (
+    <>
+      <p class="!mt-0 text-sm" style="color: var(--ror-text-muted);">
+        {(t as LegalDict['privacy']).updated}
+      </p>
+      {(t as LegalDict['privacy']).intro.map((p) => (
+        <p>{p}</p>
+      ))}
+      {(t as LegalDict['privacy']).sections.map((s) => (
+        <>
+          <h2>{s.h}</h2>
+          {s.body.map((p) => (
+            <p>{p}</p>
+          ))}
+        </>
+      ))}
+    </>
+  )}
+
+  {page === 'contact' && (
+    <>
+      {(t as LegalDict['contact']).intro.map((p) => (
+        <p>{p}</p>
+      ))}
+      <h2>{(t as LegalDict['contact']).socialTitle}</h2>
+      <p>{(t as LegalDict['contact']).socialBody}</p>
+      <ul>
+        {SOCIALS.map((s) => (
+          <li>
+            <a
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-medium hover:underline"
+              style="color: var(--ror-brand-700);"
+            >
+              {s.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <h2>{(t as LegalDict['contact']).noteTitle}</h2>
+      <p>{(t as LegalDict['contact']).noteBody}</p>
+    </>
+  )}
+</ContentLayout>

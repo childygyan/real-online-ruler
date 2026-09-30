@@ -72,8 +72,22 @@ const year = new Date().getFullYear();
     </div>
   </div>
   <div class="border-t py-6" style="border-color: var(--ror-border);">
-    <p class="ror-container text-xs" style="color: var(--ror-text-muted);">
-      {fill(f.copyright, { year })}
-    </p>
+    <div
+      class="ror-container flex flex-col gap-3 text-xs sm:flex-row sm:items-center sm:justify-between"
+      style="color: var(--ror-text-muted);"
+    >
+      <p>{fill(f.copyright, { year })}</p>
+      <nav aria-label={f.legalLabel}>
+        <ul class="flex flex-wrap gap-x-5 gap-y-1">
+          {f.legalLinks.map((l) => (
+            <li>
+              <a class="hover:underline" href={localizePath(l.href, locale)}>
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
   </div>
 </footer>

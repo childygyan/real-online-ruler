@@ -9,6 +9,7 @@
  */
 
 import type { Dict } from '../dict.js';
+import { legalZh } from './legal-zh.js';
 
 export const zh: Dict = {
   skipToContent: '跳转到正文',
@@ -52,6 +53,13 @@ export const zh: Dict = {
     accuracyBody:
       '屏幕测量的准确度取决于您的校准。针对您的显示器校准一次，并将浏览器缩放保持在 100%，每次访问时尺子都会保持准确。',
     copyright: '© {year} Real Online Ruler。免费供所有人使用——无需注册，无需下载。',
+    legalLabel: '法律信息',
+    legalLinks: [
+      { label: '关于我们', href: '/about/' },
+      { label: '隐私政策', href: '/privacy-policy/' },
+      { label: '服务条款', href: '/terms-of-service/' },
+      { label: '联系我们', href: '/contact/' },
+    ],
   },
 
   layout: {
@@ -400,6 +408,7 @@ export const zh: Dict = {
   },
 
   content: {
+    legal: legalZh,
     guide: {
       title: '如何读懂在线尺子（厘米、毫米、英寸、像素）| Real Online Ruler',
       description:

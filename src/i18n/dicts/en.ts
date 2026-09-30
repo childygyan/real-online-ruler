@@ -11,6 +11,8 @@
  * The Dict type is `typeof en`; missing or extra keys fail compilation.
  */
 
+import { legalEn } from './legal-en.js';
+
 export const en = {
   skipToContent: 'Skip to content',
 
@@ -53,6 +55,13 @@ export const en = {
     accuracyBody:
       'On-screen measurements are only as accurate as your calibration. Calibrate once for your display, keep browser zoom at 100%, and the ruler stays true on every visit.',
     copyright: '© {year} Real Online Ruler. Free for everyone — no account, no download.',
+    legalLabel: 'Legal',
+    legalLinks: [
+      { label: 'About Us', href: '/about/' },
+      { label: 'Privacy Policy', href: '/privacy-policy/' },
+      { label: 'Terms of Service', href: '/terms-of-service/' },
+      { label: 'Contact', href: '/contact/' },
+    ],
   },
 
   layout: {
@@ -406,6 +415,7 @@ export const en = {
   },
 
   content: {
+    legal: legalEn,
     guide: {
       title: 'How to Read an Online Ruler (cm, mm, Inches, Pixels) | Real Online Ruler',
       description:

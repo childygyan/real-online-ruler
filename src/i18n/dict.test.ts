@@ -112,7 +112,7 @@ describe('i18n dictionary parity', () => {
         content: Record<string, { blocks: { kind: string }[] }>;
       };
       for (const [page, pageDict] of Object.entries(dict.content)) {
-        for (const b of pageDict.blocks) {
+        for (const b of pageDict.blocks ?? []) {
           expect(kinds.has(b.kind), `${code}:${page} block kind`).toBe(true);
         }
       }
