@@ -1,9 +1,8 @@
 ---
 /**
- * RulerApp.astro — the interactive ruler workspace (Phase 3).
- * Four independently toggleable SVG rulers (top/bottom/left/right), unit
- * switcher, live calibration readout. Re-renders on resize and whenever
- * the calibration changes.
+ * RulerApp.astro — the interactive ruler workspace.
+ * Phase 3: SVG rulers on 4 toggleable edges, unit switcher.
+ * Phase 4: guides, crosshair, fullscreen, theme, persisted prefs.
  */
 ---
 
@@ -53,11 +52,85 @@
       </button>
     </div>
 
+    <div class="flex items-center gap-2">
+      <div
+        role="group"
+        aria-label="Precision tools"
+        class="flex overflow-hidden rounded-lg border"
+        style="border-color: var(--ror-border);"
+      >
+        <button
+          type="button"
+          class="ruler-tool"
+          id="tool-guides"
+          aria-pressed="false"
+          title="Toggle guide lines (G)"
+        >
+          Guides
+        </button>
+        <button
+          type="button"
+          class="ruler-tool"
+          id="tool-crosshair"
+          aria-pressed="false"
+          title="Toggle crosshair (C)"
+        >
+          Crosshair
+        </button>
+      </div>
+      <div
+        id="guide-orient"
+        role="group"
+        aria-label="New guide orientation"
+        class="hidden overflow-hidden rounded-lg border"
+        style="border-color: var(--ror-border);"
+      >
+        <button
+          type="button"
+          class="ruler-tool"
+          data-orient="h"
+          aria-pressed="true"
+          title="New guides are horizontal"
+        >
+          H
+        </button>
+        <button
+          type="button"
+          class="ruler-tool"
+          data-orient="v"
+          aria-pressed="false"
+          title="New guides are vertical"
+        >
+          V
+        </button>
+      </div>
+    </div>
+
     <span class="flex-1"></span>
 
-    <button type="button" data-open-calibrate class="ror-btn-ghost !px-4 !py-2 text-xs">
-      Calibrate
-    </button>
+    <div class="flex overflow-hidden rounded-lg border" style="border-color: var(--ror-border);">
+      <button
+        type="button"
+        class="ruler-tool"
+        id="tool-fullscreen"
+        aria-pressed="false"
+        title="Fullscreen (F)"
+      >
+        Fullscreen
+      </button>
+      <button type="button" class="ruler-tool" id="tool-theme" title="Toggle theme (D)">
+        Theme
+      </button>
+      <button
+        type="button"
+        data-open-calibrate
+        class="ruler-tool"
+        style="border-right: none;"
+        title="Calibrate display"
+      >
+        Calibrate
+      </button>
+    </div>
   </div>
 
   <!-- Stage -->
@@ -72,9 +145,36 @@
     <div id="ruler-bar-left" class="absolute left-0" aria-hidden="true"></div>
     <div id="ruler-bar-right" class="absolute right-0" aria-hidden="true"></div>
     <div id="ruler-workspace" class="absolute flex items-center justify-center p-6">
+      <div id="guides-layer" class="absolute inset-0" style="pointer-events: none;"></div>
+      <div
+        id="crosshair-layer"
+        class="absolute inset-0 hidden"
+        style="pointer-events: none;"
+        aria-hidden="true"
+      >
+        <div
+          id="ch-h"
+          class="absolute left-0 right-0 top-0"
+          style="border-top: 1px dashed var(--ror-brand-500);"
+        ></div>
+        <div
+          id="ch-v"
+          class="absolute bottom-0 left-0 top-0"
+          style="border-left: 1px dashed var(--ror-brand-500);"
+        ></div>
+        <div
+          id="ch-label"
+          class="absolute rounded px-1.5 py-0.5 text-[11px] font-semibold"
+          style="background-color: var(--ror-brand-600); color: #fff; transform: translate(10px, 10px);"
+        ></div>
+      </div>
       <p class="max-w-sm text-center text-sm" style="color: var(--ror-text-muted);">
         Toggle the edges above to frame this area with rulers. Hold a small object against a
         ruler&rsquo;s highlighted measuring edge and read its size.
+        <span id="guides-hint" class="hidden">
+          With Guides on, click anywhere here to drop a guide line; drag a line to move it,
+          double-click it to remove it, Esc clears all guides.
+        </span>
       </p>
     </div>
   </div>
@@ -85,7 +185,10 @@
     style="border-color: var(--ror-border); color: var(--ror-text-muted);"
   >
     <span id="ruler-cal-status">Loading calibration…</span>
-    <span>Keep browser zoom at 100% — zooming rescales the ruler.</span>
+    <span>
+      Keep browser zoom at 100% — zooming rescales the ruler. Shortcuts: 1–4 units · G guides · C
+      crosshair · F fullscreen · D theme.
+    </span>
   </div>
 </div>
 
@@ -119,24 +222,88 @@
     outline: 2px solid var(--ror-brand-500);
     outline-offset: -2px;
   }
+  .guide-line {
+    position: absolute;
+    pointer-events: auto;
+    touch-action: none;
+    z-index: 5;
+  }
+  .guide-line.guide-h {
+    left: 0;
+    right: 0;
+    height: 0;
+    border-top: 2px solid var(--ror-brand-500);
+    cursor: ns-resize;
+  }
+  .guide-line.guide-v {
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-left: 2px solid var(--ror-brand-500);
+    cursor: ew-resize;
+  }
+  .guide-label {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: var(--ror-brand-600);
+    color: #fff;
+    border-radius: 4px;
+    padding: 1px 6px;
+    pointer-events: none;
+  }
+  .guide-h .guide-label {
+    left: 6px;
+    top: -11px;
+  }
+  .guide-v .guide-label {
+    top: 6px;
+    left: -11px;
+    transform: rotate(-90deg) translateX(-50%);
+    transform-origin: top left;
+  }
 </style>
 
 <script>
   import { loadCalibration } from '../lib/calibration.js';
   import { computeTicks } from '../lib/ticks.js';
+  import { formatValue } from '../lib/units.js';
+  import { addGuide, clearGuides, moveGuide, pxToUnitValue, removeGuide } from '../lib/guides.js';
+  import { loadPrefs, savePrefs } from '../lib/prefs.js';
 
   var BAR = 56; // ruler bar thickness, px
   var TICK_LEN = { major: 24, long: 18, medium: 13, minor: 8 };
   var FONT_CSS = 'font-family: inherit; font-size: 11px;';
 
+  var prefs = loadPrefs();
   var state = {
-    unit: 'cm',
-    edges: { top: true, bottom: false, left: false, right: false },
+    unit: prefs.unit,
+    edges: {
+      top: prefs.edges.top,
+      bottom: prefs.edges.bottom,
+      left: prefs.edges.left,
+      right: prefs.edges.right,
+    },
     pxPerInch: 96,
+    guidesOn: prefs.guidesOn,
+    crosshairOn: prefs.crosshairOn,
+    guideOrient: 'h',
+    guides: clearGuides(),
   };
+
+  function persist() {
+    savePrefs({
+      unit: state.unit,
+      edges: state.edges,
+      guidesOn: state.guidesOn,
+      crosshairOn: state.crosshairOn,
+    });
+  }
 
   var stage = document.getElementById('ruler-stage');
   var workspace = document.getElementById('ruler-workspace');
+  var root = document.getElementById('ruler-app-root');
   var bars = {
     top: document.getElementById('ruler-bar-top'),
     bottom: document.getElementById('ruler-bar-bottom'),
@@ -144,15 +311,31 @@
     right: document.getElementById('ruler-bar-right'),
   };
   var statusEl = document.getElementById('ruler-cal-status');
+  var guidesLayer = document.getElementById('guides-layer');
+  var guidesHint = document.getElementById('guides-hint');
+  var orientBox = document.getElementById('guide-orient');
+  var chLayer = document.getElementById('crosshair-layer');
+  var chH = document.getElementById('ch-h');
+  var chV = document.getElementById('ch-v');
+  var chLabel = document.getElementById('ch-label');
+  var guidesBtn = document.getElementById('tool-guides');
+  var crosshairBtn = document.getElementById('tool-crosshair');
+  var fullscreenBtn = document.getElementById('tool-fullscreen');
+  var themeBtn = document.getElementById('tool-theme');
 
   function crisp(n) {
     return (Math.round(n) + 0.5).toFixed(1);
   }
 
-  /** Horizontal ruler SVG. `flip` = true puts the measuring edge at the bottom (top bar). */
+  function fmtUnit(v) {
+    return formatValue(v, state.unit) + ' ' + state.unit;
+  }
+
+  /* ---------- ruler rendering (Phase 3) ---------- */
+
   function hRulerSVG(length, flip) {
     var ticks = computeTicks(length, state.unit, state.pxPerInch);
-    var base = flip ? BAR : 0; // y of the measuring edge
+    var base = flip ? BAR : 0;
     var dir = flip ? -1 : 1;
     var parts = [];
     parts.push(
@@ -164,7 +347,6 @@
         state.unit +
         '">'
     );
-    // measuring-edge baseline
     parts.push(
       '<line x1="0" y1="' +
         base +
@@ -177,30 +359,26 @@
     for (var i = 0; i < ticks.length; i++) {
       var t = ticks[i];
       var len = TICK_LEN[t.size];
-      var x = crisp(t.pos);
-      var y1 = base;
-      var y2 = base + dir * len;
       var color = t.size === 'minor' ? 'var(--ror-tick-minor)' : 'var(--ror-tick)';
       parts.push(
         '<line x1="' +
-          x +
+          crisp(t.pos) +
           '" y1="' +
-          y1 +
+          base +
           '" x2="' +
-          x +
+          crisp(t.pos) +
           '" y2="' +
-          y2 +
+          (base + dir * len) +
           '" stroke="' +
           color +
           '" stroke-width="1" shape-rendering="crispEdges"/>'
       );
       if (t.label !== undefined) {
-        var ty = base + dir * (len + 13);
         parts.push(
           '<text x="' +
             t.pos.toFixed(1) +
             '" y="' +
-            ty +
+            (base + dir * (len + 13)) +
             '" text-anchor="middle" fill="var(--ror-text-muted)" style="' +
             FONT_CSS +
             '">' +
@@ -213,10 +391,9 @@
     return parts.join('');
   }
 
-  /** Vertical ruler SVG. `flip` = true puts the measuring edge at the right (left bar). */
   function vRulerSVG(length, flip) {
     var ticks = computeTicks(length, state.unit, state.pxPerInch);
-    var base = flip ? BAR : 0; // x of the measuring edge
+    var base = flip ? BAR : 0;
     var dir = flip ? -1 : 1;
     var parts = [];
     parts.push(
@@ -240,30 +417,27 @@
     for (var i = 0; i < ticks.length; i++) {
       var t = ticks[i];
       var len = TICK_LEN[t.size];
-      var y = crisp(t.pos);
       var color = t.size === 'minor' ? 'var(--ror-tick-minor)' : 'var(--ror-tick)';
       parts.push(
         '<line x1="' +
           base +
           '" y1="' +
-          y +
+          crisp(t.pos) +
           '" x2="' +
           (base + dir * len) +
           '" y2="' +
-          y +
+          crisp(t.pos) +
           '" stroke="' +
           color +
           '" stroke-width="1" shape-rendering="crispEdges"/>'
       );
       if (t.label !== undefined) {
-        var tx = base + dir * (len + 7);
         parts.push(
           '<text transform="translate(' +
-            tx +
+            (base + dir * (len + 7)) +
             ',' +
             t.pos.toFixed(1) +
-            ') rotate(-90)" text-anchor="middle" ' +
-            'dominant-baseline="central" fill="var(--ror-text-muted)" style="' +
+            ') rotate(-90)" text-anchor="middle" dominant-baseline="central" fill="var(--ror-text-muted)" style="' +
             FONT_CSS +
             '">' +
             t.label +
@@ -285,10 +459,8 @@
     var padL = state.edges.left ? BAR : 0;
     var padR = state.edges.right ? BAR : 0;
 
-    // Horizontal bars span the full width.
     bars.top.style.display = state.edges.top ? 'block' : 'none';
     bars.bottom.style.display = state.edges.bottom ? 'block' : 'none';
-    // Vertical bars fit between the horizontal ones (no corner overlap).
     bars.left.style.display = state.edges.left ? 'block' : 'none';
     bars.right.style.display = state.edges.right ? 'block' : 'none';
     bars.left.style.top = padT + 'px';
@@ -305,7 +477,248 @@
     workspace.style.bottom = padB + 'px';
     workspace.style.left = padL + 'px';
     workspace.style.right = padR + 'px';
+
+    renderGuides();
   }
+
+  /* ---------- guides (Phase 4) ---------- */
+
+  function workspaceRect() {
+    return workspace.getBoundingClientRect();
+  }
+
+  function guideLabelText(pos) {
+    return fmtUnit(pxToUnitValue(pos, state.unit, state.pxPerInch));
+  }
+
+  function renderGuides() {
+    if (!guidesLayer) return;
+    var rect = workspaceRect();
+    var html = [];
+    for (var i = 0; i < state.guides.length; i++) {
+      var g = state.guides[i];
+      var cls = g.orientation === 'h' ? 'guide-h' : 'guide-v';
+      var pos = g.orientation === 'h' ? Math.min(g.pos, rect.height) : Math.min(g.pos, rect.width);
+      var style = g.orientation === 'h' ? 'top:' + pos + 'px;' : 'left:' + pos + 'px;';
+      html.push(
+        '<div class="guide-line ' +
+          cls +
+          '" data-id="' +
+          g.id +
+          '" style="' +
+          style +
+          '" role="separator" aria-label="Guide at ' +
+          guideLabelText(pos) +
+          '">' +
+          '<span class="guide-label">' +
+          guideLabelText(pos) +
+          '</span></div>'
+      );
+    }
+    guidesLayer.innerHTML = html.join('');
+  }
+
+  function dropGuide(clientX, clientY) {
+    var rect = workspaceRect();
+    var pos = state.guideOrient === 'h' ? clientY - rect.top : clientX - rect.left;
+    var max = state.guideOrient === 'h' ? rect.height : rect.width;
+    pos = Math.max(0, Math.min(pos, max));
+    state.guides = addGuide(state.guides, state.guideOrient, pos);
+    renderGuides();
+  }
+
+  function startGuideDrag(ev, el) {
+    var id = el.getAttribute('data-id');
+    var guide = null;
+    for (var i = 0; i < state.guides.length; i++) {
+      if (state.guides[i].id === id) guide = state.guides[i];
+    }
+    if (!guide) return;
+    ev.preventDefault();
+    var rect = workspaceRect();
+    var startClient = guide.orientation === 'h' ? ev.clientY : ev.clientX;
+    var startPos = guide.pos;
+    var max = guide.orientation === 'h' ? rect.height : rect.width;
+
+    function onMove(mev) {
+      var cur = guide.orientation === 'h' ? mev.clientY : mev.clientX;
+      var pos = Math.max(0, Math.min(startPos + (cur - startClient), max));
+      state.guides = moveGuide(state.guides, id, pos);
+      if (guide.orientation === 'h') el.style.top = pos + 'px';
+      else el.style.left = pos + 'px';
+      var label = el.querySelector('.guide-label');
+      var aria = guideLabelText(pos);
+      if (label) label.textContent = aria;
+      el.setAttribute('aria-label', 'Guide at ' + aria);
+    }
+    function onUp() {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointercancel', onUp);
+      window.removeEventListener('pointerup', onUp);
+    }
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+  }
+
+  guidesLayer.addEventListener('pointerdown', function (ev) {
+    var el = ev.target.closest('.guide-line');
+    if (el) startGuideDrag(ev, el);
+  });
+  guidesLayer.addEventListener('dblclick', function (ev) {
+    var el = ev.target.closest('.guide-line');
+    if (el) {
+      state.guides = removeGuide(state.guides, el.getAttribute('data-id'));
+      renderGuides();
+    }
+  });
+  workspace.addEventListener('click', function (ev) {
+    if (!state.guidesOn) return;
+    if (ev.target.closest('.guide-line')) return; // a drag just ended here
+    dropGuide(ev.clientX, ev.clientY);
+  });
+
+  function setGuides(on) {
+    state.guidesOn = on;
+    guidesBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    orientBox.classList.toggle('hidden', !on);
+    guidesHint.classList.toggle('hidden', !on);
+    guidesLayer.style.pointerEvents = on ? 'auto' : 'none';
+    if (!on) {
+      state.guides = clearGuides();
+      renderGuides();
+    }
+    persist();
+  }
+
+  guidesBtn.addEventListener('click', function () {
+    setGuides(!state.guidesOn);
+  });
+
+  orientBox.querySelectorAll('[data-orient]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      state.guideOrient = btn.getAttribute('data-orient');
+      orientBox.querySelectorAll('[data-orient]').forEach(function (b) {
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+      });
+    });
+  });
+
+  /* ---------- crosshair (Phase 4) ---------- */
+
+  function setCrosshair(on) {
+    state.crosshairOn = on;
+    crosshairBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (!on) chLayer.classList.add('hidden');
+    persist();
+  }
+
+  crosshairBtn.addEventListener('click', function () {
+    setCrosshair(!state.crosshairOn);
+  });
+
+  workspace.addEventListener('pointermove', function (ev) {
+    if (!state.crosshairOn) return;
+    var rect = workspaceRect();
+    var x = ev.clientX - rect.left;
+    var y = ev.clientY - rect.top;
+    chLayer.classList.remove('hidden');
+    chH.style.top = y + 'px';
+    chV.style.left = x + 'px';
+    chLabel.style.left = x + 'px';
+    chLabel.style.top = y + 'px';
+    chLabel.textContent =
+      fmtUnit(pxToUnitValue(x, state.unit, state.pxPerInch)) +
+      ', ' +
+      fmtUnit(pxToUnitValue(y, state.unit, state.pxPerInch));
+  });
+  workspace.addEventListener('pointerleave', function () {
+    chLayer.classList.add('hidden');
+  });
+
+  /* ---------- fullscreen + theme (Phase 4) ---------- */
+
+  function toggleFullscreen() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(function () {});
+    } else if (root.requestFullscreen) {
+      root.requestFullscreen().catch(function () {});
+    }
+  }
+  fullscreenBtn.addEventListener('click', toggleFullscreen);
+  document.addEventListener('fullscreenchange', function () {
+    var on = document.fullscreenElement === root;
+    fullscreenBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+
+  themeBtn.addEventListener('click', function () {
+    var dark = document.documentElement.classList.toggle('dark');
+    try {
+      localStorage.setItem('ror-theme', dark ? 'dark' : 'light');
+    } catch {
+      /* ignore */
+    }
+  });
+
+  /* ---------- toolbar: units + edges (Phase 3, now persisted) ---------- */
+
+  function setUnit(unit, btn) {
+    state.unit = unit;
+    root.querySelectorAll('[data-unit]').forEach(function (b) {
+      b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+    });
+    renderRulers();
+    persist();
+  }
+
+  root.querySelectorAll('[data-unit]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      setUnit(btn.getAttribute('data-unit'), btn);
+    });
+  });
+  root.querySelectorAll('[data-edge]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var edge = btn.getAttribute('data-edge');
+      state.edges[edge] = !state.edges[edge];
+      btn.setAttribute('aria-pressed', state.edges[edge] ? 'true' : 'false');
+      renderRulers();
+      persist();
+    });
+  });
+
+  /* ---------- keyboard shortcuts ---------- */
+
+  function modalOpen() {
+    var overlay = document.getElementById('calibrate-overlay');
+    return overlay !== null && !overlay.classList.contains('hidden');
+  }
+
+  document.addEventListener('keydown', function (ev) {
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    var key = ev.key.toLowerCase();
+    var unitMap = { 1: 'cm', 2: 'in', 3: 'mm', 4: 'px' };
+    if (unitMap[ev.key]) {
+      var btn = root.querySelector('[data-unit="' + unitMap[ev.key] + '"]');
+      setUnit(unitMap[ev.key], btn);
+      return;
+    }
+    if (key === 'g') {
+      setGuides(!state.guidesOn);
+    } else if (key === 'c') {
+      setCrosshair(!state.crosshairOn);
+    } else if (key === 'f') {
+      toggleFullscreen();
+    } else if (key === 'escape' || key === 'esc') {
+      if (!modalOpen() && state.guides.length > 0) {
+        state.guides = clearGuides();
+        renderGuides();
+      }
+    }
+    // 'd' (theme) is handled by the site header.
+  });
+
+  /* ---------- calibration ---------- */
 
   function methodLabel(m) {
     return (
@@ -332,41 +745,6 @@
     renderRulers();
   }
 
-  // Toolbar wiring
-  var root = document.getElementById('ruler-app-root');
-  root.querySelectorAll('[data-unit]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      state.unit = btn.getAttribute('data-unit');
-      root.querySelectorAll('[data-unit]').forEach(function (b) {
-        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
-      });
-      renderRulers();
-    });
-  });
-  root.querySelectorAll('[data-edge]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var edge = btn.getAttribute('data-edge');
-      state.edges[edge] = !state.edges[edge];
-      btn.setAttribute('aria-pressed', state.edges[edge] ? 'true' : 'false');
-      renderRulers();
-    });
-  });
-
-  // Keyboard shortcuts: 1=cm 2=in 3=mm 4=px (full map lands in Phase 4)
-  document.addEventListener('keydown', function (ev) {
-    var tag = (document.activeElement && document.activeElement.tagName) || '';
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-    var map = { 1: 'cm', 2: 'in', 3: 'mm', 4: 'px' };
-    var unit = map[ev.key];
-    if (!unit) return;
-    state.unit = unit;
-    root.querySelectorAll('[data-unit]').forEach(function (b) {
-      b.setAttribute('aria-pressed', b.getAttribute('data-unit') === unit ? 'true' : 'false');
-    });
-    renderRulers();
-  });
-
-  // React to calibration changes (same tab + other tabs)
   window.addEventListener('ror:calibration-changed', refreshCalibration);
   window.addEventListener('storage', function (ev) {
     if (ev.key === 'ror-calibration') refreshCalibration();
@@ -375,6 +753,20 @@
   new ResizeObserver(function () {
     renderRulers();
   }).observe(stage);
+
+  /* ---------- init: apply persisted prefs ---------- */
+
+  root.querySelectorAll('[data-unit]').forEach(function (b) {
+    b.setAttribute('aria-pressed', b.getAttribute('data-unit') === state.unit ? 'true' : 'false');
+  });
+  root.querySelectorAll('[data-edge]').forEach(function (b) {
+    b.setAttribute('aria-pressed', state.edges[b.getAttribute('data-edge')] ? 'true' : 'false');
+  });
+  guidesBtn.setAttribute('aria-pressed', state.guidesOn ? 'true' : 'false');
+  crosshairBtn.setAttribute('aria-pressed', state.crosshairOn ? 'true' : 'false');
+  orientBox.classList.toggle('hidden', !state.guidesOn);
+  guidesHint.classList.toggle('hidden', !state.guidesOn);
+  guidesLayer.style.pointerEvents = state.guidesOn ? 'auto' : 'none';
 
   refreshCalibration();
 </script>
