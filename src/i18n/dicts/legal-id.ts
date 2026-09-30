@@ -168,6 +168,8 @@ export const legalId = {
     ],
     socialTitle: 'Hubungi Firoz',
     socialBody: 'Profil publik (respons tercepat):',
+    emailTitle: 'Kirim email',
+    email: 'support@realonlineruler.online',
     noteTitle: 'Sebelum menulis',
     noteBody:
       'Jika pertanyaanmu soal akurasi, coba dulu halaman kalibrasi — sebagian besar pertanyaan akurasi terselesaikan dengan kalibrasi ulang saat zoom browser di 100%.',

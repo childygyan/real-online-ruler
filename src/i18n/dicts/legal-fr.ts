@@ -168,6 +168,8 @@ export const legalFr = {
     ],
     socialTitle: 'Joindre Firoz',
     socialBody: 'Profils publics (réponse la plus rapide) :',
+    emailTitle: 'Écrivez-nous',
+    email: 'support@realonlineruler.online',
     noteTitle: 'Avant de nous écrire',
     noteBody:
       "Si votre question porte sur la précision, essayez d'abord la page d'étalonnage : la plupart des questions de précision se règlent en réétalonnant avec le zoom du navigateur à 100 %.",

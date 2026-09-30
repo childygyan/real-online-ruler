@@ -168,6 +168,8 @@ export const legalPt = {
     ],
     socialTitle: 'Fale com o Firoz',
     socialBody: 'Perfis públicos (resposta mais rápida):',
+    emailTitle: 'Envie um e-mail',
+    email: 'support@realonlineruler.online',
     noteTitle: 'Antes de escrever',
     noteBody:
       'Se a sua dúvida é sobre precisão, experimente primeiro a página de calibração: a maioria das dúvidas de precisão se resolve recalibrando com o zoom do navegador em 100%.',

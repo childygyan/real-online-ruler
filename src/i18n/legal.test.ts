@@ -50,6 +50,8 @@ describe('legal dictionaries', () => {
     for (const code of CODES) {
       const contact = DICTS[code].content.legal.contact;
       expect(contact.socialTitle.length, `${code}:socialTitle`).toBeGreaterThan(0);
+      expect(contact.emailTitle.length, `${code}:emailTitle`).toBeGreaterThan(0);
+      expect(contact.email, `${code}:email`).toBe('support@realonlineruler.online');
       expect(contact.noteBody.length, `${code}:noteBody`).toBeGreaterThan(0);
     }
   });

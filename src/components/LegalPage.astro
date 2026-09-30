@@ -132,6 +132,16 @@ const SOCIALS = [
       {(t as LegalDict['contact']).intro.map((p) => (
         <p>{p}</p>
       ))}
+      <h2>{(t as LegalDict['contact']).emailTitle}</h2>
+      <p>
+        <a
+          href={`mailto:${(t as LegalDict['contact']).email}`}
+          class="font-medium hover:underline"
+          style="color: var(--ror-brand-700);"
+        >
+          {(t as LegalDict['contact']).email}
+        </a>
+      </p>
       <h2>{(t as LegalDict['contact']).socialTitle}</h2>
       <p>{(t as LegalDict['contact']).socialBody}</p>
       <ul>

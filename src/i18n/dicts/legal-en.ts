@@ -167,6 +167,8 @@ export const legalEn = {
     ],
     socialTitle: 'Reach Firoz',
     socialBody: 'Public profiles (fastest response):',
+    emailTitle: 'Email us',
+    email: 'support@realonlineruler.online',
     noteTitle: 'Before you write',
     noteBody:
       'If your question is about accuracy, try the calibration page first — most accuracy questions are resolved by recalibrating with the browser zoom at 100%.',

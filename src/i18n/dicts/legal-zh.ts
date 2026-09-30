@@ -155,6 +155,8 @@ export const legalZh = {
     ],
     socialTitle: '联系 Firoz',
     socialBody: '公开主页（回复最快）：',
+    emailTitle: '发送邮件',
+    email: 'support@realonlineruler.online',
     noteTitle: '留言之前',
     noteBody:
       '如果你的问题与精度有关，请先试试校准页面——大多数精度问题都可以通过重新校准（浏览器缩放保持 100%）解决。',
