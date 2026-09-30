@@ -41,15 +41,15 @@ Toolbar: a second "Advanced" toolbar row holds the six tool buttons plus a
 No collisions with existing shortcuts (1–4 units, G guides, C crosshair, F
 fullscreen, D theme, Esc):
 
-| Key | Action |
-| --- | ------ |
-| M | Drag-to-measure tool |
-| P | Protractor overlay |
-| L | Magnifier loupe |
-| R | Floating ruler |
-| O | Measurement log |
-| N | Grid overlay |
-| H | Shortcut help dialog |
+| Key | Action                                       |
+| --- | -------------------------------------------- |
+| M   | Drag-to-measure tool                         |
+| P   | Protractor overlay                           |
+| L   | Magnifier loupe                              |
+| R   | Floating ruler                               |
+| O   | Measurement log                              |
+| N   | Grid overlay                                 |
+| H   | Shortcut help dialog                         |
 | Esc | Cancel drawing / close dialog / clear guides |
 
 Documented in the in-app help dialog (`? Shortcuts` / `H`) and in a new
