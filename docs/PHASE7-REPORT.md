@@ -96,8 +96,9 @@ claims.
 
 ## Deployment / archive
 
-- Remote commit: (recorded below after push)
-- Drive archive: (recorded below after upload)
+- Remote commit: `0ceab3836ff8263ded056de1607bf9a582beb6e0` (GitHub `main`)
+- Drive archive: `real-online-ruler-phase7.zip` —
+  https://drive.google.com/file/d/17qePxDkIQZVcm1RyCZ-RmO7E0KmmiQBL/view?usp=drivesdk
 - Live smoke test: (recorded below after deploy)
 
 ## Notes for Phase 8 (i18n)
