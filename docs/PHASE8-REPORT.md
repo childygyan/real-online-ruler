@@ -125,7 +125,7 @@ the English base); de/it dropped for lack of signal.
 
 ## 5. GitHub
 
-- Implementation commit: `21a99dd72a79d8516bb70f2b0d5e00ecad7e4eac` (pushed to `main` on `childygyan/real-online-ruler`)
+- Implementation commit: `eba5dbfaee854e9f3bfea98c67c97ca554a3a980` (pushed to `main` on `childygyan/real-online-ruler`; report metadata follow-ups on top)
 
 ## 6. Drive archive
 
