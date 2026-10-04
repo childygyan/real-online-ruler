@@ -9,6 +9,8 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { en } from './i18n/dicts/en.js';
+import * as ringSizeContent from './pages/how-to-measure-ring-size/content.js';
+import * as pdContent from './pages/how-to-measure-pupillary-distance/content.js';
 import { getDict } from './i18n/dict.js';
 import { DEFAULT_LOCALE, LOCALES } from './i18n/locales.js';
 
@@ -132,48 +134,59 @@ describe('robots.txt and llms.txt', () => {
   });
 });
 
-describe('ring-size article', () => {
-  it('article page and colocated content exist with complete metadata', async () => {
-    expect(existsSync(join(ROOT, 'src/pages/how-to-measure-ring-size/index.astro'))).toBe(true);
-    const mod = await import('./pages/how-to-measure-ring-size/content.js');
-    const a = mod.article;
-    for (const key of ['title', 'description', 'h1', 'lede', 'breadcrumb'] as const) {
-      expect(a[key].length, `article.${key}`).toBeGreaterThan(0);
-    }
-    expect(a.blocks.length).toBeGreaterThan(10);
-    expect(a.faqs.length).toBeGreaterThanOrEqual(5);
-    expect(a.related.length).toBeGreaterThanOrEqual(3);
-    // ISO publish date, unique per article (never reuse one date across articles)
-    expect(mod.DATE_PUBLISHED).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(Number.isNaN(Date.parse(mod.DATE_PUBLISHED))).toBe(false);
-  });
+describe('how-to articles', () => {
+  // Static imports: vitest cannot resolve variable dynamic imports.
+  const ARTICLES = [
+    { slug: 'how-to-measure-ring-size', mod: ringSizeContent },
+    { slug: 'how-to-measure-pupillary-distance', mod: pdContent },
+  ];
 
-  it('every figure references a real image file with alt text', async () => {
-    const mod = await import('./pages/how-to-measure-ring-size/content.js');
-    const figures = mod.article.blocks.filter((b) => b.kind === 'figure');
-    expect(figures.length).toBeGreaterThanOrEqual(2);
-    for (const f of figures) {
-      expect(f.alt.length, `${f.src} alt`).toBeGreaterThan(10);
-      expect(f.caption.length, `${f.src} caption`).toBeGreaterThan(0);
-      const rel = f.src.replace(/^\//, '');
-      expect(existsSync(join(ROOT, 'public', rel)), rel).toBe(true);
+  it('every article page exists with complete metadata and a unique publish date', () => {
+    const dates = new Set<string>();
+    for (const { slug, mod } of ARTICLES) {
+      expect(existsSync(join(ROOT, 'src/pages', slug, 'index.astro')), slug).toBe(true);
+      const a = mod.article;
+      for (const key of ['title', 'description', 'h1', 'lede', 'breadcrumb'] as const) {
+        expect(a[key].length, `${slug}.${key}`).toBeGreaterThan(0);
+      }
+      expect(a.blocks.length).toBeGreaterThan(10);
+      expect(a.faqs.length).toBeGreaterThanOrEqual(5);
+      expect(a.related.length).toBeGreaterThanOrEqual(3);
+      // ISO publish date, unique per article (never reuse one date across articles)
+      expect(mod.DATE_PUBLISHED).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(Number.isNaN(Date.parse(mod.DATE_PUBLISHED))).toBe(false);
+      expect(dates.has(mod.DATE_PUBLISHED), `duplicate date ${mod.DATE_PUBLISHED}`).toBe(false);
+      dates.add(mod.DATE_PUBLISHED);
     }
   });
 
-  it('article links only to pages that exist (interlinking integrity)', async () => {
-    const mod = await import('./pages/how-to-measure-ring-size/content.js');
-    const hrefs = new Set<string>();
-    for (const r of mod.article.related) hrefs.add(r.href);
-    const html = mod.article.blocks
-      .filter((b) => b.kind === 'p' || b.kind === 'figure')
-      .map((b) => (b.kind === 'p' ? b.html : b.caption))
-      .join(' ');
-    for (const m of html.matchAll(/href="(\/[^"]*\/)"/g)) hrefs.add(m[1]);
-    expect(hrefs.size).toBeGreaterThan(0);
-    for (const href of hrefs) {
-      const pageFile = join(ROOT, 'src/pages', href.slice(1), 'index.astro');
-      const dirIndex = join(ROOT, 'src/pages', href.slice(1), 'index.astro');
-      expect(existsSync(pageFile) || existsSync(dirIndex), href).toBe(true);
+  it('every figure references a real image file with alt text', () => {
+    for (const { slug, mod } of ARTICLES) {
+      const figures = mod.article.blocks.filter((b) => b.kind === 'figure');
+      expect(figures.length, `${slug} figures`).toBeGreaterThanOrEqual(2);
+      for (const f of figures) {
+        expect(f.alt.length, `${slug}:${f.src} alt`).toBeGreaterThan(10);
+        expect(f.caption.length, `${slug}:${f.src} caption`).toBeGreaterThan(0);
+        const rel = f.src.replace(/^\//, '');
+        expect(existsSync(join(ROOT, 'public', rel)), rel).toBe(true);
+      }
+    }
+  });
+
+  it('article links only to pages that exist (interlinking integrity)', () => {
+    for (const { slug, mod } of ARTICLES) {
+      const hrefs = new Set<string>();
+      for (const r of mod.article.related) hrefs.add(r.href);
+      const html = mod.article.blocks
+        .filter((b) => b.kind === 'p' || b.kind === 'figure')
+        .map((b) => (b.kind === 'p' ? b.html : b.caption))
+        .join(' ');
+      for (const m of html.matchAll(/href="(\/[^"]*\/)"/g)) hrefs.add(m[1]);
+      expect(hrefs.size).toBeGreaterThan(0);
+      for (const href of hrefs) {
+        const pageFile = join(ROOT, 'src/pages', href.slice(1), 'index.astro');
+        expect(existsSync(pageFile), `${slug} -> ${href}`).toBe(true);
+      }
     }
   });
 
@@ -189,15 +202,16 @@ describe('ring-size article', () => {
     expect(JSON.stringify(en.footer.guideLinks)).not.toContain('/how-to/');
   });
 
-  it('how-to structured data covers both methods with named steps', async () => {
-    const mod = await import('./pages/how-to-measure-ring-size/content.js');
-    expect(mod.howToMethods.length).toBe(2);
-    for (const m of mod.howToMethods) {
-      expect(m.name.length).toBeGreaterThan(0);
-      expect(m.steps.length).toBeGreaterThanOrEqual(3);
-      for (const s of m.steps) {
-        expect(s.name.length, 'step name').toBeGreaterThan(0);
-        expect(s.text.length, 'step text').toBeGreaterThan(20);
+  it('how-to structured data covers every article with named steps', () => {
+    for (const { slug, mod } of ARTICLES) {
+      expect(mod.howToMethods.length, `${slug} methods`).toBe(2);
+      for (const m of mod.howToMethods) {
+        expect(m.name.length).toBeGreaterThan(0);
+        expect(m.steps.length).toBeGreaterThanOrEqual(3);
+        for (const s of m.steps) {
+          expect(s.name.length, 'step name').toBeGreaterThan(0);
+          expect(s.text.length, 'step text').toBeGreaterThan(20);
+        }
       }
     }
   });
@@ -205,7 +219,8 @@ describe('ring-size article', () => {
   it('how-to index lists every registered article with date and working links', async () => {
     expect(existsSync(join(ROOT, 'src/pages/how-to/index.astro'))).toBe(true);
     const mod = await import('./pages/how-to/articles.js');
-    expect(mod.ARTICLES.length).toBeGreaterThanOrEqual(1);
+    expect(mod.ARTICLES.length).toBe(ARTICLES.length);
+    expect(mod.ARTICLES.map((a) => a.slug).sort()).toEqual(ARTICLES.map((a) => a.slug).sort());
     // newest first, each article with its own unique publish date
     const dates = mod.ARTICLES.map((a) => a.datePublished);
     expect(new Set(dates).size).toBe(dates.length);

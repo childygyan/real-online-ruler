@@ -12,6 +12,10 @@ import {
   article as ringSize,
   DATE_PUBLISHED as ringSizeDate,
 } from '../how-to-measure-ring-size/content.js';
+import {
+  article as pupillaryDistance,
+  DATE_PUBLISHED as pupillaryDistanceDate,
+} from '../how-to-measure-pupillary-distance/content.js';
 
 export interface ArticleEntry {
   slug: string;
@@ -39,5 +43,6 @@ const byNewest = (a: ArticleEntry, b: ArticleEntry) =>
 
 export const ARTICLES: ArticleEntry[] = [
   entry('how-to-measure-ring-size', ringSize, ringSizeDate),
-  // entry('how-to-measure-pd', pd, pdDate),
+  entry('how-to-measure-pupillary-distance', pupillaryDistance, pupillaryDistanceDate),
+  // entry('how-to-measure-...', next, nextDate),
 ].sort(byNewest);

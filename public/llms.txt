@@ -17,6 +17,7 @@ Practical measurement how-tos (English; each with its own publish date).
 Full index: [How-to guides](https://realonlineruler.online/how-to/)
 
 - [How to Measure Your Ring Size at Home](https://realonlineruler.online/how-to-measure-ring-size/) (2026-10-04): paper-strip and existing-ring methods, measure in millimeters on the on-screen ruler, US/UK/EU size chart.
+- [How to Measure Your Pupillary Distance (PD) at Home](https://realonlineruler.online/how-to-measure-pupillary-distance/) (2026-10-07): mirror and helper methods, single vs dual PD explained, on-screen mm ruler instead of a physical one.
 
 ## Advanced features
 
