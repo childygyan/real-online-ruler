@@ -10,6 +10,63 @@ import type { ContentPageDict } from '../../i18n/content.js';
 
 export const DATE_PUBLISHED = '2026-10-04';
 
+/** Step-by-step methods for HowTo structured data (mirrors the article body). */
+export interface HowToMethod {
+  name: string;
+  totalTime: string;
+  tools: string[];
+  steps: { name: string; text: string }[];
+}
+
+export const howToMethods: HowToMethod[] = [
+  {
+    name: 'How to measure ring size with a paper strip',
+    totalTime: 'PT10M',
+    tools: ['Strip of plain paper', 'Pen', 'Millimeter ruler (or the on-screen ruler)'],
+    steps: [
+      {
+        name: 'Cut a paper strip',
+        text: 'Cut a strip of plain paper about 10 cm long and 1 cm wide. Avoid string or thread, which stretch and add phantom millimeters.',
+      },
+      {
+        name: 'Wrap it around your finger',
+        text: 'Wrap the strip around the base of the finger, snug but comfortable — the way a ring should feel, sliding over the knuckle with slight resistance.',
+      },
+      {
+        name: 'Mark the overlap',
+        text: 'With a pen, mark exactly where the end of the strip meets the wrapped paper.',
+      },
+      {
+        name: 'Measure in millimeters',
+        text: "Unwrap the strip, lay it flat, and measure from the end to the pen mark in millimeters. That number is your finger's circumference.",
+      },
+      {
+        name: 'Find your size',
+        text: 'Match the millimeter measurement to the ring size chart to get your US, UK, or EU size.',
+      },
+    ],
+  },
+  {
+    name: 'How to measure ring size from a ring you own',
+    totalTime: 'PT5M',
+    tools: ['A ring that fits the finger', 'Millimeter ruler (or the on-screen ruler)'],
+    steps: [
+      {
+        name: 'Pick a ring that fits',
+        text: 'Choose a ring that already fits the exact finger you are sizing.',
+      },
+      {
+        name: 'Measure the inside diameter',
+        text: 'Measure straight across the inside of the band, edge to edge, in millimeters — not including the metal.',
+      },
+      {
+        name: 'Find your size',
+        text: 'Match the inside diameter in millimeters to the ring size chart.',
+      },
+    ],
+  },
+];
+
 export const article: ContentPageDict = {
   title: 'How to Measure Ring Size at Home Without a Ring Sizer | Real Online Ruler',
   description:
@@ -20,7 +77,7 @@ export const article: ContentPageDict = {
   related: [
     { href: '/mm/', label: 'Millimeter ruler' },
     { href: '/how-to-calibrate/', label: 'How to calibrate' },
-    { href: '/guide/', label: 'Reading the ruler' },
+    { href: '/how-to/', label: 'All how-to guides' },
   ],
   faqs: [
     {
@@ -100,7 +157,8 @@ export const article: ContentPageDict = {
       kind: 'figure',
       src: '/images/articles/how-to-measure-ring-size/mm-ruler-mobile.webp',
       alt: 'The millimeter ruler page displayed on a phone screen',
-      caption: 'The millimeter ruler on a phone — hold a ring or paper strip against the screen edge to read its size.',
+      caption:
+        'The millimeter ruler on a phone — hold a ring or paper strip against the screen edge to read its size.',
     },
     { kind: 'h2', text: 'Ring size chart: US, UK, and EU sizes in millimeters' },
     {

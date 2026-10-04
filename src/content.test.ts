@@ -177,15 +177,47 @@ describe('ring-size article', () => {
     }
   });
 
-  it('english footer and homepage surface the article link (english-only)', () => {
-    // The article has no localized versions yet, so the link is rendered
+  it('english footer and homepage surface the how-to hub (english-only)', () => {
+    // The how-to section has no localized versions yet, so the link is rendered
     // conditionally in the components — never via localizePath (would 404).
     const footer = read('src/components/Footer.astro');
     expect(footer).toContain("locale === 'en'");
-    expect(footer).toContain('href="/how-to-measure-ring-size/"');
+    expect(footer).toContain('href="/how-to/"');
     const home = read('src/pages/index.astro');
-    expect(home).toContain('href="/how-to-measure-ring-size/"');
-    // ...and the locale dicts stay in exact parity (no per-locale article key)
-    expect(JSON.stringify(en.footer.guideLinks)).not.toContain('how-to-measure-ring-size');
+    expect(home).toContain('href="/how-to/"');
+    // ...and the locale dicts stay in exact parity (no per-locale how-to key)
+    expect(JSON.stringify(en.footer.guideLinks)).not.toContain('/how-to/');
+  });
+
+  it('how-to structured data covers both methods with named steps', async () => {
+    const mod = await import('./pages/how-to-measure-ring-size/content.js');
+    expect(mod.howToMethods.length).toBe(2);
+    for (const m of mod.howToMethods) {
+      expect(m.name.length).toBeGreaterThan(0);
+      expect(m.steps.length).toBeGreaterThanOrEqual(3);
+      for (const s of m.steps) {
+        expect(s.name.length, 'step name').toBeGreaterThan(0);
+        expect(s.text.length, 'step text').toBeGreaterThan(20);
+      }
+    }
+  });
+
+  it('how-to index lists every registered article with date and working links', async () => {
+    expect(existsSync(join(ROOT, 'src/pages/how-to/index.astro'))).toBe(true);
+    const mod = await import('./pages/how-to/articles.js');
+    expect(mod.ARTICLES.length).toBeGreaterThanOrEqual(1);
+    // newest first, each article with its own unique publish date
+    const dates = mod.ARTICLES.map((a) => a.datePublished);
+    expect(new Set(dates).size).toBe(dates.length);
+    const sorted = [...mod.ARTICLES].sort((a, b) => b.datePublished.localeCompare(a.datePublished));
+    expect(mod.ARTICLES.map((a) => a.slug)).toEqual(sorted.map((a) => a.slug));
+    for (const a of mod.ARTICLES) {
+      expect(a.title.length).toBeGreaterThan(0);
+      expect(a.description.length).toBeGreaterThan(0);
+      expect(existsSync(join(ROOT, 'src/pages', a.slug, 'index.astro')), a.slug).toBe(true);
+      if (a.image) {
+        expect(existsSync(join(ROOT, 'public', a.image.replace(/^\//, ''))), a.image).toBe(true);
+      }
+    }
   });
 });

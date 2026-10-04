@@ -57,12 +57,12 @@ const year = new Date().getFullYear();
             </a>
           </li>
         ))}
-        {/* English-only articles: no localized versions exist (yet), so the
-            link stays root-relative and is shown on the English footer only. */}
+        {/* English-only how-to section: no localized versions exist (yet), so
+            the link stays root-relative and is shown on the English footer only. */}
         {locale === 'en' && (
           <li>
-            <a class="hover:underline" href="/how-to-measure-ring-size/">
-              How to measure ring size
+            <a class="hover:underline" href="/how-to/">
+              How-to guides
             </a>
           </li>
         )}

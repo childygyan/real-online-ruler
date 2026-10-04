@@ -8,11 +8,16 @@
  */
 import ContentLayout from '../../layouts/ContentLayout.astro';
 import ContentBlocks from '../../components/ContentBlocks.astro';
-import { article, DATE_PUBLISHED } from './content.js';
+import { article, DATE_PUBLISHED, howToMethods } from './content.js';
 
 const path = '/how-to-measure-ring-size/';
 const site = (Astro.site?.toString() ?? 'https://realonlineruler.online/').replace(/\/$/, '');
 const pageUrl = `${site}${path}`;
+const images = [
+  `${site}/images/articles/how-to-measure-ring-size/ruler-workspace.webp`,
+  `${site}/images/articles/how-to-measure-ring-size/calibration-methods.webp`,
+  `${site}/images/articles/how-to-measure-ring-size/mm-ruler-mobile.webp`,
+];
 
 const faqJsonLd = {
   '@context': 'https://schema.org',
@@ -32,12 +37,19 @@ const articleJsonLd = {
   datePublished: DATE_PUBLISHED,
   author: { '@type': 'Person', name: 'Firoz Khan' },
   mainEntityOfPage: pageUrl,
-  image: [
-    `${site}/images/articles/how-to-measure-ring-size/ruler-workspace.webp`,
-    `${site}/images/articles/how-to-measure-ring-size/calibration-methods.webp`,
-    `${site}/images/articles/how-to-measure-ring-size/mm-ruler-mobile.webp`,
-  ],
+  image: images,
 };
+
+const howToJsonLd = howToMethods.map((m) => ({
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: m.name,
+  description: article.description,
+  image: images,
+  totalTime: m.totalTime,
+  tool: m.tools,
+  step: m.steps.map((s) => ({ '@type': 'HowToStep', name: s.name, text: s.text })),
+}));
 ---
 
 <ContentLayout
@@ -49,7 +61,7 @@ const articleJsonLd = {
   breadcrumb={article.breadcrumb}
   locales={['en']}
   datePublished={DATE_PUBLISHED}
-  jsonLd={[articleJsonLd, faqJsonLd]}
+  jsonLd={[articleJsonLd, ...howToJsonLd, faqJsonLd]}
   related={article.related}
 >
   <ContentBlocks blocks={article.blocks} />

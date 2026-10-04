@@ -1,0 +1,130 @@
+---
+/**
+ * /how-to/ — index of English-only how-to articles ("How-to guides").
+ *
+ * New articles appear here automatically via ./articles.ts. English-only:
+ * locales={['en']} so hreflang never points at untranslated URLs.
+ */
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import { ARTICLES } from './articles.js';
+
+const path = '/how-to/';
+const site = (Astro.site?.toString() ?? 'https://realonlineruler.online/').replace(/\/$/, '');
+
+const pretty = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+
+const itemListJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: ARTICLES.map((a, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: `${site}/${a.slug}/`,
+    name: a.title,
+  })),
+};
+---
+
+<ContentLayout
+  title="How-to Guides: Practical Measuring Tutorials | Real Online Ruler"
+  description="Step-by-step guides for measuring real-world things — ring sizes, pupillary distance, and more — with our free on-screen ruler. New guides added regularly."
+  path={path}
+  h1="How-to guides"
+  lede="Practical, hands-on measuring tutorials. Every guide ends where our free on-screen ruler begins — measuring the real thing."
+  breadcrumb="How-to guides"
+  locales={['en']}
+  jsonLd={[itemListJsonLd]}
+>
+  <div class="howto-grid">
+    {ARTICLES.map((a) => (
+      <a href={`/${a.slug}/`} class="howto-card">
+        {a.image && (
+          <img src={a.image} alt="" loading="lazy" decoding="async" class="howto-thumb" />
+        )}
+        <div class="howto-body">
+          <p class="howto-date">
+            <time datetime={a.datePublished}>{pretty(a.datePublished)}</time>
+          </p>
+          <h2 class="howto-title">{a.title}</h2>
+          <p class="howto-desc">{a.description}</p>
+          <span class="howto-more">Read the guide →</span>
+        </div>
+      </a>
+    ))}
+  </div>
+</ContentLayout>
+
+<style>
+  .howto-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  @media (min-width: 640px) {
+    .howto-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .howto-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ror-border);
+    border-radius: 14px;
+    overflow: hidden;
+    background-color: var(--ror-bg-soft);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .howto-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
+  }
+  .howto-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: top;
+    border-bottom: 1px solid var(--ror-border);
+  }
+  .howto-body {
+    padding: 1.25rem 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+  .howto-date {
+    font-size: 0.8rem;
+    color: var(--ror-text-muted);
+    margin: 0 !important;
+  }
+  .howto-title {
+    font-size: 1.2rem !important;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 !important;
+    color: var(--ror-text);
+  }
+  .howto-desc {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--ror-text-muted);
+    margin: 0 !important;
+    flex: 1;
+  }
+  .howto-more {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ror-brand-700);
+  }
+  .howto-card:hover .howto-more {
+    text-decoration: underline;
+  }
+</style>
