@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import { en } from './i18n/dicts/en.js';
 import * as ringSizeContent from './pages/how-to-measure-ring-size/content.js';
 import * as pdContent from './pages/how-to-measure-pupillary-distance/content.js';
+import * as inchLookContent from './pages/what-does-an-inch-look-like/content.js';
 import { getDict } from './i18n/dict.js';
 import { DEFAULT_LOCALE, LOCALES } from './i18n/locales.js';
 
@@ -139,6 +140,7 @@ describe('how-to articles', () => {
   const ARTICLES = [
     { slug: 'how-to-measure-ring-size', mod: ringSizeContent },
     { slug: 'how-to-measure-pupillary-distance', mod: pdContent },
+    { slug: 'what-does-an-inch-look-like', mod: inchLookContent },
   ];
 
   it('every article page exists with complete metadata and a unique publish date', () => {
@@ -202,8 +204,11 @@ describe('how-to articles', () => {
     expect(JSON.stringify(en.footer.guideLinks)).not.toContain('/how-to/');
   });
 
-  it('how-to structured data covers every article with named steps', () => {
+  it('how-to structured data covers procedural articles with named steps', () => {
     for (const { slug, mod } of ARTICLES) {
+      // Visual-reference articles (no step-by-step procedure) may skip HowTo
+      // and ship Article + FAQPage schema only.
+      if (!('howToMethods' in mod) || !mod.howToMethods) continue;
       expect(mod.howToMethods.length, `${slug} methods`).toBe(2);
       for (const m of mod.howToMethods) {
         expect(m.name.length).toBeGreaterThan(0);

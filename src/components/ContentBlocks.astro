@@ -34,6 +34,35 @@ const html = (s: string) => localizeHtml(s, locale);
       <img src={b.src} alt={b.alt} loading="lazy" decoding="async" />
       <figcaption set:html={html(b.caption)} />
     </figure>
+  ) : b.kind === 'truesize' ? (
+    <div class="ror-truesize" data-truesize>
+      <div class="ror-truesize-bars">
+        {b.bars.map((bar) => (
+          <div class="ror-truesize-row">
+            <span class="ror-truesize-label">{bar.label}</span>
+            <div class="ror-truesize-bar" data-actual-mm={bar.mm} role="img" aria-label={bar.label}></div>
+          </div>
+        ))}
+      </div>
+      {b.shapes && (
+        <div class="ror-truesize-shapes">
+          {b.shapes.map((s) => (
+            <div class="ror-truesize-shape">
+              <div
+                class="ror-truesize-object"
+                class:list={[{ 'is-round': s.round }]}
+                data-actual-w-mm={s.wMm}
+                data-actual-h-mm={s.hMm}
+                role="img"
+                aria-label={s.label}
+              ></div>
+              <span class="ror-truesize-label">{s.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      <p class="ror-truesize-note" data-truesize-note></p>
+    </div>
   ) : (
     <table>
       <thead>

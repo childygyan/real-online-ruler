@@ -12,7 +12,12 @@ export type ContentBlock =
   | { kind: 'p'; html: string }
   | { kind: 'ul'; items: string[] }
   | { kind: 'table'; head: string[]; rows: string[][] }
-  | { kind: 'figure'; src: string; alt: string; caption: string };
+  | { kind: 'figure'; src: string; alt: string; caption: string }
+  | {
+      kind: 'truesize';
+      bars: { label: string; mm: number }[];
+      shapes?: { label: string; wMm: number; hMm: number; round?: boolean }[];
+    };
 
 export interface ContentFaq {
   q: string;

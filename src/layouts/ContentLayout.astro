@@ -218,4 +218,55 @@ const prettyDate = datePublished
     line-height: 1.6;
     color: var(--ror-text-muted);
   }
+  .ror-prose :global(.ror-truesize) {
+    margin: 1.75rem 0;
+    padding: 1.25rem 1.25rem 1rem;
+    border: 1px solid var(--ror-border);
+    border-radius: 12px;
+    background-color: var(--ror-bg-soft);
+    overflow-x: auto;
+  }
+  .ror-prose :global(.ror-truesize-row) {
+    margin-bottom: 0.9rem;
+  }
+  .ror-prose :global(.ror-truesize-label) {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ror-text);
+    margin-bottom: 0.3rem;
+  }
+  .ror-prose :global(.ror-truesize-bar) {
+    height: 26px;
+    max-width: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--ror-brand-600), var(--ror-brand-700));
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+  .ror-prose :global(.ror-truesize-shapes) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    align-items: flex-end;
+    margin-top: 1.25rem;
+  }
+  .ror-prose :global(.ror-truesize-shape) {
+    text-align: center;
+  }
+  .ror-prose :global(.ror-truesize-object) {
+    max-width: 100%;
+    border: 2px solid var(--ror-brand-600);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--ror-brand-600) 8%, transparent);
+    margin: 0 auto 0.4rem;
+  }
+  .ror-prose :global(.ror-truesize-object.is-round) {
+    border-radius: 50%;
+  }
+  .ror-prose :global(.ror-truesize-note) {
+    margin-top: 1rem;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--ror-text-muted);
+  }
 </style>

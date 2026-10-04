@@ -16,6 +16,10 @@ import {
   article as pupillaryDistance,
   DATE_PUBLISHED as pupillaryDistanceDate,
 } from '../how-to-measure-pupillary-distance/content.js';
+import {
+  article as whatInchLooksLike,
+  DATE_PUBLISHED as whatInchLooksLikeDate,
+} from '../what-does-an-inch-look-like/content.js';
 
 export interface ArticleEntry {
   slug: string;
@@ -44,5 +48,6 @@ const byNewest = (a: ArticleEntry, b: ArticleEntry) =>
 export const ARTICLES: ArticleEntry[] = [
   entry('how-to-measure-ring-size', ringSize, ringSizeDate),
   entry('how-to-measure-pupillary-distance', pupillaryDistance, pupillaryDistanceDate),
+  entry('what-does-an-inch-look-like', whatInchLooksLike, whatInchLooksLikeDate),
   // entry('how-to-measure-...', next, nextDate),
 ].sort(byNewest);
