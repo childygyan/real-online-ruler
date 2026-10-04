@@ -11,7 +11,8 @@ export type ContentBlock =
   | { kind: 'h3'; text: string }
   | { kind: 'p'; html: string }
   | { kind: 'ul'; items: string[] }
-  | { kind: 'table'; head: string[]; rows: string[][] };
+  | { kind: 'table'; head: string[]; rows: string[][] }
+  | { kind: 'figure'; src: string; alt: string; caption: string };
 
 export interface ContentFaq {
   q: string;

@@ -175,6 +175,19 @@ const faqJsonLd = {
           {i < t.guideLinks.length - 1 ? ' · ' : ''}
         </>
       ))}
+      {/* English-only article link (no localized version yet) */}
+      {locale === 'en' && (
+        <>
+          {' · '}
+          <a
+            href="/how-to-measure-ring-size/"
+            class="font-medium hover:underline"
+            style="color: var(--ror-brand-700);"
+          >
+            How to measure ring size
+          </a>
+        </>
+      )}
     </p>
   </section>
 

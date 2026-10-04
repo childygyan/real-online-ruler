@@ -24,6 +24,10 @@ interface Props {
   locale?: LocaleCode;
   jsonLd?: Record<string, unknown>[];
   related?: RelatedLink[];
+  /** Locales this page exists in (default: all). English-only articles pass ['en']. */
+  locales?: LocaleCode[];
+  /** ISO publish date (e.g. "2026-10-04") — rendered under the lede for articles. */
+  datePublished?: string;
 }
 
 const {
@@ -36,12 +40,29 @@ const {
   locale = DEFAULT_LOCALE,
   jsonLd = [],
   related = [],
+  locales,
+  datePublished,
 } = Astro.props;
 const t = getDict(locale);
 const l = t.layout;
+
+const prettyDate = datePublished
+  ? new Date(`${datePublished}T00:00:00Z`).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    })
+  : null;
 ---
 
-<BaseLayout title={title} description={description} path={path} locale={locale}>
+<BaseLayout
+  title={title}
+  description={description}
+  path={path}
+  locale={locale}
+  locales={locales}
+>
   {jsonLd.map((ld) => (
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
   ))}
@@ -57,6 +78,11 @@ const l = t.layout;
     </nav>
 
     <h1 class="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">{h1}</h1>
+    {prettyDate && (
+      <p class="mt-3 text-sm" style="color: var(--ror-text-muted);">
+        <time datetime={datePublished}>Published on {prettyDate}</time>
+      </p>
+    )}
     <p class="mt-5 text-lg leading-relaxed" style="color: var(--ror-text-muted);">
       {lede}
     </p>
@@ -173,5 +199,23 @@ const l = t.layout;
     border: 1px solid var(--ror-border);
     border-radius: 4px;
     padding: 0.1em 0.35em;
+  }
+  .ror-prose :global(figure.ror-figure) {
+    margin-top: 1.75rem;
+    border: 1px solid var(--ror-border);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--ror-bg-soft);
+  }
+  .ror-prose :global(figure.ror-figure img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .ror-prose :global(figure.ror-figure figcaption) {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--ror-text-muted);
   }
 </style>

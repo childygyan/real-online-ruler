@@ -23,12 +23,13 @@ export function localizePath(path: string, locale: LocaleCode): string {
  */
 export function alternateLinks(
   path: string,
-  siteOrigin: string
+  siteOrigin: string,
+  codes: LocaleCode[] = LOCALES.map((l) => l.code)
 ): { hreflang: HreflangCode; href: string }[] {
-  const links: { hreflang: HreflangCode; href: string }[] = LOCALES.map((l) => ({
-    hreflang: l.hreflang as HreflangCode,
-    href: `${siteOrigin}${localizePath(path, l.code)}`,
-  }));
+  const links: { hreflang: HreflangCode; href: string }[] = codes.map((code) => {
+    const l = LOCALES.find((x) => x.code === code)!;
+    return { hreflang: l.hreflang as HreflangCode, href: `${siteOrigin}${localizePath(path, code)}` };
+  });
   links.push({ hreflang: 'x-default', href: `${siteOrigin}${path}` });
   return links;
 }

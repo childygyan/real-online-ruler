@@ -29,6 +29,11 @@ const html = (s: string) => localizeHtml(s, locale);
         <li set:html={html(item)} />
       ))}
     </ul>
+  ) : b.kind === 'figure' ? (
+    <figure class="ror-figure">
+      <img src={b.src} alt={b.alt} loading="lazy" decoding="async" />
+      <figcaption set:html={html(b.caption)} />
+    </figure>
   ) : (
     <table>
       <thead>

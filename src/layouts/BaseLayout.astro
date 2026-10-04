@@ -18,15 +18,27 @@ interface Props {
   path?: string;
   locale?: LocaleCode;
   ogType?: string;
+  /**
+   * Locales this page actually exists in. Defaults to all locales.
+   * English-only articles pass ['en'] so hreflang never points at 404s.
+   */
+  locales?: LocaleCode[];
 }
 
-const { title, description, path = '/', locale = DEFAULT_LOCALE, ogType = 'website' } = Astro.props;
+const {
+  title,
+  description,
+  path = '/',
+  locale = DEFAULT_LOCALE,
+  ogType = 'website',
+  locales = LOCALES.map((l) => l.code),
+} = Astro.props;
 const t = getDict(locale);
 const site = Astro.site?.toString().replace(/\/$/, '') ?? '';
 const localizedPath = localizePath(path, locale);
 const canonical = site ? `${site}${localizedPath}` : localizedPath;
 const htmlLang = LOCALES.find((l) => l.code === locale)?.htmlLang ?? 'en';
-const alternates = alternateLinks(path, site);
+const alternates = alternateLinks(path, site, locales);
 const ogLoc = ogLocale(locale);
 ---
 
@@ -49,7 +61,7 @@ const ogLoc = ogLocale(locale);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={ogLoc} />
-    {LOCALES.filter((l) => l.code !== locale).map((l) => (
+    {LOCALES.filter((l) => l.code !== locale && locales.includes(l.code)).map((l) => (
       <meta property="og:locale:alternate" content={ogLocale(l.code)} />
     ))}
 

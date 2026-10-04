@@ -131,3 +131,61 @@ describe('robots.txt and llms.txt', () => {
     expect(llms).toContain('/zh/');
   });
 });
+
+describe('ring-size article', () => {
+  it('article page and colocated content exist with complete metadata', async () => {
+    expect(existsSync(join(ROOT, 'src/pages/how-to-measure-ring-size/index.astro'))).toBe(true);
+    const mod = await import('./pages/how-to-measure-ring-size/content.js');
+    const a = mod.article;
+    for (const key of ['title', 'description', 'h1', 'lede', 'breadcrumb'] as const) {
+      expect(a[key].length, `article.${key}`).toBeGreaterThan(0);
+    }
+    expect(a.blocks.length).toBeGreaterThan(10);
+    expect(a.faqs.length).toBeGreaterThanOrEqual(5);
+    expect(a.related.length).toBeGreaterThanOrEqual(3);
+    // ISO publish date, unique per article (never reuse one date across articles)
+    expect(mod.DATE_PUBLISHED).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(Number.isNaN(Date.parse(mod.DATE_PUBLISHED))).toBe(false);
+  });
+
+  it('every figure references a real image file with alt text', async () => {
+    const mod = await import('./pages/how-to-measure-ring-size/content.js');
+    const figures = mod.article.blocks.filter((b) => b.kind === 'figure');
+    expect(figures.length).toBeGreaterThanOrEqual(2);
+    for (const f of figures) {
+      expect(f.alt.length, `${f.src} alt`).toBeGreaterThan(10);
+      expect(f.caption.length, `${f.src} caption`).toBeGreaterThan(0);
+      const rel = f.src.replace(/^\//, '');
+      expect(existsSync(join(ROOT, 'public', rel)), rel).toBe(true);
+    }
+  });
+
+  it('article links only to pages that exist (interlinking integrity)', async () => {
+    const mod = await import('./pages/how-to-measure-ring-size/content.js');
+    const hrefs = new Set<string>();
+    for (const r of mod.article.related) hrefs.add(r.href);
+    const html = mod.article.blocks
+      .filter((b) => b.kind === 'p' || b.kind === 'figure')
+      .map((b) => (b.kind === 'p' ? b.html : b.caption))
+      .join(' ');
+    for (const m of html.matchAll(/href="(\/[^"]*\/)"/g)) hrefs.add(m[1]);
+    expect(hrefs.size).toBeGreaterThan(0);
+    for (const href of hrefs) {
+      const pageFile = join(ROOT, 'src/pages', href.slice(1), 'index.astro');
+      const dirIndex = join(ROOT, 'src/pages', href.slice(1), 'index.astro');
+      expect(existsSync(pageFile) || existsSync(dirIndex), href).toBe(true);
+    }
+  });
+
+  it('english footer and homepage surface the article link (english-only)', () => {
+    // The article has no localized versions yet, so the link is rendered
+    // conditionally in the components — never via localizePath (would 404).
+    const footer = read('src/components/Footer.astro');
+    expect(footer).toContain("locale === 'en'");
+    expect(footer).toContain('href="/how-to-measure-ring-size/"');
+    const home = read('src/pages/index.astro');
+    expect(home).toContain('href="/how-to-measure-ring-size/"');
+    // ...and the locale dicts stay in exact parity (no per-locale article key)
+    expect(JSON.stringify(en.footer.guideLinks)).not.toContain('how-to-measure-ring-size');
+  });
+});
