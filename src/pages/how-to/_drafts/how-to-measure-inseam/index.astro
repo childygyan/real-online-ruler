@@ -1,0 +1,65 @@
+---
+/**
+ * /how-to-measure-inseam/ — "How to Measure Your Inseam".
+ *
+ * Draft for the 15-day daily publish program (2026-10-19).
+ */
+import ContentLayout from '../../../../layouts/ContentLayout.astro';
+import ContentBlocks from '../../../../components/ContentBlocks.astro';
+import { article, DATE_PUBLISHED, howToMethods } from './content.js';
+
+const path = '/how-to-measure-inseam/';
+const site = (Astro.site?.toString() ?? 'https://realonlineruler.online/').replace(/\/$/, '');
+const pageUrl = `${site}${path}`;
+const images = [
+  `${site}/images/articles/how-to-measure-inseam/desktop.webp`,
+  `${site}/images/articles/how-to-measure-inseam/mobile.webp`,
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: article.faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.h1,
+  description: article.description,
+  datePublished: DATE_PUBLISHED,
+  author: { '@type': 'Person', name: 'Firoz Khan' },
+  mainEntityOfPage: pageUrl,
+  image: images,
+};
+
+const howToJsonLd = howToMethods.map((m) => ({
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: m.name,
+  description: article.description,
+  image: images,
+  totalTime: m.totalTime,
+  tool: m.tools,
+  step: m.steps.map((s) => ({ '@type': 'HowToStep', name: s.name, text: s.text })),
+}));
+---
+
+<ContentLayout
+  title={article.title}
+  description={article.description}
+  path={path}
+  h1={article.h1}
+  lede={article.lede}
+  breadcrumb={article.breadcrumb}
+  locales={['en']}
+  datePublished={DATE_PUBLISHED}
+  jsonLd={[articleJsonLd, ...howToJsonLd, faqJsonLd]}
+  related={article.related}
+>
+  <ContentBlocks blocks={article.blocks} />
+</ContentLayout>

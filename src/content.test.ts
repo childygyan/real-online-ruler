@@ -12,8 +12,11 @@ import { en } from './i18n/dicts/en.js';
 import * as ringSizeContent from './pages/how-to-measure-ring-size/content.js';
 import * as pdContent from './pages/how-to-measure-pupillary-distance/content.js';
 import * as inchLookContent from './pages/what-does-an-inch-look-like/content.js';
+// PUBLISH QUEUE (daily cron): add one static import per published article here, e.g.
+// import * as footSizeContent from './pages/how-to-measure-foot-size/content.js';
 import { getDict } from './i18n/dict.js';
 import { DEFAULT_LOCALE, LOCALES } from './i18n/locales.js';
+import type { ContentBlock, ContentPageDict } from './i18n/content.js';
 
 const ROOT = join(__dirname, '..');
 
@@ -141,10 +144,12 @@ describe('how-to articles', () => {
     { slug: 'how-to-measure-ring-size', mod: ringSizeContent },
     { slug: 'how-to-measure-pupillary-distance', mod: pdContent },
     { slug: 'what-does-an-inch-look-like', mod: inchLookContent },
+    // PUBLISH QUEUE (daily cron): add one entry per published article here, e.g.
+    // { slug: 'how-to-measure-foot-size', mod: footSizeContent },
   ];
 
-  it('every article page exists with complete metadata and a unique publish date', () => {
-    const dates = new Set<string>();
+  it('every article page exists with complete metadata and an honest publish date', () => {
+    const dates = new Map<string, number>();
     for (const { slug, mod } of ARTICLES) {
       expect(existsSync(join(ROOT, 'src/pages', slug, 'index.astro')), slug).toBe(true);
       const a = mod.article;
@@ -154,11 +159,15 @@ describe('how-to articles', () => {
       expect(a.blocks.length).toBeGreaterThan(10);
       expect(a.faqs.length).toBeGreaterThanOrEqual(5);
       expect(a.related.length).toBeGreaterThanOrEqual(3);
-      // ISO publish date, unique per article (never reuse one date across articles)
+      // ISO publish date. Dates are normally unique per article; the 15-day
+      // daily program (2026-10-05 → 2026-10-19) honestly dates each article on
+      // its real publish day, so at most two articles may share a date.
       expect(mod.DATE_PUBLISHED).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(Number.isNaN(Date.parse(mod.DATE_PUBLISHED))).toBe(false);
-      expect(dates.has(mod.DATE_PUBLISHED), `duplicate date ${mod.DATE_PUBLISHED}`).toBe(false);
-      dates.add(mod.DATE_PUBLISHED);
+      dates.set(mod.DATE_PUBLISHED, (dates.get(mod.DATE_PUBLISHED) ?? 0) + 1);
+    }
+    for (const [d, n] of dates) {
+      expect(n, `date ${d} shared by ${n} articles`).toBeLessThanOrEqual(2);
     }
   });
 
@@ -226,9 +235,13 @@ describe('how-to articles', () => {
     const mod = await import('./pages/how-to/articles.js');
     expect(mod.ARTICLES.length).toBe(ARTICLES.length);
     expect(mod.ARTICLES.map((a) => a.slug).sort()).toEqual(ARTICLES.map((a) => a.slug).sort());
-    // newest first, each article with its own unique publish date
+    // newest first; at most two articles share a publish date (daily program)
     const dates = mod.ARTICLES.map((a) => a.datePublished);
-    expect(new Set(dates).size).toBe(dates.length);
+    const counts = new Map<string, number>();
+    for (const d of dates) counts.set(d, (counts.get(d) ?? 0) + 1);
+    for (const [d, n] of counts) {
+      expect(n, `date ${d} shared by ${n}`).toBeLessThanOrEqual(2);
+    }
     const sorted = [...mod.ARTICLES].sort((a, b) => b.datePublished.localeCompare(a.datePublished));
     expect(mod.ARTICLES.map((a) => a.slug)).toEqual(sorted.map((a) => a.slug));
     for (const a of mod.ARTICLES) {
@@ -237,6 +250,86 @@ describe('how-to articles', () => {
       expect(existsSync(join(ROOT, 'src/pages', a.slug, 'index.astro')), a.slug).toBe(true);
       if (a.image) {
         expect(existsSync(join(ROOT, 'public', a.image.replace(/^\//, ''))), a.image).toBe(true);
+      }
+    }
+  });
+});
+
+describe('draft articles (15-day publish queue)', () => {
+  // Drafts live in src/pages/how-to/_drafts/<slug>/ until their publish day.
+  // import.meta.glob with eager:true is statically analyzable, unlike a
+  // variable dynamic import.
+  const draftMods = import.meta.glob('./pages/how-to/_drafts/*/content.ts', {
+    eager: true,
+  }) as Record<
+    string,
+    {
+      article: ContentPageDict;
+      DATE_PUBLISHED: string;
+      howToMethods?: { steps: { name: string; text: string }[] }[];
+    }
+  >;
+  const drafts = Object.entries(draftMods).map(([path, mod]) => ({
+    slug: path.split('/').at(-2)!,
+    mod,
+  }));
+
+  it('queue entries are ascending by date and each has a draft folder', async () => {
+    const { QUEUE } = await import('./pages/how-to/queue.js');
+    const draftSlugs = new Set(drafts.map((d) => d.slug));
+    // The daily publisher removes entries as it publishes, so only the
+    // 1:1 correspondence and ascending order are asserted, not a fixed count.
+    expect(QUEUE.length).toBe(drafts.length);
+    let prev = '';
+    QUEUE.forEach((q: { slug: string; datePublished: string }) => {
+      expect(draftSlugs.has(q.slug), `draft folder for ${q.slug}`).toBe(true);
+      expect(q.datePublished, q.slug).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(q.datePublished > prev, 'queue order').toBe(true);
+      prev = q.datePublished;
+    });
+  });
+
+  it('every draft is complete, dated from the queue, and links only to live pages', () => {
+    const liveSlugs = new Set(['how-to-measure-ring-size', 'how-to-measure-pupillary-distance', 'what-does-an-inch-look-like']);
+    for (const { slug, mod } of drafts) {
+      expect(existsSync(join(ROOT, 'src/pages/how-to/_drafts', slug, 'index.astro')), slug).toBe(true);
+      const a = mod.article;
+      for (const key of ['title', 'description', 'h1', 'lede', 'breadcrumb'] as const) {
+        expect(a[key]?.length, `${slug}.${key}`).toBeGreaterThan(0);
+      }
+      expect(a.blocks.length, `${slug} blocks`).toBeGreaterThan(10);
+      expect(a.faqs.length, `${slug} faqs`).toBeGreaterThanOrEqual(5);
+      expect(a.related.length, `${slug} related`).toBeGreaterThanOrEqual(3);
+      expect(mod.DATE_PUBLISHED).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      const figures = a.blocks.filter(
+        (b): b is Extract<ContentBlock, { kind: 'figure' }> => b.kind === 'figure',
+      );
+      expect(figures.length, `${slug} figures`).toBeGreaterThanOrEqual(2);
+      for (const f of figures) {
+        expect(f.alt.length, `${slug}:${f.src} alt`).toBeGreaterThan(10);
+        expect(existsSync(join(ROOT, 'public', f.src.replace(/^\//, ''))), f.src).toBe(true);
+      }
+      if (mod.howToMethods) {
+        expect(mod.howToMethods.length, `${slug} methods`).toBeGreaterThanOrEqual(1);
+        for (const m of mod.howToMethods) {
+          expect(m.steps.length, `${slug} steps`).toBeGreaterThanOrEqual(3);
+        }
+      }
+      // Never link to another draft (it 404s until its own publish day).
+      const hrefs = new Set<string>();
+      for (const r of a.related) hrefs.add(r.href);
+      const html = a.blocks
+        .filter((b) => b.kind === 'p' || b.kind === 'figure')
+        .map((b) => (b.kind === 'p' ? b.html : b.caption))
+        .join(' ');
+      for (const m of html.matchAll(/href="(\/[^"]*\/)"/g)) hrefs.add(m[1]);
+      for (const href of hrefs) {
+        const target = href.slice(1).replace(/\/$/, '');
+        const isToolPage = existsSync(join(ROOT, 'src/pages', target, 'index.astro'));
+        const isLiveArticle = liveSlugs.has(target);
+        const isDraft = drafts.some((d) => d.slug === target);
+        expect(isDraft, `${slug} links to unpublished draft ${href}`).toBe(false);
+        expect(isToolPage || isLiveArticle, `${slug} -> ${href} exists`).toBe(true);
       }
     }
   });

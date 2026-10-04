@@ -20,6 +20,8 @@ import {
   article as whatInchLooksLike,
   DATE_PUBLISHED as whatInchLooksLikeDate,
 } from '../what-does-an-inch-look-like/content.js';
+// PUBLISH QUEUE (daily cron): add one import per published article here, e.g.
+// import { article as footSize, DATE_PUBLISHED as footSizeDate } from '../how-to-measure-foot-size/content.js';
 
 export interface ArticleEntry {
   slug: string;
@@ -49,5 +51,6 @@ export const ARTICLES: ArticleEntry[] = [
   entry('how-to-measure-ring-size', ringSize, ringSizeDate),
   entry('how-to-measure-pupillary-distance', pupillaryDistance, pupillaryDistanceDate),
   entry('what-does-an-inch-look-like', whatInchLooksLike, whatInchLooksLikeDate),
-  // entry('how-to-measure-...', next, nextDate),
+  // PUBLISH QUEUE (daily cron): append one entry(...) line per published article here, e.g.
+  // entry('how-to-measure-foot-size', footSize, footSizeDate),
 ].sort(byNewest);

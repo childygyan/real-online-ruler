@@ -1,0 +1,97 @@
+---
+/**
+ * /how-big-is-4-inches/ — "How Big Is 4 Inches? See It at Actual Size".
+ *
+ * Draft for the 15-day daily publish program (2026-10-07). Visual article:
+ * Article + FAQPage JSON-LD only, plus the true-size sizing script.
+ */
+import ContentLayout from '../../../../layouts/ContentLayout.astro';
+import ContentBlocks from '../../../../components/ContentBlocks.astro';
+import { article, DATE_PUBLISHED } from './content.js';
+
+const path = '/how-big-is-4-inches/';
+const site = (Astro.site?.toString() ?? 'https://realonlineruler.online/').replace(/\/$/, '');
+const pageUrl = `${site}${path}`;
+const images = [
+  `${site}/images/articles/how-big-is-4-inches/desktop.webp`,
+  `${site}/images/articles/how-big-is-4-inches/mobile.webp`,
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: article.faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.h1,
+  description: article.description,
+  datePublished: DATE_PUBLISHED,
+  author: { '@type': 'Person', name: 'Firoz Khan' },
+  mainEntityOfPage: pageUrl,
+  image: images,
+};
+---
+
+<ContentLayout
+  title={article.title}
+  description={article.description}
+  path={path}
+  h1={article.h1}
+  lede={article.lede}
+  breadcrumb={article.breadcrumb}
+  locales={['en']}
+  datePublished={DATE_PUBLISHED}
+  jsonLd={[articleJsonLd, faqJsonLd]}
+  related={article.related}
+>
+  <ContentBlocks blocks={article.blocks} />
+</ContentLayout>
+
+<script is:inline>
+  // Sizes every [data-actual-mm] / [data-actual-w-mm] / [data-actual-h-mm]
+  // element to true physical size using the visitor's saved calibration.
+  (function () {
+    var ppi = 96;
+    var calibrated = false;
+    try {
+      var raw = localStorage.getItem('ror-calibration');
+      if (raw) {
+        var cal = JSON.parse(raw);
+        var v = Number(cal && cal.pxPerInch);
+        if (v >= 50 && v <= 600) {
+          ppi = v;
+          calibrated = cal.method !== 'default';
+        }
+      }
+    } catch {}
+    var pxPerMm = ppi / 25.4;
+    function size(el, mm) {
+      var v = Number(mm);
+      if (v > 0) el.style.width = (v * pxPerMm).toFixed(1) + 'px';
+    }
+    document.querySelectorAll('[data-actual-mm]').forEach(function (el) {
+      size(el, el.getAttribute('data-actual-mm'));
+    });
+    document.querySelectorAll('[data-actual-w-mm]').forEach(function (el) {
+      size(el, el.getAttribute('data-actual-w-mm'));
+    });
+    document.querySelectorAll('[data-actual-h-mm]').forEach(function (el) {
+      var v = Number(el.getAttribute('data-actual-h-mm'));
+      if (v > 0) el.style.height = (v * pxPerMm).toFixed(1) + 'px';
+    });
+    document.querySelectorAll('[data-truesize-note]').forEach(function (el) {
+      el.innerHTML = calibrated
+        ? 'Showing true physical size — calibrated at ' +
+          Math.round(ppi) +
+          ' px/in on this device.'
+        : 'Approximate size (96 px/in web default). <a href="/how-to-calibrate/">Calibrate for true size →</a>';
+    });
+  })();
+</script>
