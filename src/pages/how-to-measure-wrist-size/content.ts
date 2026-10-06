@@ -6,7 +6,7 @@
  * from howToMethods below). Bracelet ease values verified against jeweler
  * size guides (snug +0.6–1.3 cm, comfort ≈ +1.5 cm, loose ≈ +2 cm).
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-10-06';

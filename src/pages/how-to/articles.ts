@@ -22,6 +22,7 @@ import {
 } from '../what-does-an-inch-look-like/content.js';
 // PUBLISH QUEUE (daily cron): add one import per published article here, e.g.
 import { article as footSize, DATE_PUBLISHED as footSizeDate } from '../how-to-measure-foot-size/content.js';
+import { article as wristSize, DATE_PUBLISHED as wristSizeDate } from '../how-to-measure-wrist-size/content.js';
 // import { article as footSize, DATE_PUBLISHED as footSizeDate } from '../how-to-measure-foot-size/content.js';
 
 export interface ArticleEntry {
@@ -54,5 +55,6 @@ export const ARTICLES: ArticleEntry[] = [
   entry('what-does-an-inch-look-like', whatInchLooksLike, whatInchLooksLikeDate),
   // PUBLISH QUEUE (daily cron): append one entry(...) line per published article here, e.g.
   entry('how-to-measure-foot-size', footSize, footSizeDate),
+  entry('how-to-measure-wrist-size', wristSize, wristSizeDate),
   // entry('how-to-measure-foot-size', footSize, footSizeDate),
 ].sort(byNewest);

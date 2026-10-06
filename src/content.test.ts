@@ -14,6 +14,7 @@ import * as pdContent from './pages/how-to-measure-pupillary-distance/content.js
 import * as inchLookContent from './pages/what-does-an-inch-look-like/content.js';
 // PUBLISH QUEUE (daily cron): add one static import per published article here, e.g.
 import * as footSizeContent from './pages/how-to-measure-foot-size/content.js';
+import * as wristSizeContent from './pages/how-to-measure-wrist-size/content.js';
 // import * as footSizeContent from './pages/how-to-measure-foot-size/content.js';
 import { getDict } from './i18n/dict.js';
 import { DEFAULT_LOCALE, LOCALES } from './i18n/locales.js';
@@ -147,6 +148,7 @@ describe('how-to articles', () => {
     { slug: 'what-does-an-inch-look-like', mod: inchLookContent },
     // PUBLISH QUEUE (daily cron): add one entry per published article here, e.g.
     { slug: 'how-to-measure-foot-size', mod: footSizeContent },
+    { slug: 'how-to-measure-wrist-size', mod: wristSizeContent },
     // { slug: 'how-to-measure-foot-size', mod: footSizeContent },
   ];
 
