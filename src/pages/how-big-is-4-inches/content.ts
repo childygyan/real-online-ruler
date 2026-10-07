@@ -8,7 +8,7 @@
  * Facts: 4 in = 101.6 mm exactly; two AA batteries ≈ 101 mm; a credit
  * card is 85.6 mm ≈ 3.37 in.
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-10-07';
