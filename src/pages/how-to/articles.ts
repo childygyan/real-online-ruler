@@ -25,6 +25,7 @@ import { article as footSize, DATE_PUBLISHED as footSizeDate } from '../how-to-m
 import { article as wristSize, DATE_PUBLISHED as wristSizeDate } from '../how-to-measure-wrist-size/content.js';
 import { article as fourInches, DATE_PUBLISHED as fourInchesDate } from '../how-big-is-4-inches/content.js';
 import { article as headSize, DATE_PUBLISHED as headSizeDate } from '../how-to-measure-head-size/content.js';
+import { article as screwSize, DATE_PUBLISHED as screwSizeDate } from '../how-to-identify-screw-size/content.js';
 // import { article as footSize, DATE_PUBLISHED as footSizeDate } from '../how-to-measure-foot-size/content.js';
 
 export interface ArticleEntry {
@@ -60,5 +61,6 @@ export const ARTICLES: ArticleEntry[] = [
   entry('how-to-measure-wrist-size', wristSize, wristSizeDate),
   entry('how-big-is-4-inches', fourInches, fourInchesDate),
   entry('how-to-measure-head-size', headSize, headSizeDate),
+  entry('how-to-identify-screw-size', screwSize, screwSizeDate),
   // entry('how-to-measure-foot-size', footSize, footSizeDate),
 ].sort(byNewest);
