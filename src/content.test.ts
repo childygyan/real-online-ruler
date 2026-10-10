@@ -18,6 +18,7 @@ import * as wristSizeContent from './pages/how-to-measure-wrist-size/content.js'
 import * as fourInchesContent from './pages/how-big-is-4-inches/content.js';
 import * as headSizeContent from './pages/how-to-measure-head-size/content.js';
 import * as screwSizeContent from './pages/how-to-identify-screw-size/content.js';
+import * as necklaceLengthContent from './pages/how-to-measure-necklace-length/content.js';
 // import * as footSizeContent from './pages/how-to-measure-foot-size/content.js';
 import { getDict } from './i18n/dict.js';
 import { DEFAULT_LOCALE, LOCALES } from './i18n/locales.js';
@@ -155,6 +156,7 @@ describe('how-to articles', () => {
     { slug: 'how-big-is-4-inches', mod: fourInchesContent },
     { slug: 'how-to-measure-head-size', mod: headSizeContent },
     { slug: 'how-to-identify-screw-size', mod: screwSizeContent },
+    { slug: 'how-to-measure-necklace-length', mod: necklaceLengthContent },
     // { slug: 'how-to-measure-foot-size', mod: footSizeContent },
   ];
 

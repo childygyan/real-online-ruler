@@ -5,7 +5,7 @@
  * ships Article + HowTo + FAQPage JSON-LD (index.astro builds it from
  * howToMethods below).
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-10-10';
