@@ -21,6 +21,7 @@ import {
   DATE_PUBLISHED as whatInchLooksLikeDate,
 } from '../what-does-an-inch-look-like/content.js';
 // PUBLISH QUEUE (daily cron): add one import per published article here, e.g.
+import { article as screenSize, DATE_PUBLISHED as screenSizeDate } from '../how-to-measure-screen-size/content.js';
 import { article as footSize, DATE_PUBLISHED as footSizeDate } from '../how-to-measure-foot-size/content.js';
 import { article as wristSize, DATE_PUBLISHED as wristSizeDate } from '../how-to-measure-wrist-size/content.js';
 import { article as fourInches, DATE_PUBLISHED as fourInchesDate } from '../how-big-is-4-inches/content.js';
@@ -58,6 +59,7 @@ export const ARTICLES: ArticleEntry[] = [
   entry('how-to-measure-pupillary-distance', pupillaryDistance, pupillaryDistanceDate),
   entry('what-does-an-inch-look-like', whatInchLooksLike, whatInchLooksLikeDate),
   // PUBLISH QUEUE (daily cron): append one entry(...) line per published article here, e.g.
+  entry('how-to-measure-screen-size', screenSize, screenSizeDate),
   entry('how-to-measure-foot-size', footSize, footSizeDate),
   entry('how-to-measure-wrist-size', wristSize, wristSizeDate),
   entry('how-big-is-4-inches', fourInches, fourInchesDate),
