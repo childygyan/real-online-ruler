@@ -44,7 +44,6 @@ export interface QueuedArticle {
 }
 
 export const QUEUE: QueuedArticle[] = [
-  { slug: 'how-to-measure-hand-for-gloves', var: 'gloveSize', datePublished: '2026-10-13' },
   { slug: 'how-big-is-55-inch-tv', var: 'tv55', datePublished: '2026-10-14', visual: true },
   { slug: 'how-to-measure-box-for-shipping', var: 'boxSize', datePublished: '2026-10-15' },
   { slug: 'what-does-6-inches-look-like', var: 'sixInches', datePublished: '2026-10-16', visual: true },
