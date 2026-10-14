@@ -23,6 +23,7 @@ import {
 // PUBLISH QUEUE (daily cron): add one import per published article here, e.g.
 import { article as screenSize, DATE_PUBLISHED as screenSizeDate } from '../how-to-measure-screen-size/content.js';
 import { article as footSize, DATE_PUBLISHED as footSizeDate } from '../how-to-measure-foot-size/content.js';
+import { article as tv55, DATE_PUBLISHED as tv55Date } from '../how-big-is-55-inch-tv/content.js';
 import { article as wristSize, DATE_PUBLISHED as wristSizeDate } from '../how-to-measure-wrist-size/content.js';
 import { article as fourInches, DATE_PUBLISHED as fourInchesDate } from '../how-big-is-4-inches/content.js';
 import { article as headSize, DATE_PUBLISHED as headSizeDate } from '../how-to-measure-head-size/content.js';
@@ -63,6 +64,7 @@ export const ARTICLES: ArticleEntry[] = [
   // PUBLISH QUEUE (daily cron): append one entry(...) line per published article here, e.g.
   entry('how-to-measure-screen-size', screenSize, screenSizeDate),
   entry('how-to-measure-foot-size', footSize, footSizeDate),
+  entry('how-big-is-55-inch-tv', tv55, tv55Date),
   entry('how-to-measure-wrist-size', wristSize, wristSizeDate),
   entry('how-big-is-4-inches', fourInches, fourInchesDate),
   entry('how-to-measure-head-size', headSize, headSizeDate),

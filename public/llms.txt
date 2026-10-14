@@ -30,6 +30,8 @@ Full index: [How-to guides](https://realonlineruler.online/how-to/)
 - [How to Find Your Glasses Frame Size](https://realonlineruler.online/how-to-find-glasses-frame-size/) (2026-10-12): read the 3-number code on the temple arm (lens–bridge–temple in mm) or measure your frames with the on-screen mm ruler.
 - [How to Measure Your Hand for Glove Size](https://realonlineruler.online/how-to-measure-hand-for-gloves/) (2026-10-13): measure your hand for gloves — knuckle circumference and hand length, in cm or inches — then read any brand's size chart.
 
+- [How Big Is a 55-Inch TV? Actual Screen Dimensions](https://realonlineruler.online/how-big-is-55-inch-tv/) (2026-10-14): a 55-inch TV screen is 47.9 × 27.0 in (121.8 × 68.5 cm) — see the true size on your screen, plus a 43/50/55/65-inch comparison table.
+
 ## Advanced features
 
 - Drag-to-measure with live distance and angle readout
