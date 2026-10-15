@@ -31,6 +31,7 @@ import { article as screwSize, DATE_PUBLISHED as screwSizeDate } from '../how-to
 import { article as necklaceLength, DATE_PUBLISHED as necklaceLengthDate } from '../how-to-measure-necklace-length/content.js';
 import { article as glassesSize, DATE_PUBLISHED as glassesSizeDate } from '../how-to-find-glasses-frame-size/content.js';
 import { article as gloveSize, DATE_PUBLISHED as gloveSizeDate } from '../how-to-measure-hand-for-gloves/content.js';
+import { article as boxSize, DATE_PUBLISHED as boxSizeDate } from '../how-to-measure-box-for-shipping/content.js';
 // import { article as footSize, DATE_PUBLISHED as footSizeDate } from '../how-to-measure-foot-size/content.js';
 
 export interface ArticleEntry {
@@ -72,5 +73,6 @@ export const ARTICLES: ArticleEntry[] = [
   entry('how-to-measure-necklace-length', necklaceLength, necklaceLengthDate),
   entry('how-to-find-glasses-frame-size', glassesSize, glassesSizeDate),
   entry('how-to-measure-hand-for-gloves', gloveSize, gloveSizeDate),
+  entry('how-to-measure-box-for-shipping', boxSize, boxSizeDate),
   // entry('how-to-measure-foot-size', footSize, footSizeDate),
 ].sort(byNewest);

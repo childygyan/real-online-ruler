@@ -44,7 +44,6 @@ export interface QueuedArticle {
 }
 
 export const QUEUE: QueuedArticle[] = [
-  { slug: 'how-to-measure-box-for-shipping', var: 'boxSize', datePublished: '2026-10-15' },
   { slug: 'what-does-6-inches-look-like', var: 'sixInches', datePublished: '2026-10-16', visual: true },
   { slug: 'how-to-measure-waist-size', var: 'waistSize', datePublished: '2026-10-17' },
   { slug: 'how-to-measure-picture-frame', var: 'frameSize', datePublished: '2026-10-18' },

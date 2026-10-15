@@ -7,7 +7,7 @@
  * 2026-10-04: girth = (2 x width) + (2 x height); UPS/FedEx max 108 in
  * length and 165 in length+girth; USPS max 130 in length+girth.
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-10-15';
