@@ -13,6 +13,7 @@ import * as ringSizeContent from './pages/how-to-measure-ring-size/content.js';
 import * as pdContent from './pages/how-to-measure-pupillary-distance/content.js';
 import * as inchLookContent from './pages/what-does-an-inch-look-like/content.js';
 // PUBLISH QUEUE (daily cron): add one static import per published article here, e.g.
+import * as sixInchesContent from './pages/what-does-6-inches-look-like/content.js';
 import * as screenSizeContent from './pages/how-to-measure-screen-size/content.js';
 import * as footSizeContent from './pages/how-to-measure-foot-size/content.js';
 import * as tv55Content from './pages/how-big-is-55-inch-tv/content.js';
@@ -156,6 +157,7 @@ describe('how-to articles', () => {
     { slug: 'how-to-measure-pupillary-distance', mod: pdContent },
     { slug: 'what-does-an-inch-look-like', mod: inchLookContent },
     // PUBLISH QUEUE (daily cron): add one entry per published article here, e.g.
+    { slug: 'what-does-6-inches-look-like', mod: sixInchesContent },
     { slug: 'how-to-measure-screen-size', mod: screenSizeContent },
     { slug: 'how-to-measure-foot-size', mod: footSizeContent },
     { slug: 'how-big-is-55-inch-tv', mod: tv55Content },
