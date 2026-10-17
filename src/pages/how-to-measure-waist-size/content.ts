@@ -8,7 +8,7 @@
  * not tight, breathe normally; jeans = button, lay flat, measure across
  * waistband, double.
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-10-17';

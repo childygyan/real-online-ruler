@@ -29,6 +29,7 @@ import { article as wristSize, DATE_PUBLISHED as wristSizeDate } from '../how-to
 import { article as fourInches, DATE_PUBLISHED as fourInchesDate } from '../how-big-is-4-inches/content.js';
 import { article as headSize, DATE_PUBLISHED as headSizeDate } from '../how-to-measure-head-size/content.js';
 import { article as screwSize, DATE_PUBLISHED as screwSizeDate } from '../how-to-identify-screw-size/content.js';
+import { article as waistSize, DATE_PUBLISHED as waistSizeDate } from '../how-to-measure-waist-size/content.js';
 import { article as necklaceLength, DATE_PUBLISHED as necklaceLengthDate } from '../how-to-measure-necklace-length/content.js';
 import { article as glassesSize, DATE_PUBLISHED as glassesSizeDate } from '../how-to-find-glasses-frame-size/content.js';
 import { article as gloveSize, DATE_PUBLISHED as gloveSizeDate } from '../how-to-measure-hand-for-gloves/content.js';
@@ -72,6 +73,7 @@ export const ARTICLES: ArticleEntry[] = [
   entry('how-big-is-4-inches', fourInches, fourInchesDate),
   entry('how-to-measure-head-size', headSize, headSizeDate),
   entry('how-to-identify-screw-size', screwSize, screwSizeDate),
+  entry('how-to-measure-waist-size', waistSize, waistSizeDate),
   entry('how-to-measure-necklace-length', necklaceLength, necklaceLengthDate),
   entry('how-to-find-glasses-frame-size', glassesSize, glassesSizeDate),
   entry('how-to-measure-hand-for-gloves', gloveSize, gloveSizeDate),
