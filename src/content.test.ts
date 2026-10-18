@@ -26,6 +26,7 @@ import * as necklaceLengthContent from './pages/how-to-measure-necklace-length/c
 import * as glassesSizeContent from './pages/how-to-find-glasses-frame-size/content.js';
 import * as gloveSizeContent from './pages/how-to-measure-hand-for-gloves/content.js';
 import * as boxSizeContent from './pages/how-to-measure-box-for-shipping/content.js';
+import * as frameSizeContent from './pages/how-to-measure-picture-frame/content.js';
 // import * as footSizeContent from './pages/how-to-measure-foot-size/content.js';
 import { getDict } from './i18n/dict.js';
 import { DEFAULT_LOCALE, LOCALES } from './i18n/locales.js';
@@ -171,6 +172,7 @@ describe('how-to articles', () => {
     { slug: 'how-to-find-glasses-frame-size', mod: glassesSizeContent },
     { slug: 'how-to-measure-hand-for-gloves', mod: gloveSizeContent },
     { slug: 'how-to-measure-box-for-shipping', mod: boxSizeContent },
+    { slug: 'how-to-measure-picture-frame', mod: frameSizeContent },
     // { slug: 'how-to-measure-foot-size', mod: footSizeContent },
   ];
 

@@ -44,6 +44,5 @@ export interface QueuedArticle {
 }
 
 export const QUEUE: QueuedArticle[] = [
-  { slug: 'how-to-measure-picture-frame', var: 'frameSize', datePublished: '2026-10-18' },
   { slug: 'how-to-measure-inseam', var: 'inseamSize', datePublished: '2026-10-19' },
 ];
