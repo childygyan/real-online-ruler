@@ -8,7 +8,7 @@
  * mark wall at book top, measure floor to mark; pants method = crotch seam
  * to hem; US pants tags read waist x inseam in inches (e.g. 32x30).
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-10-19';

@@ -43,6 +43,4 @@ export interface QueuedArticle {
   visual?: boolean;
 }
 
-export const QUEUE: QueuedArticle[] = [
-  { slug: 'how-to-measure-inseam', var: 'inseamSize', datePublished: '2026-10-19' },
-];
+export const QUEUE: QueuedArticle[] = [];
