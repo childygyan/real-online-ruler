@@ -63,6 +63,18 @@ ARTICLES = [
     ("how-to-find-glasses-frame-size", "mm", 529, 189),
     ("how-to-identify-screw-size", "mm", 200, 120),
     ("how-to-measure-wrist-size", "mm", 643, 227),
+    # 3-day ongoing program batch 1 (2026-10-22 → 2026-11-18) — all lengths
+    # distinct from every existing entry above (desktop <= 860, mobile <= 280).
+    ("how-big-is-2-inches", "in", 480, 215),
+    ("what-does-10-cm-look-like", "cm", 620, 245),
+    ("how-to-measure-belt-size", "in", 580, 185),
+    ("what-does-5-cm-look-like", "cm", 440, 155),
+    ("how-to-measure-curtain-size", "in", 760, 265),
+    ("how-big-is-10-inches", "in", 720, 110),
+    ("how-to-measure-dog-collar-size", "in", 360, 95),
+    ("what-does-15-cm-look-like", "cm", 660, 135),
+    ("how-to-measure-luggage-size", "in", 540, 85),
+    ("how-big-is-12-inches", "in", 400, 70),
 ]
 
 PX_PER_IN = 96.0  # site default when uncalibrated (matches existing screenshots)
