@@ -8,7 +8,7 @@
  * 3.937 in; AA battery = 50.5 x 14.5 mm (two end-to-end = 101 mm); US
  * quarter diameter = 24.26 mm (four in a row = 97.04 mm).
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-10-25';

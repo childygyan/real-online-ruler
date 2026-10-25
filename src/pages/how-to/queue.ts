@@ -46,7 +46,6 @@ export interface QueuedArticle {
 }
 
 export const QUEUE: QueuedArticle[] = [
-  { slug: 'what-does-10-cm-look-like', var: 'tenCm', datePublished: '2026-10-25', visual: true },
   { slug: 'how-to-measure-belt-size', var: 'beltSize', datePublished: '2026-10-28' },
   { slug: 'what-does-5-cm-look-like', var: 'fiveCm', datePublished: '2026-10-31', visual: true },
   { slug: 'how-to-measure-curtain-size', var: 'curtainSize', datePublished: '2026-11-03' },

@@ -37,6 +37,7 @@ import { article as boxSize, DATE_PUBLISHED as boxSizeDate } from '../how-to-mea
 import { article as frameSize, DATE_PUBLISHED as frameSizeDate } from '../how-to-measure-picture-frame/content.js';
 import { article as inseamSize, DATE_PUBLISHED as inseamSizeDate } from '../how-to-measure-inseam/content.js';
 import { article as twoInches, DATE_PUBLISHED as twoInchesDate } from '../how-big-is-2-inches/content.js';
+import { article as tenCm, DATE_PUBLISHED as tenCmDate } from '../what-does-10-cm-look-like/content.js';
 // import { article as footSize, DATE_PUBLISHED as footSizeDate } from '../how-to-measure-foot-size/content.js';
 
 export interface ArticleEntry {
@@ -84,5 +85,6 @@ export const ARTICLES: ArticleEntry[] = [
   entry('how-to-measure-picture-frame', frameSize, frameSizeDate),
   entry('how-to-measure-inseam', inseamSize, inseamSizeDate),
   entry('how-big-is-2-inches', twoInches, twoInchesDate),
+  entry('what-does-10-cm-look-like', tenCm, tenCmDate),
   // entry('how-to-measure-foot-size', footSize, footSizeDate),
 ].sort(byNewest);
