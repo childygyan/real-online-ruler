@@ -20,6 +20,7 @@ import {
   article as whatInchLooksLike,
   DATE_PUBLISHED as whatInchLooksLikeDate,
 } from '../what-does-an-inch-look-like/content.js';
+import { article as beltSize, DATE_PUBLISHED as beltSizeDate } from '../how-to-measure-belt-size/content.js';
 // PUBLISH QUEUE (daily cron): add one import per published article here, e.g.
 import { article as sixInches, DATE_PUBLISHED as sixInchesDate } from '../what-does-6-inches-look-like/content.js';
 import { article as screenSize, DATE_PUBLISHED as screenSizeDate } from '../how-to-measure-screen-size/content.js';
@@ -86,5 +87,6 @@ export const ARTICLES: ArticleEntry[] = [
   entry('how-to-measure-inseam', inseamSize, inseamSizeDate),
   entry('how-big-is-2-inches', twoInches, twoInchesDate),
   entry('what-does-10-cm-look-like', tenCm, tenCmDate),
+  entry('how-to-measure-belt-size', beltSize, beltSizeDate),
   // entry('how-to-measure-foot-size', footSize, footSizeDate),
 ].sort(byNewest);

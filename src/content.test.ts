@@ -12,6 +12,7 @@ import { en } from './i18n/dicts/en.js';
 import * as ringSizeContent from './pages/how-to-measure-ring-size/content.js';
 import * as pdContent from './pages/how-to-measure-pupillary-distance/content.js';
 import * as inchLookContent from './pages/what-does-an-inch-look-like/content.js';
+import * as beltSizeContent from './pages/how-to-measure-belt-size/content.js';
 // PUBLISH QUEUE (daily cron): add one static import per published article here, e.g.
 import * as sixInchesContent from './pages/what-does-6-inches-look-like/content.js';
 import * as screenSizeContent from './pages/how-to-measure-screen-size/content.js';
@@ -179,6 +180,7 @@ describe('how-to articles', () => {
     { slug: 'how-to-measure-inseam', mod: inseamSizeContent },
     { slug: 'how-big-is-2-inches', mod: twoInchesContent },
     { slug: 'what-does-10-cm-look-like', mod: tenCmContent },
+    { slug: 'how-to-measure-belt-size', mod: beltSizeContent },
     // { slug: 'how-to-measure-foot-size', mod: footSizeContent },
   ];
 
