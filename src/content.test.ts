@@ -31,6 +31,7 @@ import * as frameSizeContent from './pages/how-to-measure-picture-frame/content.
 import * as inseamSizeContent from './pages/how-to-measure-inseam/content.js';
 import * as twoInchesContent from './pages/how-big-is-2-inches/content.js';
 import * as tenCmContent from './pages/what-does-10-cm-look-like/content.js';
+import * as fiveCmContent from './pages/what-does-5-cm-look-like/content.js';
 // import * as footSizeContent from './pages/how-to-measure-foot-size/content.js';
 import { getDict } from './i18n/dict.js';
 import { DEFAULT_LOCALE, LOCALES } from './i18n/locales.js';
@@ -180,6 +181,7 @@ describe('how-to articles', () => {
     { slug: 'how-to-measure-inseam', mod: inseamSizeContent },
     { slug: 'how-big-is-2-inches', mod: twoInchesContent },
     { slug: 'what-does-10-cm-look-like', mod: tenCmContent },
+    { slug: 'what-does-5-cm-look-like', mod: fiveCmContent },
     { slug: 'how-to-measure-belt-size', mod: beltSizeContent },
     // { slug: 'how-to-measure-foot-size', mod: footSizeContent },
   ];

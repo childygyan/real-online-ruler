@@ -7,7 +7,7 @@
  * calibration. Facts verified via web search 2026-10-19: 5 cm = 50 mm =
  * 1.9685 in; AA battery = 50.5 x 14.5 mm per IEC 60086; 2 in = 50.8 mm.
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-10-31';
