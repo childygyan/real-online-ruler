@@ -10,7 +10,7 @@
  * (sheers/luxury); lengths: sill (1/2 in above), apron (1 in below), floor
  * (1/2 in above / kiss / puddle 2–6 in extra); ready-made lengths 63/84/96/108 in.
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-11-03';
