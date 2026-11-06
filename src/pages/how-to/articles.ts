@@ -29,6 +29,7 @@ import { article as footSize, DATE_PUBLISHED as footSizeDate } from '../how-to-m
 import { article as tv55, DATE_PUBLISHED as tv55Date } from '../how-big-is-55-inch-tv/content.js';
 import { article as wristSize, DATE_PUBLISHED as wristSizeDate } from '../how-to-measure-wrist-size/content.js';
 import { article as fourInches, DATE_PUBLISHED as fourInchesDate } from '../how-big-is-4-inches/content.js';
+import { article as tenInches, DATE_PUBLISHED as tenInchesDate } from '../how-big-is-10-inches/content.js';
 import { article as headSize, DATE_PUBLISHED as headSizeDate } from '../how-to-measure-head-size/content.js';
 import { article as screwSize, DATE_PUBLISHED as screwSizeDate } from '../how-to-identify-screw-size/content.js';
 import { article as waistSize, DATE_PUBLISHED as waistSizeDate } from '../how-to-measure-waist-size/content.js';
@@ -79,6 +80,7 @@ export const ARTICLES: ArticleEntry[] = [
   entry('how-big-is-55-inch-tv', tv55, tv55Date),
   entry('how-to-measure-wrist-size', wristSize, wristSizeDate),
   entry('how-big-is-4-inches', fourInches, fourInchesDate),
+  entry('how-big-is-10-inches', tenInches, tenInchesDate),
   entry('how-to-measure-head-size', headSize, headSizeDate),
   entry('how-to-identify-screw-size', screwSize, screwSizeDate),
   entry('how-to-measure-waist-size', waistSize, waistSizeDate),

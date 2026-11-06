@@ -7,7 +7,7 @@
  * own calibration. Facts verified via web search 2026-10-19: 10 in =
  * 254 mm exactly; US Letter paper = 8.5 x 11 in (215.9 x 279.4 mm).
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-11-06';

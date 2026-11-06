@@ -46,7 +46,6 @@ export interface QueuedArticle {
 }
 
 export const QUEUE: QueuedArticle[] = [
-  { slug: 'how-big-is-10-inches', var: 'tenInches', datePublished: '2026-11-06', visual: true },
   { slug: 'how-to-measure-dog-collar-size', var: 'dogCollarSize', datePublished: '2026-11-09' },
   { slug: 'what-does-15-cm-look-like', var: 'fifteenCm', datePublished: '2026-11-12', visual: true },
   { slug: 'how-to-measure-luggage-size', var: 'luggageSize', datePublished: '2026-11-15' },
