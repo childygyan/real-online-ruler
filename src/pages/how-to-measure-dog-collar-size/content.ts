@@ -9,7 +9,7 @@
  * typical brackets S 8–12 / M 12–18 / L 18–26 / XL 24–34 in; recheck
  * puppies often as they grow.
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-11-09';

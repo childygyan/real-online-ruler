@@ -14,6 +14,7 @@ import * as pdContent from './pages/how-to-measure-pupillary-distance/content.js
 import * as inchLookContent from './pages/what-does-an-inch-look-like/content.js';
 import * as beltSizeContent from './pages/how-to-measure-belt-size/content.js';
 // PUBLISH QUEUE (daily cron): add one static import per published article here, e.g.
+import * as dogCollarSizeContent from './pages/how-to-measure-dog-collar-size/content.js';
 import * as curtainSizeContent from './pages/how-to-measure-curtain-size/content.js';
 import * as sixInchesContent from './pages/what-does-6-inches-look-like/content.js';
 import * as screenSizeContent from './pages/how-to-measure-screen-size/content.js';
@@ -166,6 +167,7 @@ describe('how-to articles', () => {
     { slug: 'how-to-measure-pupillary-distance', mod: pdContent },
     { slug: 'what-does-an-inch-look-like', mod: inchLookContent },
     // PUBLISH QUEUE (daily cron): add one entry per published article here, e.g.
+    { slug: 'how-to-measure-dog-collar-size', mod: dogCollarSizeContent },
     { slug: 'how-to-measure-curtain-size', mod: curtainSizeContent },
     { slug: 'what-does-6-inches-look-like', mod: sixInchesContent },
     { slug: 'how-to-measure-screen-size', mod: screenSizeContent },

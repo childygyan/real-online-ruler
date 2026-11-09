@@ -22,6 +22,7 @@ import {
 } from '../what-does-an-inch-look-like/content.js';
 import { article as beltSize, DATE_PUBLISHED as beltSizeDate } from '../how-to-measure-belt-size/content.js';
 // PUBLISH QUEUE (daily cron): add one import per published article here, e.g.
+import { article as dogCollarSize, DATE_PUBLISHED as dogCollarSizeDate } from '../how-to-measure-dog-collar-size/content.js';
 import { article as curtainSize, DATE_PUBLISHED as curtainSizeDate } from '../how-to-measure-curtain-size/content.js';
 import { article as sixInches, DATE_PUBLISHED as sixInchesDate } from '../what-does-6-inches-look-like/content.js';
 import { article as screenSize, DATE_PUBLISHED as screenSizeDate } from '../how-to-measure-screen-size/content.js';
@@ -73,6 +74,7 @@ export const ARTICLES: ArticleEntry[] = [
   entry('how-to-measure-pupillary-distance', pupillaryDistance, pupillaryDistanceDate),
   entry('what-does-an-inch-look-like', whatInchLooksLike, whatInchLooksLikeDate),
   // PUBLISH QUEUE (daily cron): append one entry(...) line per published article here, e.g.
+  entry('how-to-measure-dog-collar-size', dogCollarSize, dogCollarSizeDate),
   entry('how-to-measure-curtain-size', curtainSize, curtainSizeDate),
   entry('what-does-6-inches-look-like', sixInches, sixInchesDate),
   entry('how-to-measure-screen-size', screenSize, screenSizeDate),
