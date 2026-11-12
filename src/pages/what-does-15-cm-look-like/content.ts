@@ -7,7 +7,7 @@
  * web search 2026-10-19: 15 cm = 150 mm = 5.9055 in; the standard short
  * school ruler is 15 cm; a US dollar bill is 15.6 cm long.
  */
-import type { ContentPageDict } from '../../../../i18n/content.js';
+import type { ContentPageDict } from '../../i18n/content.js';
 
 /** Publish date — from queue.ts; keep in sync. */
 export const DATE_PUBLISHED = '2026-11-12';
